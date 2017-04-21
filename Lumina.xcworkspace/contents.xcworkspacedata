@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:SwiftCamSample/SwiftCamSample.xcodeproj">
+      location = "group:Lumina/Lumina.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:SwiftCam/SwiftCam.xcodeproj">
+      location = "group:LuminaSample/LuminaSample.xcodeproj">
    </FileRef>
 </Workspace>

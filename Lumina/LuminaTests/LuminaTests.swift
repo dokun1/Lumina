@@ -1,15 +1,15 @@
 //
-//  SwiftCamTests.swift
-//  SwiftCamTests
+//  LuminaTests.swift
+//  LuminaTests
 //
 //  Created by David Okun IBM on 4/21/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
 import XCTest
-@testable import SwiftCam
+@testable import Lumina
 
-class SwiftCamTests: XCTestCase {
+class LuminaTests: XCTestCase {
     
     override func setUp() {
         super.setUp()

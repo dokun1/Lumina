@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  SwiftCamSample
+//  LuminaSample
 //
 //  Created by David Okun IBM on 4/21/17.
 //  Copyright © 2017 David Okun. All rights reserved.
