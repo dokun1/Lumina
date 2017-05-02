@@ -7,9 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		539848301EB8F14300F77AEA /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5398482F1EB8F14300F77AEA /* AVFoundation.framework */; };
 		53B828DA1EAAA07F00E3A624 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53B828D01EAAA07F00E3A624 /* Lumina.framework */; };
 		53B828DF1EAAA07F00E3A624 /* LuminaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828DE1EAAA07F00E3A624 /* LuminaTests.swift */; };
 		53B828E11EAAA07F00E3A624 /* Lumina.h in Headers */ = {isa = PBXBuildFile; fileRef = 53B828D31EAAA07F00E3A624 /* Lumina.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		53B8290F1EAAA24600E3A624 /* LuminaController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B8290E1EAAA24600E3A624 /* LuminaController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,12 +25,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5398482F1EB8F14300F77AEA /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		53B828D01EAAA07F00E3A624 /* Lumina.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Lumina.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		53B828D31EAAA07F00E3A624 /* Lumina.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lumina.h; sourceTree = "<group>"; };
 		53B828D41EAAA07F00E3A624 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		53B828D91EAAA07F00E3A624 /* LuminaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LuminaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		53B828DE1EAAA07F00E3A624 /* LuminaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaTests.swift; sourceTree = "<group>"; };
 		53B828E01EAAA07F00E3A624 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		53B8290E1EAAA24600E3A624 /* LuminaController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LuminaController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				539848301EB8F14300F77AEA /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,12 +55,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5398482E1EB8F14300F77AEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5398482F1EB8F14300F77AEA /* AVFoundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		53B828C61EAAA07F00E3A624 = {
 			isa = PBXGroup;
 			children = (
 				53B828D21EAAA07F00E3A624 /* Lumina */,
 				53B828DD1EAAA07F00E3A624 /* LuminaTests */,
 				53B828D11EAAA07F00E3A624 /* Products */,
+				5398482E1EB8F14300F77AEA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -73,6 +87,7 @@
 			children = (
 				53B828D31EAAA07F00E3A624 /* Lumina.h */,
 				53B828D41EAAA07F00E3A624 /* Info.plist */,
+				53B8290E1EAAA24600E3A624 /* LuminaController.swift */,
 			);
 			path = Lumina;
 			sourceTree = "<group>";
@@ -149,6 +164,7 @@
 					53B828CF1EAAA07F00E3A624 = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = RQ632LL2X3;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 					};
 					53B828D81EAAA07F00E3A624 = {
@@ -198,6 +214,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53B8290F1EAAA24600E3A624 /* LuminaController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,6 +339,7 @@
 		53B828E51EAAA07F00E3A624 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = RQ632LL2X3;
@@ -334,6 +352,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.okun.io.Lumina;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -341,6 +360,7 @@
 		53B828E61EAAA07F00E3A624 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = RQ632LL2X3;
@@ -360,6 +380,7 @@
 		53B828E81EAAA07F00E3A624 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = RQ632LL2X3;
 				INFOPLIST_FILE = LuminaTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -372,6 +393,7 @@
 		53B828E91EAAA07F00E3A624 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = RQ632LL2X3;
 				INFOPLIST_FILE = LuminaTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -400,6 +422,7 @@
 				53B828E61EAAA07F00E3A624 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		53B828E71EAAA07F00E3A624 /* Build configuration list for PBXNativeTarget "LuminaTests" */ = {
 			isa = XCConfigurationList;
@@ -408,6 +431,7 @@
 				53B828E91EAAA07F00E3A624 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -7,19 +7,29 @@
 //
 
 import UIKit
+import Lumina
 
 class ViewController: UIViewController {
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        guard let camera = LuminaController(camera: .back) else {
+            return
+        }
+        camera.delegate = self
+        present(camera, animated: true, completion: nil)
     }
-
-
 }
 
+extension ViewController: LuminaDelegate {
+    func detected(image: UIImage) {
+        print("got an image")
+    }
+    
+    func detected(data: Data) {
+        
+    }
+}
