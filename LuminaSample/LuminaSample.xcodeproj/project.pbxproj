@@ -12,7 +12,6 @@
 		53B828FC1EAAA09000E3A624 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FA1EAAA09000E3A624 /* Main.storyboard */; };
 		53B828FE1EAAA09000E3A624 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FD1EAAA09000E3A624 /* Assets.xcassets */; };
 		53B829011EAAA09000E3A624 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FF1EAAA09000E3A624 /* LaunchScreen.storyboard */; };
-		53B8290A1EAAA18000E3A624 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53B829091EAAA18000E3A624 /* Lumina.framework */; };
 		53B8290B1EAAA1A100E3A624 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53B829091EAAA18000E3A624 /* Lumina.framework */; };
 		53B8290C1EAAA1A100E3A624 /* Lumina.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 53B829091EAAA18000E3A624 /* Lumina.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -48,7 +47,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				53B8290B1EAAA1A100E3A624 /* Lumina.framework in Frameworks */,
-				53B8290A1EAAA18000E3A624 /* Lumina.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,7 +119,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0820;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = "David Okun";
 				TargetAttributes = {
 					53B828F21EAAA09000E3A624 = {
