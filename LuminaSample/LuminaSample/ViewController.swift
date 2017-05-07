@@ -14,19 +14,23 @@ class ViewController: UITableViewController {
     @IBOutlet weak var trackImagesSwitch: UISwitch!
     @IBOutlet weak var trackMetadataSwitch: UISwitch!
     @IBOutlet weak var increaseImagePerformanceSwitch: UISwitch!
+    @IBOutlet weak var showTextPromptViewSwitch: UISwitch!
 }
 
 extension ViewController { //MARK: IBActions
     @IBAction func cameraButtonTapped() {
         let direction: CameraDirection = frontCameraSwitch.isOn ? .front : .back
-        guard let camera = LuminaController(camera: direction) else {
-            return
+        var camera: LuminaController? = nil
+        if showTextPromptViewSwitch.isOn {
+            camera = LuminaController(camera: direction, initialPrompt: "I love Lumina, and I'm going to start using it everywhere!!")
+        } else {
+            camera = LuminaController(camera: direction)
         }
-        camera.delegate = self
-        camera.trackImages = trackImagesSwitch.isOn
-        camera.trackMetadata = trackMetadataSwitch.isOn
-        camera.improvedImageDetectionPerformance = increaseImagePerformanceSwitch.isOn
-        present(camera, animated: true, completion: nil)
+        camera!.delegate = self
+        camera!.trackImages = trackImagesSwitch.isOn
+        camera!.trackMetadata = trackMetadataSwitch.isOn
+        camera!.improvedImageDetectionPerformance = increaseImagePerformanceSwitch.isOn
+        present(camera!, animated: true, completion: nil)
     }
 }
 

@@ -27,6 +27,11 @@ public final class LuminaController: UIViewController {
     
     private var previewLayer: AVCaptureVideoPreviewLayer?
     private var previewView: UIView?
+    
+    private var metadataOutput: AVCaptureMetadataOutput?
+    private var videoBufferQueue = DispatchQueue(label: "com.lumina.videoBufferQueue")
+    private var metadataBufferQueue = DispatchQueue(label: "com.lumina.metadataBufferQueue")
+    
     fileprivate var input: AVCaptureDeviceInput?
     
     fileprivate var videoOutput: AVCaptureVideoDataOutput {
@@ -37,10 +42,8 @@ public final class LuminaController: UIViewController {
         return videoOutput
     }
     
-    private var metadataOutput: AVCaptureMetadataOutput?
-    
-    private var videoBufferQueue = DispatchQueue(label: "com.lumina.videoBufferQueue")
-    private var metadataBufferQueue = DispatchQueue(label: "com.lumina.metadataBufferQueue")
+    fileprivate var textPromptView: LuminaTextPromptView?
+    fileprivate var initialPrompt: String?
     
     fileprivate var session: AVCaptureSession?
     
@@ -50,6 +53,7 @@ public final class LuminaController: UIViewController {
     fileprivate var currentCameraDirection: CameraDirection = .back
     fileprivate var isUpdating = false
     fileprivate var torchOn = false
+    
     
     public var delegate: LuminaDelegate! = nil
     public var trackImages = false
@@ -101,6 +105,12 @@ public final class LuminaController: UIViewController {
         previewLayer.frame = self.view.bounds
         commitSession(for: camera)
         createUI()
+    }
+    
+    public convenience init?(camera: CameraDirection, initialPrompt: String?) {
+        self.init(camera: camera)
+        self.initialPrompt = initialPrompt
+        createTextPromptView()
     }
     
     fileprivate func commitSession(for desiredCameraDirection: CameraDirection) {
@@ -191,6 +201,25 @@ public final class LuminaController: UIViewController {
     
     public required init?(coder aDecoder: NSCoder) {
         return nil
+    }
+}
+
+extension LuminaController { // MARK: Text prompt methods
+    fileprivate func createTextPromptView() {
+        let view = LuminaTextPromptView(frame: CGRect(origin: CGPoint(x: self.view.bounds.minX + 10, y: self.view.bounds.minY + 70), size: CGSize(width: self.view.bounds.size.width - 20, height: 80)))
+        if let prompt = self.initialPrompt {
+            view.updateText(to: prompt)
+        }
+        self.view.addSubview(view)
+        self.textPromptView = view
+    }
+    
+    public func updateTextPromptView(to text:String) {
+        guard let view = self.textPromptView else {
+            print("No text prompt view to update!!")
+            return
+        }
+        view.updateText(to: text)
     }
 }
 
