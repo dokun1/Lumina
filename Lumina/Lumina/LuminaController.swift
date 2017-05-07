@@ -109,7 +109,7 @@ public final class LuminaController: UIViewController {
         }
         self.currentCameraDirection = desiredCameraDirection
         
-        session.sessionPreset = AVCaptureSessionPresetPhoto
+        session.sessionPreset = AVCaptureSessionPresetHigh
         
         if let input = self.input {
             session.removeInput(input)
