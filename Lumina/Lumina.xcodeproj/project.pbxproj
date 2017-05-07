@@ -12,6 +12,7 @@
 		53B828DF1EAAA07F00E3A624 /* LuminaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828DE1EAAA07F00E3A624 /* LuminaTests.swift */; };
 		53B828E11EAAA07F00E3A624 /* Lumina.h in Headers */ = {isa = PBXBuildFile; fileRef = 53B828D31EAAA07F00E3A624 /* Lumina.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		53B8290F1EAAA24600E3A624 /* LuminaController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B8290E1EAAA24600E3A624 /* LuminaController.swift */; };
+		53B9CCFB1EBF6C62008E4A43 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53B9CCFA1EBF6C62008E4A43 /* Media.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +34,7 @@
 		53B828DE1EAAA07F00E3A624 /* LuminaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaTests.swift; sourceTree = "<group>"; };
 		53B828E01EAAA07F00E3A624 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		53B8290E1EAAA24600E3A624 /* LuminaController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LuminaController.swift; sourceTree = "<group>"; };
+		53B9CCFA1EBF6C62008E4A43 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 				53B828D31EAAA07F00E3A624 /* Lumina.h */,
 				53B828D41EAAA07F00E3A624 /* Info.plist */,
 				53B8290E1EAAA24600E3A624 /* LuminaController.swift */,
+				53B9CCFA1EBF6C62008E4A43 /* Media.xcassets */,
 			);
 			path = Lumina;
 			sourceTree = "<group>";
@@ -197,6 +200,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53B9CCFB1EBF6C62008E4A43 /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

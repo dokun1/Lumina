@@ -15,9 +15,9 @@ public protocol LuminaDelegate {
     func cancelled(camera: LuminaController)
 }
 
-public enum CameraDirection {
-    case front
-    case back
+public enum CameraDirection: String {
+    case front = "Front"
+    case back = "Back"
 }
 
 public final class LuminaController: UIViewController {
@@ -30,15 +30,13 @@ public final class LuminaController: UIViewController {
     private var videoOutput: AVCaptureVideoDataOutput {
         let videoOutput = AVCaptureVideoDataOutput()
         videoOutput.alwaysDiscardsLateVideoFrames = true
+        videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as AnyHashable : kCVPixelFormatType_32BGRA]
         videoOutput.setSampleBufferDelegate(self, queue: videoBufferQueue)
         return videoOutput
     }
     
     private var metadataOutput: AVCaptureMetadataOutput {
         let metadataOutput = AVCaptureMetadataOutput()
-        metadataOutput.setMetadataObjectsDelegate(self, queue: metadataBufferQueue)
-        metadataOutput.metadataObjectTypes = metadataOutput.availableMetadataObjectTypes
-        metadataOutput.rectOfInterest = self.view.frame
         return metadataOutput
     }
     
@@ -54,6 +52,7 @@ public final class LuminaController: UIViewController {
     public var delegate: LuminaDelegate! = nil
     public var trackImages = false
     public var trackMetadata = false
+    public var improvedImageDetectionPerformance = false
     
     private var discoverySession: AVCaptureDeviceDiscoverySession? {
         let discoverySession = AVCaptureDeviceDiscoverySession(deviceTypes: [AVCaptureDeviceType.builtInDualCamera, AVCaptureDeviceType.builtInTelephotoCamera, AVCaptureDeviceType.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: AVCaptureDevicePosition.unspecified)
@@ -63,20 +62,21 @@ public final class LuminaController: UIViewController {
     private func getDevice(for cameraDirection: CameraDirection) -> AVCaptureDevice? {
         var device: AVCaptureDevice?
         guard let discoverySession = self.discoverySession else {
+            print("Could not get discovery session")
             return nil
         }
         for discoveryDevice: AVCaptureDevice in discoverySession.devices {
-            switch cameraDirection {
-            case .front:
+            if cameraDirection == .front {
                 if discoveryDevice.position == AVCaptureDevicePosition.front {
                     device = discoveryDevice
+                    break
                 }
-                break
-            case .back:
-                if discoveryDevice.position == AVCaptureDevicePosition.back {
+            } else {
+                if discoveryDevice.position == AVCaptureDevicePosition.back { // TODO: support for iPhone 7 plus dual cameras
                     device = discoveryDevice
+                    break
                 }
-                break
+                
             }
         }
         return device
@@ -84,14 +84,16 @@ public final class LuminaController: UIViewController {
     
     public init?(camera: CameraDirection) {
         super.init(nibName: nil, bundle: nil)
+        
         self.session = AVCaptureSession()
         self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
         self.previewView = self.view
         
         guard let previewLayer = self.previewLayer else {
+            print("Could not access image preview layer")
             return
         }
-        
+        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
         self.view.layer.addSublayer(previewLayer)
         self.view.bounds = UIScreen.main.bounds
         
@@ -102,11 +104,12 @@ public final class LuminaController: UIViewController {
     
     fileprivate func commitSession(for desiredCameraDirection: CameraDirection) {
         guard let session = self.session else {
+            print("Error getting session")
             return
         }
         self.currentCameraDirection = desiredCameraDirection
         
-        session.sessionPreset = AVCaptureSessionPresetHigh
+        session.sessionPreset = AVCaptureSessionPresetPhoto
         
         if let input = self.input {
             session.removeInput(input)
@@ -115,6 +118,7 @@ public final class LuminaController: UIViewController {
         do {
             try self.input = AVCaptureDeviceInput(device: getDevice(for: desiredCameraDirection))
         } catch {
+            print("Error getting device input for \(desiredCameraDirection.rawValue)")
             return
         }
         
@@ -125,27 +129,35 @@ public final class LuminaController: UIViewController {
         if session.canAddOutput(self.videoOutput) {
             session.addOutput(self.videoOutput)
         }
-        
         if session.canAddOutput(self.metadataOutput) {
             session.addOutput(self.metadataOutput)
         }
         
+        self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
+        self.metadataOutput.setMetadataObjectsDelegate(self, queue: metadataBufferQueue)
+        
         session.commitConfiguration()
         session.startRunning()
+        
         guard let cameraSwitchButton = self.cameraSwitchButton else {
+            print("Could not create camera switch button")
             return
         }
         cameraSwitchButton.isEnabled = true
+        
     }
     
     private func createUI() {
         self.cameraSwitchButton = UIButton(frame: CGRect(x: self.view.frame.maxX - 60, y: self.view.frame.minY + 10, width: 50, height: 50))
         guard let cameraSwitchButton = self.cameraSwitchButton else {
+            print("Could not access camera switch button memory address")
             return
         }
-        cameraSwitchButton.backgroundColor = UIColor.green
+        cameraSwitchButton.backgroundColor = UIColor.clear
         cameraSwitchButton.addTarget(self, action: #selector(cameraSwitchButtonTapped), for: UIControlEvents.touchUpInside)
         self.view.addSubview(cameraSwitchButton)
+        
+        cameraSwitchButton.setImage("cameraSwitchIcon".imageFromBundle, for: .normal)
         
         self.cameraCancelButton = UIButton(frame: CGRect(origin: CGPoint(x: self.view.frame.minX + 10, y: self.view.frame.maxY - 40), size: CGSize(width: 70, height: 30)))
         guard let cameraCancelButton = self.cameraCancelButton else {
@@ -154,6 +166,7 @@ public final class LuminaController: UIViewController {
         cameraCancelButton.setTitle("Cancel", for: .normal)
         cameraCancelButton.backgroundColor = UIColor.clear
         guard let titleLabel = cameraCancelButton.titleLabel else {
+            print("Could not access cancel button label memory address")
             return
         }
         titleLabel.textColor = UIColor.white
@@ -196,89 +209,90 @@ private extension LuminaController { //MARK: Button Tap Methods
 }
 
 private extension CMSampleBuffer {
-    var image: UIImage? {
+    var imageFromCoreImage: UIImage? {
         guard let imageBuffer = CMSampleBufferGetImageBuffer(self) else {
+            print("Could not get image buffer from CMSampleBuffer")
             return nil
         }
         let coreImage: CIImage = CIImage(cvPixelBuffer: imageBuffer)
         let context: CIContext = CIContext()
         guard let graphicsImage: CGImage = context.createCGImage(coreImage, from: coreImage.extent) else {
+            print("Could not create CoreGraphics image from context")
             return nil
         }
-        let image = UIImage(cgImage: graphicsImage)
-        return image.rotated(by: Measurement(value: 90.0, unit: .degrees))
-    }
-}
-
-private extension UIImage {
-    struct RotationOptions: OptionSet {
-        let rawValue: Int
-        
-        static let flipOnVerticalAxis = RotationOptions(rawValue: 1)
-        static let flipOnHorizontalAxis = RotationOptions(rawValue: 2)
+        return UIImage(cgImage: graphicsImage)
     }
     
-    func rotated(by rotationAngle: Measurement<UnitAngle>, options: RotationOptions = []) -> UIImage? {
-        guard let cgImage = self.cgImage else { return nil }
-        
-        let rotationInRadians = CGFloat(rotationAngle.converted(to: .radians).value)
-        let transform = CGAffineTransform(rotationAngle: rotationInRadians)
-        var rect = CGRect(origin: .zero, size: self.size).applying(transform)
-        rect.origin = .zero
-        
-        let renderer = UIGraphicsImageRenderer(size: rect.size)
-        return renderer.image { renderContext in
-            renderContext.cgContext.translateBy(x: rect.midX, y: rect.midY)
-            renderContext.cgContext.rotate(by: rotationInRadians)
+    var imageFromPixelBuffer: UIImage? {
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(self) else {
+            print("Could not get image buffer from CMSampleBuffer")
+            return nil
+        }
+        if CVPixelBufferLockBaseAddress(imageBuffer, CVPixelBufferLockFlags(rawValue: 0)) == kCVReturnSuccess {
+            var colorSpace = CGColorSpaceCreateDeviceRGB()
+            var bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
+            var width = CVPixelBufferGetWidth(imageBuffer)
+            var height = CVPixelBufferGetHeight(imageBuffer)
+            var bitsPerComponent: size_t = 8
+            var bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
+            var baseAddress = CVPixelBufferGetBaseAddress(imageBuffer)
             
-            let x = options.contains(.flipOnVerticalAxis) ? -1.0 : 1.0
-            let y = options.contains(.flipOnHorizontalAxis) ? 1.0 : -1.0
-            renderContext.cgContext.scaleBy(x: CGFloat(x), y: CGFloat(y))
+            let format = CVPixelBufferGetPixelFormatType(imageBuffer)
+            if format == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange {
+                baseAddress = CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0)
+                width = CVPixelBufferGetWidthOfPlane(imageBuffer, 0)
+                height = CVPixelBufferGetHeightOfPlane(imageBuffer, 0)
+                bitsPerComponent = 1
+                bytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 0)
+                colorSpace = CGColorSpaceCreateDeviceGray()
+                bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue | CGBitmapInfo.byteOrder32Big.rawValue)
+            }
             
-            let drawRect = CGRect(origin: CGPoint(x: -self.size.width/2, y: -self.size.height/2), size: self.size)
-            renderContext.cgContext.draw(cgImage, in: drawRect)
+            let context = CGContext(data: baseAddress, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo.rawValue)
+            if let context = context {
+                guard let sample = context.makeImage() else {
+                    print("Could not create CoreGraphics image from context")
+                    return nil
+                }
+                CVPixelBufferUnlockBaseAddress(imageBuffer, CVPixelBufferLockFlags(rawValue: 0))
+                return UIImage(cgImage: sample)
+            } else {
+                print("Could not create CoreGraphics context")
+                return nil
+            }
+        } else {
+            print("Could not lock base address for pixel buffer")
+            return nil
         }
     }
 }
 
 extension LuminaController: AVCaptureVideoDataOutputSampleBufferDelegate {
     public func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
-//        guard case self.trackImages = true else {
-//            return
-//        }
-//        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-//            return
-//        }
-//        if CVPixelBufferLockBaseAddress(imageBuffer, CVPixelBufferLockFlags(rawValue: 0)) == kCVReturnSuccess {
-//            var colorSpace: CGColorSpace? = nil
-//            var bitmapInfo: CGBitmapInfo? = nil
-//            var width: size_t = 0
-//            var height: size_t = 0
-//            var bitsPerComponent: size_t = 0
-//            var bytesPerRow: size_t = 0
-//            var data: UnsafeMutableRawPointer? = nil
-//            
-//            let format = CVPixelBufferGetPixelFormatType(imageBuffer)
-//            if format == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange {
-//                data = CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0)
-//                width = CVPixelBufferGetWidthOfPlane(imageBuffer, 0)
-//                height = CVPixelBufferGetHeightOfPlane(imageBuffer, 0)
-//                bitsPerComponent = 1
-//                bytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 0)
-//                colorSpace = CGColorSpaceCreateDeviceGray()
-//                bitmapInfo = cgbitmapinto
-//            }
-//        }
-        guard let sampleBuffer = sampleBuffer else {
-            return
-        }
-        guard let image = sampleBuffer.image else {
+        guard case self.trackImages = true else {
             return
         }
         guard let delegate = self.delegate else {
+            print("Warning!! No delegate set, but image tracking turned on")
             return
         }
-        delegate.detected(camera: self, image: image)
+        guard let sampleBuffer = sampleBuffer else {
+            print("No sample buffer detected")
+            return
+        }
+        var image: UIImage? = nil
+        let startTime = Date()
+        if self.improvedImageDetectionPerformance {
+            image = sampleBuffer.imageFromPixelBuffer
+        
+        } else {
+            image = sampleBuffer.imageFromCoreImage
+        }
+        let end = Date()
+        print("Image tracking processing time: \(end.timeIntervalSince(startTime))")
+        if let image = image {
+            delegate.detected(camera: self, image: image)
+        }
     }
 }
 
@@ -291,5 +305,16 @@ extension LuminaController: AVCaptureMetadataOutputObjectsDelegate {
             return
         }
         delegate.detected(camera: self, data: metadataObjects)
+    }
+}
+
+extension String {
+    var imageFromBundle: UIImage? {
+        let bundle = Bundle(for: LuminaController.self)
+        if let path = bundle.path(forResource: self, ofType: "png") {
+            return UIImage(contentsOfFile: path)
+        } else {
+            return nil
+        }
     }
 }

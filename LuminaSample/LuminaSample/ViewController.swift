@@ -13,6 +13,7 @@ class ViewController: UITableViewController {
     @IBOutlet weak var frontCameraSwitch: UISwitch!
     @IBOutlet weak var trackImagesSwitch: UISwitch!
     @IBOutlet weak var trackMetadataSwitch: UISwitch!
+    @IBOutlet weak var increaseImagePerformanceSwitch: UISwitch!
 }
 
 extension ViewController { //MARK: IBActions
@@ -23,6 +24,7 @@ extension ViewController { //MARK: IBActions
         }
         camera.delegate = self
         camera.trackImages = trackImagesSwitch.isOn
+        camera.improvedImageDetectionPerformance = increaseImagePerformanceSwitch.isOn
         present(camera, animated: true, completion: nil)
     }
 }
