@@ -18,6 +18,8 @@ public protocol LuminaDelegate {
 public enum CameraDirection: String {
     case front = "Front"
     case back = "Back"
+    @available(iOS 10.2, *) case telephoto = "Telephoto"
+    @available(iOS 10.2, *) case dual = "Dual"
 }
 
 public final class LuminaController: UIViewController {
@@ -25,9 +27,9 @@ public final class LuminaController: UIViewController {
     
     private var previewLayer: AVCaptureVideoPreviewLayer?
     private var previewView: UIView?
-    private var input: AVCaptureDeviceInput?
+    fileprivate var input: AVCaptureDeviceInput?
     
-    private var videoOutput: AVCaptureVideoDataOutput {
+    fileprivate var videoOutput: AVCaptureVideoDataOutput {
         let videoOutput = AVCaptureVideoDataOutput()
         videoOutput.alwaysDiscardsLateVideoFrames = true
         videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as AnyHashable : kCVPixelFormatType_32BGRA]
@@ -35,10 +37,7 @@ public final class LuminaController: UIViewController {
         return videoOutput
     }
     
-    private var metadataOutput: AVCaptureMetadataOutput {
-        let metadataOutput = AVCaptureMetadataOutput()
-        return metadataOutput
-    }
+    private var metadataOutput: AVCaptureMetadataOutput?
     
     private var videoBufferQueue = DispatchQueue(label: "com.lumina.videoBufferQueue")
     private var metadataBufferQueue = DispatchQueue(label: "com.lumina.metadataBufferQueue")
@@ -47,7 +46,10 @@ public final class LuminaController: UIViewController {
     
     fileprivate var cameraSwitchButton: UIButton?
     fileprivate var cameraCancelButton: UIButton?
+    fileprivate var cameraTorchButton: UIButton?
     fileprivate var currentCameraDirection: CameraDirection = .back
+    fileprivate var isUpdating = false
+    fileprivate var torchOn = false
     
     public var delegate: LuminaDelegate! = nil
     public var trackImages = false
@@ -76,7 +78,6 @@ public final class LuminaController: UIViewController {
                     device = discoveryDevice
                     break
                 }
-                
             }
         }
         return device
@@ -122,6 +123,8 @@ public final class LuminaController: UIViewController {
             return
         }
         
+        let metadataOutput = AVCaptureMetadataOutput()
+        
         if session.canAddInput(self.input) {
             session.addInput(self.input)
         }
@@ -129,12 +132,14 @@ public final class LuminaController: UIViewController {
         if session.canAddOutput(self.videoOutput) {
             session.addOutput(self.videoOutput)
         }
-        if session.canAddOutput(self.metadataOutput) {
-            session.addOutput(self.metadataOutput)
-        }
         
-        self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
-        self.metadataOutput.setMetadataObjectsDelegate(self, queue: metadataBufferQueue)
+        if session.canAddOutput(metadataOutput) {
+            session.addOutput(metadataOutput)
+        }
+        metadataOutput.setMetadataObjectsDelegate(self, queue: metadataBufferQueue)
+        metadataOutput.metadataObjectTypes = metadataOutput.availableMetadataObjectTypes
+        
+        self.metadataOutput = metadataOutput
         
         session.commitConfiguration()
         session.startRunning()
@@ -157,7 +162,8 @@ public final class LuminaController: UIViewController {
         cameraSwitchButton.addTarget(self, action: #selector(cameraSwitchButtonTapped), for: UIControlEvents.touchUpInside)
         self.view.addSubview(cameraSwitchButton)
         
-        cameraSwitchButton.setImage("cameraSwitchIcon".imageFromBundle, for: .normal)
+        let image = UIImage(named: "cameraSwitchIcon", in: Bundle(for: LuminaController.self), compatibleWith: nil)
+        cameraSwitchButton.setImage(image, for: .normal)
         
         self.cameraCancelButton = UIButton(frame: CGRect(origin: CGPoint(x: self.view.frame.minX + 10, y: self.view.frame.maxY - 40), size: CGSize(width: 70, height: 30)))
         guard let cameraCancelButton = self.cameraCancelButton else {
@@ -173,6 +179,14 @@ public final class LuminaController: UIViewController {
         titleLabel.font = UIFont.systemFont(ofSize: 16, weight: 0.5)
         cameraCancelButton.addTarget(self, action: #selector(cameraCancelButtonTapped), for: UIControlEvents.touchUpInside)
         self.view.addSubview(cameraCancelButton)
+        
+        let cameraTorchButton = UIButton(frame: CGRect(origin: CGPoint(x: self.view.frame.minX + 10, y: self.view.frame.minY + 10), size: CGSize(width: 50, height: 50)))
+        cameraTorchButton.backgroundColor = UIColor.clear
+        cameraTorchButton.addTarget(self, action: #selector(cameraTorchButtonTapped), for: UIControlEvents.touchUpInside)
+        let torchImage = UIImage(named: "cameraTorch", in: Bundle(for: LuminaController.self), compatibleWith: nil)
+        cameraTorchButton.setImage(torchImage, for: .normal)
+        self.view.addSubview(cameraTorchButton)
+        self.cameraTorchButton = cameraTorchButton
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -184,7 +198,6 @@ private extension LuminaController { //MARK: Button Tap Methods
     @objc func cameraSwitchButtonTapped() {
         if let cameraSwitchButton = self.cameraSwitchButton {
             cameraSwitchButton.isEnabled = false
-            print("camera switch button tapped")
             if let session = self.session {
                 session.stopRunning()
             }
@@ -193,6 +206,12 @@ private extension LuminaController { //MARK: Button Tap Methods
                 commitSession(for: .back)
                 break
             case .back:
+                commitSession(for: .front)
+                break
+            case .telephoto:
+                commitSession(for: .front)
+                break
+            case .dual:
                 commitSession(for: .front)
                 break
             }
@@ -204,6 +223,36 @@ private extension LuminaController { //MARK: Button Tap Methods
     @objc func cameraCancelButtonTapped() {
         if let delegate = self.delegate {
             delegate.cancelled(camera: self)
+        }
+    }
+    
+    @objc func cameraTorchButtonTapped() {
+        guard let input = self.input else {
+            print("Trying to update torch, but cannot detect device input!")
+            return
+        }
+        if self.torchOn == false {
+            do {
+                if input.device.isTorchModeSupported(.on) {
+                    try input.device.lockForConfiguration()
+                    try input.device.setTorchModeOnWithLevel(1.0)
+                    self.torchOn = !self.torchOn
+                    input.device.unlockForConfiguration()
+                }
+            } catch {
+                print("Could not turn torch on!!")
+            }
+        } else {
+            do {
+                if input.device.isTorchModeSupported(.off) {
+                    try input.device.lockForConfiguration()
+                    input.device.torchMode = .off
+                    self.torchOn = !self.torchOn
+                    input.device.unlockForConfiguration()
+                }
+            } catch {
+                print("Could not turn torch off!!")
+            }
         }
     }
 }
@@ -296,6 +345,85 @@ extension LuminaController: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
 }
 
+extension LuminaController { // MARK: Tap to focus methods
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if self.isUpdating == true {
+            return
+        } else {
+            self.isUpdating = true
+        }
+        for touch in touches {
+            let point = touch.location(in: touch.view)
+            let focusX = point.x/UIScreen.main.bounds.size.width
+            let focusY = point.y/UIScreen.main.bounds.size.height
+            guard let input = self.input else {
+                print("Trying to focus, but cannot detect device input!")
+                return
+            }
+            do {
+                if input.device.isFocusModeSupported(.autoFocus) && input.device.isFocusPointOfInterestSupported {
+                    try input.device.lockForConfiguration()
+                    input.device.focusMode = .autoFocus
+                    input.device.focusPointOfInterest = CGPoint(x: focusX, y: focusY)
+                    if input.device.isExposureModeSupported(.autoExpose) && input.device.isExposurePointOfInterestSupported {
+                        input.device.exposureMode = .autoExpose
+                        input.device.exposurePointOfInterest = CGPoint(x: focusX, y: focusY)
+                    }
+                    input.device.unlockForConfiguration()
+                    showFocusView(at: point)
+                    let deadlineTime = DispatchTime.now() + .seconds(3)
+                    DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
+                        self.resetCameraToContinuousExposureAndFocus()
+                    }
+                } else {
+                    self.isUpdating = false
+                }
+            } catch {
+                print("could not lock for configuration! Not able to focus")
+                self.isUpdating = false
+            }
+        }
+    }
+    
+    func resetCameraToContinuousExposureAndFocus() {
+        do {
+            guard let input = self.input else {
+                print("Trying to focus, but cannot detect device input!")
+                return
+            }
+            if input.device.isFocusModeSupported(.continuousAutoFocus) {
+                try input.device.lockForConfiguration()
+                input.device.focusMode = .continuousAutoFocus
+                if input.device.isExposureModeSupported(.continuousAutoExposure) {
+                    input.device.exposureMode = .continuousAutoExposure
+                }
+                input.device.unlockForConfiguration()
+            }
+        } catch {
+            print("could not reset to continuous auto focus and exposure!!")
+        }
+    }
+    
+    func showFocusView(at: CGPoint) {
+        let focusView: UIImageView = UIImageView(image: UIImage(named: "cameraFocus", in: Bundle(for: LuminaController.self), compatibleWith: nil))
+        focusView.contentMode = .scaleAspectFit
+        focusView.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        focusView.center = at
+        focusView.alpha = 0.0
+        self.view.addSubview(focusView)
+        UIView.animate(withDuration: 0.2, animations: {
+            focusView.alpha = 1.0
+        }, completion: { complete in
+            UIView.animate(withDuration: 1.0, animations: {
+                focusView.alpha = 0.0
+            }, completion: { final in
+                focusView.removeFromSuperview()
+                self.isUpdating = false
+            })
+        })
+    }
+}
+
 extension LuminaController: AVCaptureMetadataOutputObjectsDelegate {
     public func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
         guard case self.trackMetadata = true else {
@@ -305,16 +433,5 @@ extension LuminaController: AVCaptureMetadataOutputObjectsDelegate {
             return
         }
         delegate.detected(camera: self, data: metadataObjects)
-    }
-}
-
-extension String {
-    var imageFromBundle: UIImage? {
-        let bundle = Bundle(for: LuminaController.self)
-        if let path = bundle.path(forResource: self, ofType: "png") {
-            return UIImage(contentsOfFile: path)
-        } else {
-            return nil
-        }
     }
 }

@@ -24,6 +24,7 @@ extension ViewController { //MARK: IBActions
         }
         camera.delegate = self
         camera.trackImages = trackImagesSwitch.isOn
+        camera.trackMetadata = trackMetadataSwitch.isOn
         camera.improvedImageDetectionPerformance = increaseImagePerformanceSwitch.isOn
         present(camera, animated: true, completion: nil)
     }
@@ -35,7 +36,7 @@ extension ViewController: LuminaDelegate {
     }
     
     func detected(camera: LuminaController, data: [Any]) {
-        print("detected data")
+        print("detected data: \(data)")
     }
     
     func cancelled(camera: LuminaController) {
