@@ -42,5 +42,4 @@ extension ViewController: LuminaDelegate {
     func cancelled(camera: LuminaController) {
         camera.dismiss(animated: true, completion: nil)
     }
-    
 }

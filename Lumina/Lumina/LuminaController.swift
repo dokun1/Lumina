@@ -346,7 +346,7 @@ extension LuminaController: AVCaptureVideoDataOutputSampleBufferDelegate {
 }
 
 extension LuminaController { // MARK: Tap to focus methods
-    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if self.isUpdating == true {
             return
         } else {
