@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		53883FD11EC4DE5B00D1DE40 /* LuminaMetadataBorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53883FD01EC4DE5B00D1DE40 /* LuminaMetadataBorderView.swift */; };
 		539848301EB8F14300F77AEA /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5398482F1EB8F14300F77AEA /* AVFoundation.framework */; };
 		53B828DA1EAAA07F00E3A624 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53B828D01EAAA07F00E3A624 /* Lumina.framework */; };
 		53B828DF1EAAA07F00E3A624 /* LuminaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828DE1EAAA07F00E3A624 /* LuminaTests.swift */; };
@@ -27,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		53883FD01EC4DE5B00D1DE40 /* LuminaMetadataBorderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LuminaMetadataBorderView.swift; sourceTree = "<group>"; };
 		5398482F1EB8F14300F77AEA /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		53B828D01EAAA07F00E3A624 /* Lumina.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Lumina.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		53B828D31EAAA07F00E3A624 /* Lumina.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lumina.h; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 				53B828D41EAAA07F00E3A624 /* Info.plist */,
 				53B8290E1EAAA24600E3A624 /* LuminaController.swift */,
 				53B9CCFC1EBFD22E008E4A43 /* LuminaTextPromptView.swift */,
+				53883FD01EC4DE5B00D1DE40 /* LuminaMetadataBorderView.swift */,
 				53B9CCFA1EBF6C62008E4A43 /* Media.xcassets */,
 			);
 			path = Lumina;
@@ -223,6 +226,7 @@
 			files = (
 				53B8290F1EAAA24600E3A624 /* LuminaController.swift in Sources */,
 				53B9CCFD1EBFD22E008E4A43 /* LuminaTextPromptView.swift in Sources */,
+				53883FD11EC4DE5B00D1DE40 /* LuminaMetadataBorderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

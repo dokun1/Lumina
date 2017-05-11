@@ -25,7 +25,7 @@ public enum CameraDirection: String {
 public final class LuminaController: UIViewController {
     private var sessionPreset: String?
     
-    private var previewLayer: AVCaptureVideoPreviewLayer?
+    fileprivate var previewLayer: AVCaptureVideoPreviewLayer?
     private var previewView: UIView?
     
     private var metadataOutput: AVCaptureMetadataOutput?
@@ -53,12 +53,14 @@ public final class LuminaController: UIViewController {
     fileprivate var currentCameraDirection: CameraDirection = .back
     fileprivate var isUpdating = false
     fileprivate var torchOn = false
-    
+    fileprivate var metadataBorders: [LuminaMetadataBorderView]?
+    fileprivate var metadataBorderDestructionTimer: Timer?
     
     public var delegate: LuminaDelegate! = nil
     public var trackImages = false
     public var trackMetadata = false
     public var improvedImageDetectionPerformance = false
+    public var drawMetadataBorders = false
     
     private var discoverySession: AVCaptureDeviceDiscoverySession? {
         let discoverySession = AVCaptureDeviceDiscoverySession(deviceTypes: [AVCaptureDeviceType.builtInDualCamera, AVCaptureDeviceType.builtInTelephotoCamera, AVCaptureDeviceType.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: AVCaptureDevicePosition.unspecified)
@@ -454,7 +456,7 @@ extension LuminaController { // MARK: Tap to focus methods
     }
 }
 
-extension LuminaController: AVCaptureMetadataOutputObjectsDelegate {
+extension LuminaController: AVCaptureMetadataOutputObjectsDelegate { // MARK: Metadata output buffer
     public func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
         guard case self.trackMetadata = true else {
             return
@@ -462,7 +464,78 @@ extension LuminaController: AVCaptureMetadataOutputObjectsDelegate {
         guard let delegate = self.delegate else {
             return
         }
-        delegate.detected(camera: self, data: metadataObjects)
+        defer {
+            delegate.detected(camera: self, data: metadataObjects)
+        }
+        if self.drawMetadataBorders == true {
+            guard let previewLayer = self.previewLayer else {
+                return
+            }
+            if let oldBorders = self.metadataBorders {
+                for oldBorder in oldBorders {
+                    DispatchQueue.main.async {
+                        oldBorder.removeFromSuperview()
+                    }
+                }
+            }
+            self.metadataBorders = nil
+            var newBorders = [LuminaMetadataBorderView]()
+    
+            for metadata in metadataObjects {
+                if let transformed: AVMetadataMachineReadableCodeObject = previewLayer.transformedMetadataObject(for: metadata as! AVMetadataObject) as? AVMetadataMachineReadableCodeObject { // This is for barcodes and anything machine readable
+                    var border = LuminaMetadataBorderView()
+                    border.isHidden = true
+                    border.frame = transformed.bounds
+                    let translatedCorners = translate(points: transformed.corners as! [[String: Any]], fromView: self.view, toView: border)
+                    border = LuminaMetadataBorderView(frame: transformed.bounds, corners: translatedCorners)
+                    border.isHidden = false
+                    newBorders.append(border)
+                    DispatchQueue.main.async {
+                        self.view.addSubview(border)
+                    }
+                } else if let face: AVMetadataFaceObject = previewLayer.transformedMetadataObject(for: metadata as! AVMetadataObject) as? AVMetadataFaceObject {
+                    let border = LuminaMetadataBorderView(frame: face.bounds)
+                    newBorders.append(border)
+                    DispatchQueue.main.async {
+                        self.view.addSubview(border)
+                    }
+                }
+            }
+            DispatchQueue.main.async {
+                self.drawingTimer()
+            }
+            self.metadataBorders = newBorders
+        }
+    }
+
+    private func translate(points: [[String: Any]], fromView: UIView, toView: UIView) -> [CGPoint] {
+        var translatedPoints = [CGPoint]()
+        for point: [String: Any] in points {
+            let currentPoint = CGPoint(x: point["X"] as! Double, y: point["Y"] as! Double)
+            let translatedPoint = fromView.convert(currentPoint, to: toView)
+            translatedPoints.append(translatedPoint)
+        }
+        return translatedPoints
+    }
+    
+    private func drawingTimer() {
+        DispatchQueue.main.async {
+            if let _ = self.metadataBorderDestructionTimer {
+                self.metadataBorderDestructionTimer!.invalidate()
+            }
+            self.metadataBorderDestructionTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.removeAllBorders), userInfo: nil, repeats: false)
+        }
+    }
+    
+    @objc private func removeAllBorders() {
+        DispatchQueue.main.async {
+            for subview in self.view.subviews {
+                if let border = subview as? LuminaMetadataBorderView {
+                    border.removeFromSuperview()
+                }
+            }
+            self.metadataBorders = nil
+        }
     }
 }
 
@@ -503,26 +576,28 @@ private extension UIImage {
             break
         }
         
-        let ctx: CGContext = CGContext(data: nil,
-                                       width: Int(size.width),
-                                       height: Int(size.height),
-                                       bitsPerComponent: self.cgImage!.bitsPerComponent,
-                                       bytesPerRow: 0,
-                                       space: self.cgImage!.colorSpace!,
-                                       bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+        guard let cgImage = self.cgImage, let colorspace = cgImage.colorSpace else {
+            return self
+        }
+        
+        guard let ctx: CGContext = CGContext(data: nil, width: Int(size.width), height: Int(size.height), bitsPerComponent: cgImage.bitsPerComponent, bytesPerRow: 0, space: colorspace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
+            return self
+        }
         
         ctx.concatenate(transform)
         
         switch imageOrientation {
         case UIImageOrientation.left, UIImageOrientation.leftMirrored, UIImageOrientation.right, UIImageOrientation.rightMirrored:
-            ctx.draw(self.cgImage!, in: CGRect(x: 0, y: 0, width: size.height, height: size.width))
+            ctx.draw(cgImage, in: CGRect(x: 0, y: 0, width: size.height, height: size.width))
         default:
-            ctx.draw(self.cgImage!, in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+            ctx.draw(cgImage, in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
             break
         }
         
-        let cgImage: CGImage = ctx.makeImage()!
-        
-        return UIImage(cgImage: cgImage)
+        if let convertedCGImage = ctx.makeImage() {
+            return UIImage(cgImage: convertedCGImage)
+        } else {
+            return self
+        }
     }
 }

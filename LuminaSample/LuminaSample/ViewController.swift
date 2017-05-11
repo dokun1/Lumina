@@ -15,6 +15,7 @@ class ViewController: UITableViewController {
     @IBOutlet weak var trackMetadataSwitch: UISwitch!
     @IBOutlet weak var increaseImagePerformanceSwitch: UISwitch!
     @IBOutlet weak var showTextPromptViewSwitch: UISwitch!
+    @IBOutlet weak var drawMetadataBorders: UISwitch!
 }
 
 extension ViewController { //MARK: IBActions
@@ -30,6 +31,7 @@ extension ViewController { //MARK: IBActions
         camera!.trackImages = trackImagesSwitch.isOn
         camera!.trackMetadata = trackMetadataSwitch.isOn
         camera!.improvedImageDetectionPerformance = increaseImagePerformanceSwitch.isOn
+        camera!.drawMetadataBorders = drawMetadataBorders.isOn
         present(camera!, animated: true, completion: nil)
     }
 }
