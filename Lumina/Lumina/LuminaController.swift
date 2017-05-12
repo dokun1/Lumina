@@ -53,14 +53,20 @@ public final class LuminaController: UIViewController {
     fileprivate var currentCameraDirection: CameraDirection = .back
     fileprivate var isUpdating = false
     fileprivate var torchOn = false
-    fileprivate var metadataBorders: [LuminaMetadataBorderView]?
-    fileprivate var metadataBorderDestructionTimer: Timer?
+    fileprivate var metadataBordersCodes: [LuminaMetadataBorderView]?
+    fileprivate var metadataBordersFaces: [LuminaMetadataBorderView]?
+    fileprivate var metadataBordersCodesDestructionTimer: Timer?
+    fileprivate var metadataBordersFacesDestructionTimer: Timer?
     
     public var delegate: LuminaDelegate! = nil
     public var trackImages = false
     public var trackMetadata = false
     public var improvedImageDetectionPerformance = false
     public var drawMetadataBorders = false
+    
+    override public var prefersStatusBarHidden: Bool {
+        return true
+    }
     
     private var discoverySession: AVCaptureDeviceDiscoverySession? {
         let discoverySession = AVCaptureDeviceDiscoverySession(deviceTypes: [AVCaptureDeviceType.builtInDualCamera, AVCaptureDeviceType.builtInTelephotoCamera, AVCaptureDeviceType.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: AVCaptureDevicePosition.unspecified)
@@ -80,7 +86,7 @@ public final class LuminaController: UIViewController {
                     break
                 }
             } else {
-                if discoveryDevice.position == AVCaptureDevicePosition.back { // TODO: support for iPhone 7 plus dual cameras
+                if discoveryDevice.position == AVCaptureDevicePosition.back { // TODO: add support for iPhone 7 plus dual cameras
                     device = discoveryDevice
                     break
                 }
@@ -165,7 +171,7 @@ public final class LuminaController: UIViewController {
     }
     
     private func createUI() {
-        self.cameraSwitchButton = UIButton(frame: CGRect(x: self.view.frame.maxX - 60, y: self.view.frame.minY + 10, width: 50, height: 50))
+        self.cameraSwitchButton = UIButton(frame: CGRect(x: self.view.frame.maxX - 50, y: self.view.frame.minY + 10, width: 40, height: 40))
         guard let cameraSwitchButton = self.cameraSwitchButton else {
             print("Could not access camera switch button memory address")
             return
@@ -174,7 +180,7 @@ public final class LuminaController: UIViewController {
         cameraSwitchButton.addTarget(self, action: #selector(cameraSwitchButtonTapped), for: UIControlEvents.touchUpInside)
         self.view.addSubview(cameraSwitchButton)
         
-        let image = UIImage(named: "cameraSwitchIcon", in: Bundle(for: LuminaController.self), compatibleWith: nil)
+        let image = UIImage(named: "cameraSwitch", in: Bundle(for: LuminaController.self), compatibleWith: nil)
         cameraSwitchButton.setImage(image, for: .normal)
         
         self.cameraCancelButton = UIButton(frame: CGRect(origin: CGPoint(x: self.view.frame.minX + 10, y: self.view.frame.maxY - 40), size: CGSize(width: 70, height: 30)))
@@ -188,11 +194,11 @@ public final class LuminaController: UIViewController {
             return
         }
         titleLabel.textColor = UIColor.white
-        titleLabel.font = UIFont.systemFont(ofSize: 16, weight: 0.5)
+        titleLabel.font = UIFont.systemFont(ofSize: 20)
         cameraCancelButton.addTarget(self, action: #selector(cameraCancelButtonTapped), for: UIControlEvents.touchUpInside)
         self.view.addSubview(cameraCancelButton)
         
-        let cameraTorchButton = UIButton(frame: CGRect(origin: CGPoint(x: self.view.frame.minX + 10, y: self.view.frame.minY + 10), size: CGSize(width: 50, height: 50)))
+        let cameraTorchButton = UIButton(frame: CGRect(origin: CGPoint(x: self.view.frame.minX + 10, y: self.view.frame.minY + 10), size: CGSize(width: 40, height: 40)))
         cameraTorchButton.backgroundColor = UIColor.clear
         cameraTorchButton.addTarget(self, action: #selector(cameraTorchButtonTapped), for: UIControlEvents.touchUpInside)
         let torchImage = UIImage(named: "cameraTorch", in: Bundle(for: LuminaController.self), compatibleWith: nil)
@@ -288,7 +294,7 @@ private extension LuminaController { //MARK: Button Tap Methods
     }
 }
 
-private extension CMSampleBuffer {
+private extension CMSampleBuffer { // MARK: Extending CMSampleBuffer
     var imageFromCoreImage: UIImage? {
         guard let imageBuffer = CMSampleBufferGetImageBuffer(self) else {
             print("Could not get image buffer from CMSampleBuffer")
@@ -348,7 +354,7 @@ private extension CMSampleBuffer {
     }
 }
 
-extension LuminaController: AVCaptureVideoDataOutputSampleBufferDelegate {
+extension LuminaController: AVCaptureVideoDataOutputSampleBufferDelegate { // MARK: Image Tracking Output
     public func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
         guard case self.trackImages = true else {
             return
@@ -403,7 +409,7 @@ extension LuminaController { // MARK: Tap to focus methods
                     }
                     input.device.unlockForConfiguration()
                     showFocusView(at: point)
-                    let deadlineTime = DispatchTime.now() + .seconds(3)
+                    let deadlineTime = DispatchTime.now() + .seconds(1)
                     DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
                         self.resetCameraToContinuousExposureAndFocus()
                     }
@@ -471,18 +477,24 @@ extension LuminaController: AVCaptureMetadataOutputObjectsDelegate { // MARK: Me
             guard let previewLayer = self.previewLayer else {
                 return
             }
-            if let oldBorders = self.metadataBorders {
-                for oldBorder in oldBorders {
-                    DispatchQueue.main.async {
-                        oldBorder.removeFromSuperview()
+            guard let firstObject = metadataObjects.first else {
+                return
+            }
+            if let _: AVMetadataMachineReadableCodeObject = previewLayer.transformedMetadataObject(for: firstObject as! AVMetadataObject) as? AVMetadataMachineReadableCodeObject { // TODO: Figure out exactly why Faces and Barcodes fire this method separately
+                if let oldBorders = self.metadataBordersCodes {
+                    for oldBorder in oldBorders {
+                        DispatchQueue.main.async {
+                            oldBorder.removeFromSuperview()
+                        }
                     }
                 }
-            }
-            self.metadataBorders = nil
-            var newBorders = [LuminaMetadataBorderView]()
-    
-            for metadata in metadataObjects {
-                if let transformed: AVMetadataMachineReadableCodeObject = previewLayer.transformedMetadataObject(for: metadata as! AVMetadataObject) as? AVMetadataMachineReadableCodeObject { // This is for barcodes and anything machine readable
+                self.metadataBordersCodes = nil
+                var newBorders = [LuminaMetadataBorderView]()
+                
+                for metadata in metadataObjects {
+                    guard let transformed: AVMetadataMachineReadableCodeObject = previewLayer.transformedMetadataObject(for: metadata as! AVMetadataObject) as? AVMetadataMachineReadableCodeObject else {
+                        continue
+                    }
                     var border = LuminaMetadataBorderView()
                     border.isHidden = true
                     border.frame = transformed.bounds
@@ -493,18 +505,38 @@ extension LuminaController: AVCaptureMetadataOutputObjectsDelegate { // MARK: Me
                     DispatchQueue.main.async {
                         self.view.addSubview(border)
                     }
-                } else if let face: AVMetadataFaceObject = previewLayer.transformedMetadataObject(for: metadata as! AVMetadataObject) as? AVMetadataFaceObject {
+                }
+                DispatchQueue.main.async {
+                    self.drawingTimerCodes()
+                }
+                self.metadataBordersCodes = newBorders
+            } else {
+                if let oldBorders = self.metadataBordersFaces {
+                    for oldBorder in oldBorders {
+                        DispatchQueue.main.async {
+                            oldBorder.removeFromSuperview()
+                        }
+                    }
+                }
+                self.metadataBordersFaces = nil
+                var newBorders = [LuminaMetadataBorderView]()
+                
+                for metadata in metadataObjects {
+                    guard let face: AVMetadataFaceObject = previewLayer.transformedMetadataObject(for: metadata as! AVMetadataObject) as? AVMetadataFaceObject else {
+                        continue
+                    }
                     let border = LuminaMetadataBorderView(frame: face.bounds)
+                    border.boundsFace = true
                     newBorders.append(border)
                     DispatchQueue.main.async {
                         self.view.addSubview(border)
                     }
                 }
+                DispatchQueue.main.async {
+                    self.drawingTimerFaces()
+                }
+                self.metadataBordersFaces = newBorders
             }
-            DispatchQueue.main.async {
-                self.drawingTimer()
-            }
-            self.metadataBorders = newBorders
         }
     }
 
@@ -518,28 +550,48 @@ extension LuminaController: AVCaptureMetadataOutputObjectsDelegate { // MARK: Me
         return translatedPoints
     }
     
-    private func drawingTimer() {
+    private func drawingTimerCodes() {
         DispatchQueue.main.async {
-            if let _ = self.metadataBorderDestructionTimer {
-                self.metadataBorderDestructionTimer!.invalidate()
+            if let _ = self.metadataBordersCodesDestructionTimer {
+                self.metadataBordersCodesDestructionTimer!.invalidate()
             }
-            self.metadataBorderDestructionTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.removeAllBorders), userInfo: nil, repeats: false)
+            self.metadataBordersCodesDestructionTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.removeAllBordersCodes), userInfo: nil, repeats: false)
         }
     }
     
-    @objc private func removeAllBorders() {
+    private func drawingTimerFaces() {
+        DispatchQueue.main.async {
+            if let _ = self.metadataBordersFacesDestructionTimer {
+                self.metadataBordersFacesDestructionTimer!.invalidate()
+            }
+            self.metadataBordersFacesDestructionTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.removeAllBordersFaces), userInfo: nil, repeats: false)
+        }
+    }
+    
+    @objc private func removeAllBordersCodes() {
         DispatchQueue.main.async {
             for subview in self.view.subviews {
-                if let border = subview as? LuminaMetadataBorderView {
+                if let border = subview as? LuminaMetadataBorderView, border.boundsFace == false {
                     border.removeFromSuperview()
                 }
             }
-            self.metadataBorders = nil
+            self.metadataBordersCodes = nil
+        }
+    }
+    
+    @objc private func removeAllBordersFaces() {
+        DispatchQueue.main.async {
+            for subview in self.view.subviews {
+                if let border = subview as? LuminaMetadataBorderView, border.boundsFace == true {
+                    border.removeFromSuperview()
+                }
+            }
+            self.metadataBordersFaces = nil
         }
     }
 }
 
-private extension UIImage {
+private extension UIImage { // MARK: Fix UIImage orientation
     var fixOrientation: UIImage {
         if imageOrientation == UIImageOrientation.up {
             return self

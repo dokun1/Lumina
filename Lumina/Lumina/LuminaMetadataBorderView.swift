@@ -12,6 +12,7 @@ final class LuminaMetadataBorderView: UIView {
     
     private var corners: [CGPoint]?
     private var outline = CAShapeLayer()
+    public var boundsFace = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
