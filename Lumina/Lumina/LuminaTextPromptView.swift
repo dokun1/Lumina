@@ -14,12 +14,14 @@ final class LuminaTextPromptView: UIView {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        self.textLabel = UILabel(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: frame.width, height: frame.height)))
+        self.textLabel = UILabel(frame: CGRect(origin: CGPoint(x: 5, y: 5), size: CGSize(width: frame.width - 10, height: frame.height - 10)))
         self.textLabel.backgroundColor = UIColor.clear
         self.textLabel.textColor = UIColor.white
         self.textLabel.textAlignment = .center
-        self.textLabel.font = UIFont.systemFont(ofSize: 18)
-        self.textLabel.numberOfLines = 4
+        self.textLabel.font = UIFont.systemFont(ofSize: 20)
+        self.textLabel.numberOfLines = 3
+        self.textLabel.minimumScaleFactor = 10/UIFont.labelFontSize
+        self.textLabel.adjustsFontSizeToFitWidth = true
         self.addSubview(textLabel)
         self.backgroundColor = UIColor.blue
         self.alpha = 0.65

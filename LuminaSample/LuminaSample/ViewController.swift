@@ -23,7 +23,7 @@ extension ViewController { //MARK: IBActions
         let direction: CameraDirection = frontCameraSwitch.isOn ? .front : .back
         var camera: LuminaController? = nil
         if showTextPromptViewSwitch.isOn {
-            camera = LuminaController(camera: direction, initialPrompt: "I love Lumina, and I'm going to start using it everywhere!!")
+            camera = LuminaController(camera: direction, initialPrompt: "I love Lumina, and I'm going to start using it everywhere!! Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah")
         } else {
             camera = LuminaController(camera: direction)
         }
@@ -33,6 +33,10 @@ extension ViewController { //MARK: IBActions
         camera!.improvedImageDetectionPerformance = increaseImagePerformanceSwitch.isOn
         camera!.drawMetadataBorders = drawMetadataBorders.isOn
         present(camera!, animated: true, completion: nil)
+        let deadline = DispatchTime.now() + .seconds(4)
+        DispatchQueue.main.asyncAfter(deadline: deadline) { 
+            camera!.updateTextPromptView(to: "And here's what happens after you update the text view on the camera!!!")
+        }
     }
 }
 

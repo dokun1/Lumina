@@ -147,8 +147,12 @@ public final class LuminaController: UIViewController {
             session.addInput(self.input)
         }
         
-        if session.canAddOutput(self.videoOutput) {
-            session.addOutput(self.videoOutput)
+        let videoOutput = self.videoOutput
+        
+        
+        
+        if session.canAddOutput(videoOutput) {
+            session.addOutput(videoOutput)
         }
         
         if session.canAddOutput(metadataOutput) {
@@ -161,6 +165,14 @@ public final class LuminaController: UIViewController {
         
         session.commitConfiguration()
         session.startRunning()
+        
+        if let connection = videoOutput.connection(withMediaType: AVMediaTypeVideo) {
+            connection.isEnabled = true
+            if connection.isVideoMirroringSupported && desiredCameraDirection == .front {
+                connection.isVideoMirrored = true
+                connection.preferredVideoStabilizationMode = .standard
+            }
+        }
         
         guard let cameraSwitchButton = self.cameraSwitchButton else {
             print("Could not create camera switch button")
@@ -223,11 +235,13 @@ extension LuminaController { // MARK: Text prompt methods
     }
     
     public func updateTextPromptView(to text:String) {
-        guard let view = self.textPromptView else {
-            print("No text prompt view to update!!")
-            return
+        DispatchQueue.main.async {
+            guard let view = self.textPromptView else {
+                print("No text prompt view to update!!")
+                return
+            }
+            view.updateText(to: text)
         }
-        view.updateText(to: text)
     }
 }
 
@@ -258,6 +272,9 @@ private extension LuminaController { //MARK: Button Tap Methods
     }
     
     @objc func cameraCancelButtonTapped() {
+        if let session = self.session {
+            session.stopRunning()
+        }
         if let delegate = self.delegate {
             delegate.cancelled(camera: self)
         }
@@ -295,21 +312,21 @@ private extension LuminaController { //MARK: Button Tap Methods
 }
 
 private extension CMSampleBuffer { // MARK: Extending CMSampleBuffer
-    var imageFromCoreImage: UIImage? {
+    var imageFromCoreImage: CGImage? {
         guard let imageBuffer = CMSampleBufferGetImageBuffer(self) else {
             print("Could not get image buffer from CMSampleBuffer")
             return nil
         }
         let coreImage: CIImage = CIImage(cvPixelBuffer: imageBuffer)
         let context: CIContext = CIContext()
-        guard let graphicsImage: CGImage = context.createCGImage(coreImage, from: coreImage.extent) else {
+        guard let sample: CGImage = context.createCGImage(coreImage, from: coreImage.extent) else {
             print("Could not create CoreGraphics image from context")
             return nil
         }
-        return UIImage(cgImage: graphicsImage, scale: 1.0, orientation: .right).fixOrientation
+        return sample
     }
     
-    var imageFromPixelBuffer: UIImage? {
+    var imageFromPixelBuffer: CGImage? {
         guard let imageBuffer = CMSampleBufferGetImageBuffer(self) else {
             print("Could not get image buffer from CMSampleBuffer")
             return nil
@@ -341,8 +358,7 @@ private extension CMSampleBuffer { // MARK: Extending CMSampleBuffer
                     return nil
                 }
                 CVPixelBufferUnlockBaseAddress(imageBuffer, CVPixelBufferLockFlags(rawValue: 0))
-                
-                return UIImage(cgImage: sample, scale: 1.0, orientation: .right).fixOrientation
+                return sample
             } else {
                 print("Could not create CoreGraphics context")
                 return nil
@@ -367,19 +383,21 @@ extension LuminaController: AVCaptureVideoDataOutputSampleBufferDelegate { // MA
             print("No sample buffer detected")
             return
         }
-        var image: UIImage? = nil
         let startTime = Date()
+        var sample: CGImage? = nil
         if self.improvedImageDetectionPerformance {
-            image = sampleBuffer.imageFromPixelBuffer
-        
+            sample = sampleBuffer.imageFromPixelBuffer
         } else {
-            image = sampleBuffer.imageFromCoreImage
+            sample = sampleBuffer.imageFromCoreImage
         }
+        guard let completedSample = sample else {
+            return
+        }
+        let orientation: UIImageOrientation = self.currentCameraDirection == .front ? .left : .right
+        let image = UIImage(cgImage: completedSample, scale: 1.0, orientation: orientation).fixOrientation
         let end = Date()
         print("Image tracking processing time: \(end.timeIntervalSince(startTime))")
-        if let image = image {
-            delegate.detected(camera: self, image: image)
-        }
+        delegate.detected(camera: self, image: image)
     }
 }
 
