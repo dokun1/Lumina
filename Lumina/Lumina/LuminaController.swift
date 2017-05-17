@@ -18,8 +18,8 @@ public protocol LuminaDelegate {
 public enum CameraDirection: String {
     case front = "Front"
     case back = "Back"
-    @available(iOS 10.2, *) case telephoto = "Telephoto"
-    @available(iOS 10.2, *) case dual = "Dual"
+    case telephoto = "Telephoto"
+    case dual = "Dual"
 }
 
 public final class LuminaController: UIViewController {
@@ -69,7 +69,13 @@ public final class LuminaController: UIViewController {
     }
     
     private var discoverySession: AVCaptureDeviceDiscoverySession? {
-        let discoverySession = AVCaptureDeviceDiscoverySession(deviceTypes: [AVCaptureDeviceType.builtInDualCamera, AVCaptureDeviceType.builtInTelephotoCamera, AVCaptureDeviceType.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: AVCaptureDevicePosition.unspecified)
+        var deviceTypes = [AVCaptureDeviceType]()
+        deviceTypes.append(.builtInWideAngleCamera)
+        if #available(iOS 10.2, *) {
+            deviceTypes.append(.builtInDualCamera)
+            deviceTypes.append(.builtInTelephotoCamera)
+        }
+        let discoverySession = AVCaptureDeviceDiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaTypeVideo, position: AVCaptureDevicePosition.unspecified)
         return discoverySession
     }
     
