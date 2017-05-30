@@ -21,11 +21,9 @@ class ViewController: UITableViewController {
 extension ViewController { //MARK: IBActions
     @IBAction func cameraButtonTapped() {
         let direction: CameraDirection = frontCameraSwitch.isOn ? .front : .back
-        var camera: LuminaController? = nil
+        let camera = LuminaController(camera: direction)
         if showTextPromptViewSwitch.isOn {
-            camera = LuminaController(camera: direction, initialPrompt: "I love Lumina, and I'm going to start using it everywhere!! Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah")
-        } else {
-            camera = LuminaController(camera: direction)
+            camera!.updateTextPromptView(to: "I love Lumina, and I'm going to start using it everywhere!! Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah")
         }
         camera!.delegate = self
         camera!.trackImages = trackImagesSwitch.isOn
@@ -36,6 +34,10 @@ extension ViewController { //MARK: IBActions
         let deadline = DispatchTime.now() + .seconds(4)
         DispatchQueue.main.asyncAfter(deadline: deadline) { 
             camera!.updateTextPromptView(to: "And here's what happens after you update the text view on the camera!!!")
+            let hideDeadline = DispatchTime.now() + .seconds(2)
+            DispatchQueue.main.asyncAfter(deadline: hideDeadline, execute: { 
+                camera!.hideTextPromptView(andEraseText: true)
+            })
         }
     }
 }

@@ -11,6 +11,7 @@ import UIKit
 final class LuminaTextPromptView: UIView {
     
     private var textLabel = UILabel()
+    static private let animationDuration = 0.3
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -24,14 +25,35 @@ final class LuminaTextPromptView: UIView {
         self.textLabel.adjustsFontSizeToFitWidth = true
         self.addSubview(textLabel)
         self.backgroundColor = UIColor.blue
-        self.alpha = 0.65
+        self.alpha = 0.0
         self.layer.cornerRadius = 5.0
-        self.layer.borderColor = UIColor.white.cgColor
-        self.layer.borderWidth = 1.0
     }
     
     public func updateText(to text:String) {
         self.textLabel.text = text
+        if self.alpha < 0.1 {
+            self.makeAppear()
+        }
+    }
+    
+    public func hide(andErase: Bool) {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: LuminaTextPromptView.animationDuration, animations: {
+                self.alpha = 0.0
+            }) { complete in
+                if andErase {
+                    self.textLabel.text = ""
+                }
+            }
+        }
+    }
+    
+    private func makeAppear() {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: LuminaTextPromptView.animationDuration) {
+                self.alpha = 0.65
+            }
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
