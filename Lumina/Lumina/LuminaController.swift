@@ -119,11 +119,6 @@ public final class LuminaController: UIViewController {
         previewLayer.frame = self.view.bounds
         commitSession(for: camera)
         createUI()
-    }
-    
-    public convenience init?(camera: CameraDirection, initialPrompt: String?) {
-        self.init(camera: camera)
-        self.initialPrompt = initialPrompt
         createTextPromptView()
     }
     
@@ -154,8 +149,6 @@ public final class LuminaController: UIViewController {
         }
         
         let videoOutput = self.videoOutput
-        
-        
         
         if session.canAddOutput(videoOutput) {
             session.addOutput(videoOutput)
@@ -247,6 +240,16 @@ extension LuminaController { // MARK: Text prompt methods
                 return
             }
             view.updateText(to: text)
+        }
+    }
+    
+    public func hideTextPromptView(andEraseText: Bool) {
+        DispatchQueue.main.async {
+            guard let view = self.textPromptView else {
+                print("Could not find text prompt view to hide!!!")
+                return
+            }
+            view.hide(andErase: andEraseText)
         }
     }
 }
