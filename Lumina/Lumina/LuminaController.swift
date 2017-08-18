@@ -37,7 +37,7 @@ public final class LuminaController: UIViewController {
     fileprivate var videoOutput: AVCaptureVideoDataOutput {
         let videoOutput = AVCaptureVideoDataOutput()
         videoOutput.alwaysDiscardsLateVideoFrames = true
-        videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as AnyHashable : kCVPixelFormatType_32BGRA]
+        videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as AnyHashable as! String : kCVPixelFormatType_32BGRA]
         videoOutput.setSampleBufferDelegate(self, queue: videoBufferQueue)
         return videoOutput
     }
@@ -68,14 +68,15 @@ public final class LuminaController: UIViewController {
         return true
     }
     
-    private var discoverySession: AVCaptureDeviceDiscoverySession? {
-        var deviceTypes = [AVCaptureDeviceType]()
-        deviceTypes.append(.builtInWideAngleCamera)
+    private var discoverySession: AVCaptureDevice.DiscoverySession? {
+        var deviceTypes: [AVCaptureDevice.DeviceType] = []
+        deviceTypes.append(AVCaptureDevice.DeviceType.builtInWideAngleCamera)
         if #available(iOS 10.2, *) {
-            deviceTypes.append(.builtInDualCamera)
-            deviceTypes.append(.builtInTelephotoCamera)
+            deviceTypes.append(AVCaptureDevice.DeviceType.builtInDualCamera)
+            deviceTypes.append(AVCaptureDevice.DeviceType.builtInTelephotoCamera)
         }
-        let discoverySession = AVCaptureDeviceDiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaTypeVideo, position: AVCaptureDevicePosition.unspecified)
+        let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
+        
         return discoverySession
     }
     
@@ -87,12 +88,12 @@ public final class LuminaController: UIViewController {
         }
         for discoveryDevice: AVCaptureDevice in discoverySession.devices {
             if cameraDirection == .front {
-                if discoveryDevice.position == AVCaptureDevicePosition.front {
+                if discoveryDevice.position == AVCaptureDevice.Position.front {
                     device = discoveryDevice
                     break
                 }
             } else {
-                if discoveryDevice.position == AVCaptureDevicePosition.back { // TODO: add support for iPhone 7 plus dual cameras
+                if discoveryDevice.position == AVCaptureDevice.Position.back { // TODO: add support for iPhone 7 plus dual cameras
                     device = discoveryDevice
                     break
                 }
@@ -104,7 +105,7 @@ public final class LuminaController: UIViewController {
     public init?(camera: CameraDirection) {
         super.init(nibName: nil, bundle: nil)
         
-        self.session = AVCaptureSession()
+        let session = AVCaptureSession()
         self.previewLayer = AVCaptureVideoPreviewLayer(session: session)
         self.previewView = self.view
         
@@ -112,11 +113,12 @@ public final class LuminaController: UIViewController {
             print("Could not access image preview layer")
             return
         }
-        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+        previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         self.view.layer.addSublayer(previewLayer)
         self.view.bounds = UIScreen.main.bounds
         
         previewLayer.frame = self.view.bounds
+        self.session = session
         commitSession(for: camera)
         createUI()
         createTextPromptView()
@@ -129,24 +131,28 @@ public final class LuminaController: UIViewController {
         }
         self.currentCameraDirection = desiredCameraDirection
         
-        session.sessionPreset = AVCaptureSessionPresetHigh
+        session.sessionPreset = AVCaptureSession.Preset.high
         
         if let input = self.input {
             session.removeInput(input)
         }
         
         do {
-            try self.input = AVCaptureDeviceInput(device: getDevice(for: desiredCameraDirection))
+            guard let device = getDevice(for: desiredCameraDirection) else {
+                print("could not get desired camera direction")
+                return
+            }
+            try input = AVCaptureDeviceInput(device: device)
+            if session.canAddInput(input!) {
+                session.addInput(input!)
+                self.input = input!
+            }
         } catch {
             print("Error getting device input for \(desiredCameraDirection.rawValue)")
             return
         }
         
         let metadataOutput = AVCaptureMetadataOutput()
-        
-        if session.canAddInput(self.input) {
-            session.addInput(self.input)
-        }
         
         let videoOutput = self.videoOutput
         
@@ -165,7 +171,7 @@ public final class LuminaController: UIViewController {
         session.commitConfiguration()
         session.startRunning()
         
-        if let connection = videoOutput.connection(withMediaType: AVMediaTypeVideo) {
+        if let connection = videoOutput.connection(with: AVMediaType.video) {
             connection.isEnabled = true
             if connection.isVideoMirroringSupported && desiredCameraDirection == .front {
                 connection.isVideoMirrored = true
@@ -208,6 +214,8 @@ public final class LuminaController: UIViewController {
         titleLabel.font = UIFont.systemFont(ofSize: 20)
         cameraCancelButton.addTarget(self, action: #selector(cameraCancelButtonTapped), for: UIControlEvents.touchUpInside)
         self.view.addSubview(cameraCancelButton)
+        
+        
         
         let cameraTorchButton = UIButton(frame: CGRect(origin: CGPoint(x: self.view.frame.minX + 10, y: self.view.frame.minY + 10), size: CGSize(width: 40, height: 40)))
         cameraTorchButton.backgroundColor = UIColor.clear
@@ -298,7 +306,7 @@ private extension LuminaController { //MARK: Button Tap Methods
             do {
                 if input.device.isTorchModeSupported(.on) {
                     try input.device.lockForConfiguration()
-                    try input.device.setTorchModeOnWithLevel(1.0)
+                    try input.device.setTorchModeOn(level: 1.0)
                     self.torchOn = !self.torchOn
                     input.device.unlockForConfiguration()
                 }
@@ -380,7 +388,7 @@ private extension CMSampleBuffer { // MARK: Extending CMSampleBuffer
 }
 
 extension LuminaController: AVCaptureVideoDataOutputSampleBufferDelegate { // MARK: Image Tracking Output
-    public func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
+    public func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard case self.trackImages = true else {
             return
         }
@@ -388,10 +396,11 @@ extension LuminaController: AVCaptureVideoDataOutputSampleBufferDelegate { // MA
             print("Warning!! No delegate set, but image tracking turned on")
             return
         }
-        guard let sampleBuffer = sampleBuffer else {
-            print("No sample buffer detected")
-            return
-        }
+        
+//        guard let sampleBuffer = sampleBuffer else {
+//            print("No sample buffer detected")
+//            return
+//        }
         let startTime = Date()
         var sample: CGImage? = nil
         if self.improvedImageDetectionPerformance {
@@ -490,7 +499,7 @@ extension LuminaController { // MARK: Tap to focus methods
 }
 
 extension LuminaController: AVCaptureMetadataOutputObjectsDelegate { // MARK: Metadata output buffer
-    public func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
+    public func metadataOutput(_ captureOutput: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         guard case self.trackMetadata = true else {
             return
         }
@@ -507,7 +516,7 @@ extension LuminaController: AVCaptureMetadataOutputObjectsDelegate { // MARK: Me
             guard let firstObject = metadataObjects.first else {
                 return
             }
-            if let _: AVMetadataMachineReadableCodeObject = previewLayer.transformedMetadataObject(for: firstObject as! AVMetadataObject) as? AVMetadataMachineReadableCodeObject { // TODO: Figure out exactly why Faces and Barcodes fire this method separately
+            if let _: AVMetadataMachineReadableCodeObject = previewLayer.transformedMetadataObject(for: firstObject ) as? AVMetadataMachineReadableCodeObject { // TODO: Figure out exactly why Faces and Barcodes fire this method separately
                 if let oldBorders = self.metadataBordersCodes {
                     for oldBorder in oldBorders {
                         DispatchQueue.main.async {
@@ -519,13 +528,14 @@ extension LuminaController: AVCaptureMetadataOutputObjectsDelegate { // MARK: Me
                 var newBorders = [LuminaMetadataBorderView]()
                 
                 for metadata in metadataObjects {
-                    guard let transformed: AVMetadataMachineReadableCodeObject = previewLayer.transformedMetadataObject(for: metadata as! AVMetadataObject) as? AVMetadataMachineReadableCodeObject else {
+                    guard let transformed: AVMetadataMachineReadableCodeObject = previewLayer.transformedMetadataObject(for: metadata ) as? AVMetadataMachineReadableCodeObject else {
                         continue
                     }
                     var border = LuminaMetadataBorderView()
                     border.isHidden = true
                     border.frame = transformed.bounds
-                    let translatedCorners = translate(points: transformed.corners as! [[String: Any]], fromView: self.view, toView: border)
+                    
+                    let translatedCorners = translate(points: transformed.corners, fromView: self.view, toView: border)
                     border = LuminaMetadataBorderView(frame: transformed.bounds, corners: translatedCorners)
                     border.isHidden = false
                     newBorders.append(border)
@@ -549,7 +559,7 @@ extension LuminaController: AVCaptureMetadataOutputObjectsDelegate { // MARK: Me
                 var newBorders = [LuminaMetadataBorderView]()
                 
                 for metadata in metadataObjects {
-                    guard let face: AVMetadataFaceObject = previewLayer.transformedMetadataObject(for: metadata as! AVMetadataObject) as? AVMetadataFaceObject else {
+                    guard let face: AVMetadataFaceObject = previewLayer.transformedMetadataObject(for: metadata ) as? AVMetadataFaceObject else {
                         continue
                     }
                     let border = LuminaMetadataBorderView(frame: face.bounds)
@@ -567,10 +577,10 @@ extension LuminaController: AVCaptureMetadataOutputObjectsDelegate { // MARK: Me
         }
     }
 
-    private func translate(points: [[String: Any]], fromView: UIView, toView: UIView) -> [CGPoint] {
+    private func translate(points: [CGPoint], fromView: UIView, toView: UIView) -> [CGPoint] {
         var translatedPoints = [CGPoint]()
-        for point: [String: Any] in points {
-            let currentPoint = CGPoint(x: point["X"] as! Double, y: point["Y"] as! Double)
+        for point in points {
+            let currentPoint = CGPoint(x: point.x, y: point.y) //CGPoint(x: point["X"] as! Double, y: point["Y"] as! Double)
             let translatedPoint = fromView.convert(currentPoint, to: toView)
             translatedPoints.append(translatedPoint)
         }
