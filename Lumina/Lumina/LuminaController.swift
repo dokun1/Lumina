@@ -215,6 +215,8 @@ public final class LuminaController: UIViewController {
         cameraCancelButton.addTarget(self, action: #selector(cameraCancelButtonTapped), for: UIControlEvents.touchUpInside)
         self.view.addSubview(cameraCancelButton)
         
+        
+        
         let cameraTorchButton = UIButton(frame: CGRect(origin: CGPoint(x: self.view.frame.minX + 10, y: self.view.frame.minY + 10), size: CGSize(width: 40, height: 40)))
         cameraTorchButton.backgroundColor = UIColor.clear
         cameraTorchButton.addTarget(self, action: #selector(cameraTorchButtonTapped), for: UIControlEvents.touchUpInside)
@@ -532,7 +534,8 @@ extension LuminaController: AVCaptureMetadataOutputObjectsDelegate { // MARK: Me
                     var border = LuminaMetadataBorderView()
                     border.isHidden = true
                     border.frame = transformed.bounds
-                    let translatedCorners = translate(points: transformed.corners as! [[String: Any]], fromView: self.view, toView: border)
+                    
+                    let translatedCorners = translate(points: transformed.corners, fromView: self.view, toView: border)
                     border = LuminaMetadataBorderView(frame: transformed.bounds, corners: translatedCorners)
                     border.isHidden = false
                     newBorders.append(border)
@@ -574,10 +577,10 @@ extension LuminaController: AVCaptureMetadataOutputObjectsDelegate { // MARK: Me
         }
     }
 
-    private func translate(points: [[String: Any]], fromView: UIView, toView: UIView) -> [CGPoint] {
+    private func translate(points: [CGPoint], fromView: UIView, toView: UIView) -> [CGPoint] {
         var translatedPoints = [CGPoint]()
-        for point: [String: Any] in points {
-            let currentPoint = CGPoint(x: point["X"] as! Double, y: point["Y"] as! Double)
+        for point in points {
+            let currentPoint = CGPoint(x: point.x, y: point.y) //CGPoint(x: point["X"] as! Double, y: point["Y"] as! Double)
             let translatedPoint = fromView.convert(currentPoint, to: toView)
             translatedPoints.append(translatedPoint)
         }
