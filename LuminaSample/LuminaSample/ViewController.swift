@@ -20,38 +20,39 @@ class ViewController: UITableViewController {
 
 extension ViewController { //MARK: IBActions
     @IBAction func cameraButtonTapped() {
-        let direction: CameraDirection = frontCameraSwitch.isOn ? .front : .back
-        let camera = LuminaController(camera: direction)
-        if showTextPromptViewSwitch.isOn {
-            camera!.updateTextPromptView(to: "I love Lumina, and I'm going to start using it everywhere!! Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah")
-        }
-        camera!.delegate = self
-        camera!.trackImages = trackImagesSwitch.isOn
-        camera!.trackMetadata = trackMetadataSwitch.isOn
-        camera!.improvedImageDetectionPerformance = increaseImagePerformanceSwitch.isOn
-        camera!.drawMetadataBorders = drawMetadataBorders.isOn
-        present(camera!, animated: true, completion: nil)
-        let deadline = DispatchTime.now() + .seconds(4)
-        DispatchQueue.main.asyncAfter(deadline: deadline) { 
-            camera!.updateTextPromptView(to: "And here's what happens after you update the text view on the camera!!!")
-            let hideDeadline = DispatchTime.now() + .seconds(2)
-            DispatchQueue.main.asyncAfter(deadline: hideDeadline, execute: { 
-                camera!.hideTextPromptView(andEraseText: true)
-            })
-        }
+
+        let camera = LuminaViewController()
+        
+//        if showTextPromptViewSwitch.isOn {
+//            camera.updateTextPromptView(to: "I love Lumina, and I'm going to start using it everywhere!! Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah")
+//        }
+        camera.delegate = self
+//        camera.trackImages = trackImagesSwitch.isOn
+//        camera.trackMetadata = trackMetadataSwitch.isOn
+//        camera.improvedImageDetectionPerformance = increaseImagePerformanceSwitch.isOn
+//        camera.drawMetadataBorders = drawMetadataBorders.isOn
+        present(camera, animated: true, completion: nil)
+//        let deadline = DispatchTime.now() + .seconds(4)
+//        DispatchQueue.main.asyncAfter(deadline: deadline) {
+//            camera.updateTextPromptView(to: "And here's what happens after you update the text view on the camera!!!")
+//            let hideDeadline = DispatchTime.now() + .seconds(2)
+//            DispatchQueue.main.asyncAfter(deadline: hideDeadline, execute: {
+//                camera.hideTextPromptView(andEraseText: true)
+//            })
+//        }
     }
 }
 
 extension ViewController: LuminaDelegate {
-    func detected(camera: LuminaController, image: UIImage) {
+    func detected(camera: LuminaViewController, image: UIImage) {
         print("got an image")
     }
     
-    func detected(camera: LuminaController, data: [Any]) {
+    func detected(camera: LuminaViewController, data: [Any]) {
         print("detected data: \(data)")
     }
     
-    func cancelled(camera: LuminaController) {
+    func cancelled(camera: LuminaViewController) {
         camera.dismiss(animated: true, completion: nil)
     }
 }
