@@ -15,7 +15,7 @@ protocol LuminaCameraDelegate {
 
 final class LuminaCamera: NSObject {
     var controller: LuminaViewController?
-    fileprivate var delegate: LuminaCameraDelegate?
+    internal var delegate: LuminaCameraDelegate?
     
     var position: CameraDirection = .unspecified {
         didSet {

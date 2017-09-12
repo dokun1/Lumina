@@ -87,7 +87,6 @@ public final class LuminaViewController: UIViewController {
         }
     }
     
-    fileprivate var currentCameraDirection: CameraDirection = .back
     fileprivate var isUpdating = false
     fileprivate var torchOn = false
     fileprivate var metadataBordersCodes: [LuminaMetadataBorderView]?
@@ -177,7 +176,9 @@ public final class LuminaViewController: UIViewController {
     
     public init() {
         super.init(nibName: nil, bundle: nil)
-        self.camera = LuminaCamera(with: self)
+        let camera = LuminaCamera(with: self)
+        camera.delegate = self
+        self.camera = camera
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -278,7 +279,7 @@ public final class LuminaViewController: UIViewController {
     }
 }
 
-extension LuminaViewController: LuminaCameraDelegate {
+extension LuminaViewController: LuminaCameraDelegate { // MARK: Camera Delegate Functions
     func finishedUpdating() {
         self.cameraTorchButton.isEnabled = true
         self.cameraCancelButton.isEnabled = true
@@ -319,29 +320,23 @@ extension LuminaViewController { // MARK: Text prompt methods
 
 private extension LuminaViewController { //MARK: Button Tap Methods
     @objc func cameraSwitchButtonTapped() {
-        if let camera = self.camera {
-            switch self.position {
-            case .front:
-                self.position = .back
-                break
-            case .back:
-                self.position = .front
-                break
-            case .telephoto:
-                self.position = .front
-                break
-            case .dual:
-                self.position = .front
-                break
-            case .unspecified:
-                self.position = .back
-                break
-            }
-            do {
-                try camera.update()
-            } catch {
-                print("camera update error while tapping camera switch button")
-            }
+        self.cameraSwitchButton.isEnabled = false
+        switch self.position {
+        case .front:
+            self.position = .back
+            break
+        case .back:
+            self.position = .front
+            break
+        case .telephoto:
+            self.position = .front
+            break
+        case .dual:
+            self.position = .front
+            break
+        case .unspecified:
+            self.position = .front
+            break
         }
     }
     
