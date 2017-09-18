@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="YTR-7f-xcc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="YTR-7f-xcc">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -120,41 +120,8 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="72" id="okn-LG-MWY">
-                                        <rect key="frame" x="0.0" y="216" width="375" height="72"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="okn-LG-MWY" id="acM-g1-J8X">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="71.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Increase image tracking performance" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4e9-Ym-wQR">
-                                                    <rect key="frame" x="8" y="25" width="302" height="21"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="21" id="KFH-YE-xXI"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="bCG-sT-CZY">
-                                                    <rect key="frame" x="318" y="20" width="51" height="31"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="49" id="Zav-yg-5wt"/>
-                                                        <constraint firstAttribute="height" constant="31" id="bKQ-a3-1qo"/>
-                                                    </constraints>
-                                                </switch>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="bCG-sT-CZY" firstAttribute="top" secondItem="acM-g1-J8X" secondAttribute="topMargin" constant="12" id="4CM-9n-Fuw"/>
-                                                <constraint firstItem="bCG-sT-CZY" firstAttribute="leading" secondItem="4e9-Ym-wQR" secondAttribute="trailing" constant="8" id="4Q0-8s-n3M"/>
-                                                <constraint firstItem="bCG-sT-CZY" firstAttribute="trailing" secondItem="acM-g1-J8X" secondAttribute="trailingMargin" id="D0n-lS-jG1"/>
-                                                <constraint firstItem="4e9-Ym-wQR" firstAttribute="top" secondItem="acM-g1-J8X" secondAttribute="topMargin" constant="17" id="TQe-QQ-gCs"/>
-                                                <constraint firstItem="4e9-Ym-wQR" firstAttribute="leading" secondItem="acM-g1-J8X" secondAttribute="leadingMargin" id="iAZ-TF-Hrb"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="72" id="ugR-8x-wRS">
-                                        <rect key="frame" x="0.0" y="288" width="375" height="72"/>
+                                        <rect key="frame" x="0.0" y="216" width="375" height="72"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ugR-8x-wRS" id="0ee-Pi-xUC">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="71.5"/>
@@ -187,7 +154,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="72" id="HON-wa-PTo">
-                                        <rect key="frame" x="0.0" y="360" width="375" height="72"/>
+                                        <rect key="frame" x="0.0" y="288" width="375" height="72"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HON-wa-PTo" id="DEi-wm-Q0r">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="71.5"/>
@@ -237,7 +204,6 @@
                     <connections>
                         <outlet property="drawMetadataBorders" destination="Kmg-dj-gOO" id="Vzu-7d-dKI"/>
                         <outlet property="frontCameraSwitch" destination="nKD-LF-3bA" id="58R-9R-phO"/>
-                        <outlet property="increaseImagePerformanceSwitch" destination="bCG-sT-CZY" id="gdb-Zt-blu"/>
                         <outlet property="showTextPromptViewSwitch" destination="h0C-Dt-sGe" id="Q2v-R4-Hho"/>
                         <outlet property="trackImagesSwitch" destination="sd2-7e-jsz" id="hFm-GO-ZgI"/>
                         <outlet property="trackMetadataSwitch" destination="TMa-zQ-U10" id="VJx-fk-wti"/>
@@ -253,7 +219,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="YTR-7f-xcc" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="dWE-ou-sg1">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>

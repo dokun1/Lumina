@@ -13,6 +13,7 @@ enum SystemButtonType {
     case cameraSwitch
     case photoCapture
     case cancel
+    case shutter
 }
 
 final class LuminaButton: UIButton {
@@ -20,6 +21,7 @@ final class LuminaButton: UIButton {
     private var squareSystemButtonHeight = 40
     private var cancelButtonWidth = 70
     private var cancelButtonHeight = 30
+    private var shutterButtonDimension = 70
     
     private var _image: UIImage?
     var image: UIImage? {
@@ -71,6 +73,11 @@ final class LuminaButton: UIButton {
         case .cancel:
             self.text = "Cancel"
             self.frame = CGRect(origin: CGPoint(x: 10, y: UIScreen.main.bounds.maxY - 50), size: CGSize(width: self.cancelButtonWidth, height: self.cancelButtonHeight))
+            break
+        case .shutter:
+            self.image = UIImage(named: "cameraShutter", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
+            self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.midX - 35, y: UIScreen.main.bounds.maxY - 80), size: CGSize(width: self.shutterButtonDimension, height: self.shutterButtonDimension))
+            break
         default:
             break
         }
