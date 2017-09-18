@@ -29,17 +29,21 @@ extension ViewController { //MARK: IBActions
 }
 
 extension ViewController: LuminaDelegate {
-    func cancelButtonTapped(controller: LuminaViewController) {
-        controller.dismiss(animated: true, completion: nil)
-    }
-    
-    func stillImageTaken(controller: LuminaViewController, image: UIImage) {
+    func detected(controller: LuminaViewController, stillImage: UIImage) {
         controller.dismiss(animated: true) {
             print("image received - check debugger")
         }
     }
     
-    func videoFrameCaptured(controller: LuminaViewController, frame: UIImage) {
-        print("frame received")
+    func detected(controller: LuminaViewController, videoFrame: UIImage) {
+        print("video frame received")
+    }
+    
+    func detected(controller: LuminaViewController, metadata: [Any]) {
+        print(metadata)
+    }
+    
+    func cancelled(controller: LuminaViewController) {
+        controller.dismiss(animated: true, completion: nil)
     }
 }

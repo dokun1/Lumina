@@ -12,6 +12,7 @@ import AVFoundation
 protocol LuminaCameraDelegate {
     func stillImageCaptured(camera: LuminaCamera, image: UIImage)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
+    func finishedFocus(camera: LuminaCamera)
 }
 
 class LuminaCamera: NSObject {
@@ -133,6 +134,55 @@ class LuminaCamera: NSObject {
         self.session.addOutput(self.photoOutput)
         self.session.commitConfiguration()
         self.session.startRunning()
+    }
+    
+    func pause() {
+        self.session.stopRunning()
+    }
+}
+
+// MARK: Focus Handling
+
+extension LuminaCamera {
+    func handleFocus(at focusPoint: CGPoint) {
+        guard let input = self.videoInput else {
+            return
+        }
+        do {
+            if input.device.isFocusModeSupported(.autoFocus) && input.device.isFocusPointOfInterestSupported {
+                try input.device.lockForConfiguration()
+                input.device.focusMode = .autoFocus
+                input.device.focusPointOfInterest = CGPoint(x: focusPoint.x, y: focusPoint.y)
+                if input.device.isExposureModeSupported(.autoExpose) && input.device.isExposurePointOfInterestSupported {
+                    input.device.exposureMode = .autoExpose
+                    input.device.exposurePointOfInterest = CGPoint(x: focusPoint.x, y: focusPoint.y)
+                }
+                input.device.unlockForConfiguration()
+            } else {
+                self.delegate.finishedFocus(camera: self)
+            }
+        } catch {
+            self.delegate.finishedFocus(camera: self)
+        }
+    }
+    
+    func resetCameraToContinuousExposureAndFocus() {
+        do {
+            guard let input = self.videoInput else {
+                print("Trying to focus, but cannot detect device input!")
+                return
+            }
+            if input.device.isFocusModeSupported(.continuousAutoFocus) {
+                try input.device.lockForConfiguration()
+                input.device.focusMode = .continuousAutoFocus
+                if input.device.isExposureModeSupported(.continuousAutoExposure) {
+                    input.device.exposureMode = .continuousAutoExposure
+                }
+                input.device.unlockForConfiguration()
+            }
+        } catch {
+            print("could not reset to continuous auto focus and exposure!!")
+        }
     }
 }
 

@@ -10,9 +10,10 @@ import UIKit
 import AVFoundation
 
 public protocol LuminaDelegate {
-    func cancelButtonTapped(controller: LuminaViewController)
-    func stillImageTaken(controller: LuminaViewController, image: UIImage)
-    func videoFrameCaptured(controller: LuminaViewController, frame: UIImage)
+    func detected(controller: LuminaViewController, stillImage: UIImage)
+    func detected(controller: LuminaViewController, videoFrame: UIImage)
+    func detected(controller: LuminaViewController, metadata: [Any])
+    func cancelled(controller: LuminaViewController)
 }
 
 public enum CameraPosition {
@@ -90,6 +91,8 @@ public final class LuminaViewController: UIViewController {
         return promptView
     }
     
+    fileprivate var isUpdating = false
+    
     open var delegate: LuminaDelegate! = nil
     
     open var position: CameraPosition = .unspecified {
@@ -139,6 +142,13 @@ public final class LuminaViewController: UIViewController {
         if let camera = self.camera {
             camera.update()
             createUI()
+        }
+    }
+    
+    public override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(true)
+        if let camera = self.camera {
+            camera.pause()
         }
     }
     
@@ -211,15 +221,19 @@ fileprivate extension LuminaViewController {
 // MARK: CameraDelegate Functions
 
 extension LuminaViewController: LuminaCameraDelegate {
+    func finishedFocus(camera: LuminaCamera) {
+        self.isUpdating = false
+    }
+    
     func stillImageCaptured(camera: LuminaCamera, image: UIImage) {
         if let delegate = self.delegate {
-            delegate.stillImageTaken(controller: self, image: image)
+            delegate.detected(controller: self, stillImage: image)
         }
     }
     
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage) {
         if let delegate = self.delegate {
-            delegate.videoFrameCaptured(controller: self, frame: frame)
+            delegate.detected(controller: self, videoFrame: frame)
         }
     }
 }
@@ -229,7 +243,7 @@ extension LuminaViewController: LuminaCameraDelegate {
 fileprivate extension LuminaViewController {
     @objc func cancelButtonTapped() {
         if let delegate = self.delegate {
-            delegate.cancelButtonTapped(controller: self)
+            delegate.cancelled(controller: self)
         }
     }
     
@@ -258,3 +272,49 @@ fileprivate extension LuminaViewController {
         camera.torchState = !camera.torchState
     }
 }
+
+// MARK: Tap to Focus Methods
+
+extension LuminaViewController {
+    private func showFocusView(at: CGPoint) {
+        let focusView: UIImageView = UIImageView(image: UIImage(named: "cameraFocus", in: Bundle(for: LuminaViewController.self), compatibleWith: nil))
+        focusView.contentMode = .scaleAspectFit
+        focusView.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        focusView.center = at
+        focusView.alpha = 0.0
+        self.view.addSubview(focusView)
+        UIView.animate(withDuration: 0.2, animations: {
+            focusView.alpha = 1.0
+        }, completion: { complete in
+            UIView.animate(withDuration: 1.0, animations: {
+                focusView.alpha = 0.0
+            }, completion: { final in
+                focusView.removeFromSuperview()
+                self.isUpdating = false
+            })
+        })
+    }
+    
+    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if self.isUpdating == true {
+            return
+        } else {
+            self.isUpdating = true
+        }
+        for touch in touches {
+            let point = touch.location(in: touch.view)
+            let focusX = point.x/UIScreen.main.bounds.size.width
+            let focusY = point.y/UIScreen.main.bounds.size.height
+            guard let camera = self.camera else {
+                return
+            }
+            camera.handleFocus(at: CGPoint(x: focusX, y: focusY))
+            showFocusView(at: point)
+            let deadlineTime = DispatchTime.now() + .seconds(1)
+            DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
+                camera.resetCameraToContinuousExposureAndFocus()
+            }
+        }
+    }
+}
+
