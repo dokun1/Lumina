@@ -166,6 +166,10 @@ public final class LuminaViewController: UIViewController {
         updateButtonFrames()
     }
     
+    override public var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
     open class func getVersion() -> String? {
         let bundle = Bundle(for: LuminaViewController.self)
         guard let infoDictionary = bundle.infoDictionary else {
@@ -203,7 +207,11 @@ fileprivate extension LuminaViewController {
     
     func updateButtonFrames() {
         self.cancelButton.center = CGPoint(x: self.view.frame.minX + 55, y: self.view.frame.maxY - 45)
-        self.shutterButton.center = CGPoint(x: self.view.frame.midX, y: self.view.frame.maxY - 45)
+        if self.view.frame.width > self.view.frame.height {
+            self.shutterButton.center = CGPoint(x: self.view.frame.maxX - 45, y: self.view.frame.midY)
+        } else {
+            self.shutterButton.center = CGPoint(x: self.view.frame.midX, y: self.view.frame.maxY - 45)
+        }
         self.switchButton.center = CGPoint(x: self.view.frame.maxX - 25, y: self.view.frame.minY + 25)
         self.torchButton.center = CGPoint(x: self.view.frame.minX + 25, y: self.view.frame.minY + 25)
         self.textPromptView.center = CGPoint(x: self.view.frame.midX, y: self.view.frame.minY + 95)
