@@ -2,7 +2,7 @@
 //  Camera.swift
 //  CameraFramework
 //
-//  Created by David Okun IBM on 8/31/17.
+//  Created by David Okun on 8/31/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 

@@ -2,7 +2,7 @@
 //  LuminaMetadataBorderView.swift
 //  Lumina
 //
-//  Created by David Okun IBM on 5/11/17.
+//  Created by David Okun on 5/11/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 

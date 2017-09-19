@@ -2,7 +2,7 @@
 //  LuminaButton.swift
 //  Lumina
 //
-//  Created by David Okun IBM on 9/11/17.
+//  Created by David Okun on 9/11/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 

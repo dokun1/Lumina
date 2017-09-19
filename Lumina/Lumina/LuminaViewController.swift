@@ -2,7 +2,7 @@
 //  CameraViewController.swift
 //  CameraFramework
 //
-//  Created by David Okun IBM on 8/29/17.
+//  Created by David Okun on 8/29/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
