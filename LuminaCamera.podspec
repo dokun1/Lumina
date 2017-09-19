@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name        = "Lumina"
+  s.name        = "LuminaCamera"
   s.version     = "0.6.0"
   s.summary     = "Lumina gives you a camera for most photo processing needs, including streaming frames for CoreML live detection."
   s.homepage    = "https://github.com/dokun1/Lumina"
