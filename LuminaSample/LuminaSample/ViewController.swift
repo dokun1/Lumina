@@ -14,7 +14,6 @@ class ViewController: UITableViewController {
     @IBOutlet weak var trackImagesSwitch: UISwitch!
     @IBOutlet weak var trackMetadataSwitch: UISwitch!
     @IBOutlet weak var showTextPromptViewSwitch: UISwitch!
-    @IBOutlet weak var drawMetadataBorders: UISwitch!
 }
 
 extension ViewController { //MARK: IBActions
@@ -24,6 +23,7 @@ extension ViewController { //MARK: IBActions
         camera.position = self.frontCameraSwitch.isOn ? .front : .back
         camera.streamFrames = self.trackImagesSwitch.isOn
         camera.textPrompt = self.showTextPromptViewSwitch.isOn ? "This is how to test the text prompt view" : ""
+        camera.trackMetadata = self.trackMetadataSwitch.isOn
         present(camera, animated: true, completion: nil)
     }
 }

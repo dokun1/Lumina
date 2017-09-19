@@ -13,6 +13,7 @@ protocol LuminaCameraDelegate {
     func stillImageCaptured(camera: LuminaCamera, image: UIImage)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
     func finishedFocus(camera: LuminaCamera)
+    func detected(camera: LuminaCamera, metadata: [Any])
 }
 
 class LuminaCamera: NSObject {
@@ -54,6 +55,15 @@ class LuminaCamera: NSObject {
         }
     }
     
+    var trackMetadata = false {
+        didSet {
+            if self.session.isRunning {
+                self.session.stopRunning()
+                update()
+            }
+        }
+    }
+    
     var position: CameraPosition = .unspecified {
         didSet {
             if self.session.isRunning {
@@ -73,12 +83,24 @@ class LuminaCamera: NSObject {
     }
     fileprivate var videoInput: AVCaptureDeviceInput?
     fileprivate var videoBufferQueue = DispatchQueue(label: "com.Lumina.videoBufferQueue")
+    fileprivate var metadataBufferQueue = DispatchQueue(label: "com.lumina.metadataBufferQueue")
     fileprivate var videoOutput: AVCaptureVideoDataOutput {
         let output = AVCaptureVideoDataOutput()
         output.setSampleBufferDelegate(self, queue: videoBufferQueue)
         return output
     }
     fileprivate var photoOutput = AVCapturePhotoOutput()
+    
+    private var _metadataOutput: AVCaptureMetadataOutput?
+    fileprivate var metadataOutput: AVCaptureMetadataOutput {
+        if let existingOutput = _metadataOutput {
+            return existingOutput
+        }
+        let output = AVCaptureMetadataOutput()
+        output.setMetadataObjectsDelegate(self, queue: metadataBufferQueue)
+        _metadataOutput = output
+        return output
+    }
     
     func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
         guard let controller = self.controller else {
@@ -126,12 +148,19 @@ class LuminaCamera: NSObject {
         guard self.session.canAddOutput(self.photoOutput) else {
             return
         }
+        guard self.session.canAddOutput(self.metadataOutput) else {
+            return
+        }
         self.videoInput = input
         self.session.addInput(input)
         if self.streamFrames {
             self.session.addOutput(self.videoOutput)
         }
         self.session.addOutput(self.photoOutput)
+        if self.trackMetadata {
+            self.session.addOutput(self.metadataOutput)
+            self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
+        }
         self.session.commitConfiguration()
         self.session.startRunning()
     }
@@ -291,6 +320,17 @@ extension CMSampleBuffer {
             return forCamera == .back ? .right : .leftMirrored
         case .unknown:
             return forCamera == .back ? .right : .leftMirrored
+        }
+    }
+}
+
+extension LuminaCamera: AVCaptureMetadataOutputObjectsDelegate {
+    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+        guard case self.trackMetadata = true else {
+            return
+        }
+        DispatchQueue.main.async {
+            self.delegate.detected(camera: self, metadata: metadataObjects)
         }
     }
 }

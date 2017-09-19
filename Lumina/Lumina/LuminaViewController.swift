@@ -112,6 +112,14 @@ public final class LuminaViewController: UIViewController {
         }
     }
     
+    open var trackMetadata = false {
+        didSet {
+            if let camera = self.camera {
+                camera.trackMetadata = trackMetadata
+            }
+        }
+    }
+    
     open var textPrompt = "" {
         didSet {
             self.textPromptView.updateText(to: textPrompt)
@@ -234,6 +242,12 @@ extension LuminaViewController: LuminaCameraDelegate {
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage) {
         if let delegate = self.delegate {
             delegate.detected(controller: self, videoFrame: frame)
+        }
+    }
+    
+    func detected(camera: LuminaCamera, metadata: [Any]) {
+        if let delegate = self.delegate {
+            delegate.detected(controller: self, metadata: metadata)
         }
     }
 }

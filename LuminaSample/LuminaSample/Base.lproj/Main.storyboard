@@ -153,39 +153,6 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="72" id="HON-wa-PTo">
-                                        <rect key="frame" x="0.0" y="288" width="375" height="72"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HON-wa-PTo" id="DEi-wm-Q0r">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="71.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Draw metadata borders" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y26-OZ-BaC">
-                                                    <rect key="frame" x="8" y="25" width="302" height="21"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="21" id="1qb-ie-f38"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Kmg-dj-gOO">
-                                                    <rect key="frame" x="318" y="20" width="51" height="31"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="31" id="Bqu-nS-MW8"/>
-                                                        <constraint firstAttribute="width" constant="49" id="rjA-kS-7rm"/>
-                                                    </constraints>
-                                                </switch>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="Kmg-dj-gOO" firstAttribute="top" secondItem="DEi-wm-Q0r" secondAttribute="topMargin" constant="12" id="7gM-Bm-Ycq"/>
-                                                <constraint firstItem="Kmg-dj-gOO" firstAttribute="leading" secondItem="y26-OZ-BaC" secondAttribute="trailing" constant="8" id="LHT-4g-za1"/>
-                                                <constraint firstItem="y26-OZ-BaC" firstAttribute="leading" secondItem="DEi-wm-Q0r" secondAttribute="leadingMargin" id="P6J-61-ILw"/>
-                                                <constraint firstItem="y26-OZ-BaC" firstAttribute="top" secondItem="DEi-wm-Q0r" secondAttribute="topMargin" constant="17" id="b9w-VS-1YI"/>
-                                                <constraint firstItem="Kmg-dj-gOO" firstAttribute="trailing" secondItem="DEi-wm-Q0r" secondAttribute="trailingMargin" id="rDR-yj-DDk"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -202,7 +169,6 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="drawMetadataBorders" destination="Kmg-dj-gOO" id="Vzu-7d-dKI"/>
                         <outlet property="frontCameraSwitch" destination="nKD-LF-3bA" id="58R-9R-phO"/>
                         <outlet property="showTextPromptViewSwitch" destination="h0C-Dt-sGe" id="Q2v-R4-Hho"/>
                         <outlet property="trackImagesSwitch" destination="sd2-7e-jsz" id="hFm-GO-ZgI"/>
