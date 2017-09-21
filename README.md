@@ -169,4 +169,4 @@ Small note: If editing the README, please conform to the [standard-readme](https
 
 ## License
 
-MIT © 2017 David Okun
+[MIT](LICENSE) © 2017 David Okun
