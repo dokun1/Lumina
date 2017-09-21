@@ -157,7 +157,7 @@ func detected(controller: LuminaViewController, metadata: [Any]) {
 
 ## Maintainers
 
-David Okun [![Twitter Follow](https://img.shields.io/twitter/follow/dokun24.svg?style=social&label=Follow)]() [![GitHub followers](https://img.shields.io/github/followers/dokun1.svg?style=social&label=Follow)]()
+David Okun [![Twitter Follow](https://img.shields.io/twitter/follow/dokun24.svg?style=social&label=Follow)](https://twitter.com/dokun24) [![GitHub followers](https://img.shields.io/github/followers/dokun1.svg?style=social&label=Follow)](https://github.com/dokun1)
 
 ## Contribute
 
