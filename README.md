@@ -1,11 +1,19 @@
 # Lumina
 
-[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-TODO: Put more badges here.
+[![version-badge](https://img.shields.io/cocoapods/v/Lumina.svg)](https://cocoapods.org/pods/lumina) [![license-badge](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/dokun1/Lumina/blob/master/LICENSE) [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg)](https://github.com/RichardLitt/standard-readme)
 
 > A camera designed in Swift that helps take still images, detect QR/bar codes, and stream video frames for post processing.
 
-TODO: Fill out this long description.
+Cameras are used frequently in iOS applications, and the creation of `CoreML` has precipitated a rash of applications that will want to do live object detection on a camera feed.
+
+Writing `AVFoundation` code can be fun, if not sometimes interesting. `Lumina` gives you an opportunity to skip having to write `AVFoundation` code, and gives you the tools you need to do anything you need with AV capture, streaming, etc.
+
+Lumina can:
+
+- capture still images
+- stream video frames to a delegate
+- scan any QR or barcode and output its metadata
+- detect the presence of a face and its location
 
 ## Table of Contents
 
@@ -19,25 +27,141 @@ TODO: Fill out this long description.
 
 ## Background
 
+[David Okun](https://twitter.com/dokun24) has experience working with image processing, and he thought it would be a nice thing to have a camera module that allows you to stream images, capture photos and videos, and **(eventually)** have a module that lets you plug in a CoreML model, and it streams the object predictions back to you alongside the video frames.
+
 ## Install
 
+### CocoaPods
+
+You can use [CocoaPods](https://cocoapods.org) to install `Lumina` by adding it to your `Podfile`:
+
+```ruby
+platform :ios, '10.0'
+use_frameworks!
+
+target 'MyApp' do
+    pod 'Lumina'
+end
 ```
+
+### Carthage
+
+You can use [Carthage](https://github.com/Carthage/Carthage) to install `Lumina` by adding it to your `Cartfile`:
+
+```bash
+github "dokun1/Lumina"
 ```
+
+### Swift Package Manager
+
+You can use [Swift Package Manager](https://swift.org/package-manager/) to install `Lumina` by adding the proper description to your `Package.swift` file:
+
+```swift
+import PackageDescription
+
+let package = Package(
+    name: "YOUR_PROJECT_NAME",
+    targets: [],
+    dependencies: [
+        .Package(url: "https://github.com/dokun1/Lumina.git", majorVersion: 0)
+    ]
+)
+```
+
+**NB**: As the Swift Package Manager continues to grow, please view its documentation [here](https://swift.org/package-manager/#example-usage).
+
+### Manually
+
+Clone or download this repository, and use the provided workspace to build a version of the library for your own use in any application.
 
 ## Usage
 
-```
+**NB**: This repository contains a sample application. This application is designed to demonstrate the entire feature set of the library. We recommend trying this application out.
+
+### Initialization
+
+Consider that the main use of `Lumina` is to present a `ViewController`. Here is an example of what to add inside a boilerplate `ViewController`:
+
+```swift
+import Lumina
+
 ```
 
-## API
+We recommend creating a single instance of the camera in your ViewController as early in your lifecycle as possible with:
+
+```swift
+let camera = LuminaViewController()
+```
+
+Presenting `Lumina` goes like so:
+
+```swift
+present(camera, animated: true, completion:nil)
+```
+
+Remember to add a description for `Privacy - Camera Usage Description` in your `Info.plist` file, so that system permissions are handled properly.
+
+### Functionality
+
+There are a number of properties you can set before presenting `Lumina`. You can set them before presentation, or during use, like so:
+
+```swift
+camera.position = .front // could also be .back
+camera.streamFrames = true // could also be false
+camera.textPrompt = "This is how to test the text prompt view" // assigning an empty string will make the view fade away
+camera.trackMetadata = true // could also be false
+```
+
+### Handling output
+
+To handle any output, such as still images, video frames, or scanned metadata, you will need to make your controller adhere to `LuminaDelegate` and assign it like so:
+
+```swift
+camera.delegate = self
+```
+
+Because the functionality of the camera can be updated at runtime, all delegate functions are required.
+
+To handle the `Cancel` button being pushed, which is likely used to dismiss the camera in most use cases, implement:
+
+```swift
+func cancelled(controller: LuminaViewController) {
+    // here you can call controller.dismiss(animated: true, completion:nil)
+}
+```
+
+To handle a still image being captured with the photo shutter button, implement:
+
+```swift
+func detected(controller: LuminaViewController, stillImage: UIImage) {
+    // here you can take the image called stillImage and handle it however you'd like
+}
+```
+
+To handle a video frame being streamed from the camera, implement:
+
+```swift
+func detected(controller: LuminaViewController, videoFrame: UIImage) {
+    // here you can take the image called videoFrame and handle it however you'd like
+}
+```
+
+To handle metadata being detected and streamed from the camera, implement: 
+
+```swift
+func detected(controller: LuminaViewController, metadata: [Any]) {
+    // here you can take the metadata and handle it however you'd like
+    // you must find the right kind of data to downcast from, whether it is of a barcode, qr code, or face detection
+}
+```
 
 ## Maintainers
 
-[@dokun1](https://github.com/dokun1)
+David Okun [![Twitter Follow](https://img.shields.io/twitter/follow/dokun24.svg?style=social&label=Follow)]() [![GitHub followers](https://img.shields.io/github/followers/dokun1.svg?style=social&label=Follow)]()
 
 ## Contribute
 
-See [the contribute file](contribute.md)!
+See [the contribute file](CONTRIBUTING.md)!
 
 PRs accepted.
 
