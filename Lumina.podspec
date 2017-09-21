@@ -8,6 +8,6 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
   s.ios.deployment_target = "10.0"
-  s.source   = { :git => "https://github.com/dokun1/Lumina.git", :tag => s.version }
+  s.source   = { :git => "https://github.com/dokun1/Lumina.git", :branch => "master", :tag => s.version }
   s.source_files = "Lumina/Lumina/*.swift"
 end
