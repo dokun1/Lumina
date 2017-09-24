@@ -9,19 +9,54 @@
 import UIKit
 import AVFoundation
 
+/// Delegate for returning information to the application utilizing Lumina
 public protocol LuminaDelegate {
+    
+    /// Triggered whenever a still image is captured by the user of Lumina
+    ///
+    /// - Parameters:
+    ///   - controller: the instance of Lumina that captured the still image
+    ///   - stillImage: the image captured by Lumina
     func detected(controller: LuminaViewController, stillImage: UIImage)
+    
+    /// Triggered whenever streamFrames is set to true on Lumina, and streams video frames as UIImage instances
+    ///
+    /// - Note: Will not be triggered unless streamFrames is true. False is default value
+    /// - Parameters:
+    ///   - controller: the instance of Lumina that is streaming the frames
+    ///   - videoFrame: the frame captured by Lumina
     func detected(controller: LuminaViewController, videoFrame: UIImage)
+    
+    /// Triggered whenever trackMetadata is set to true on Lumina, and streams metadata detected in the form of QR codes, bar codes, or faces
+    ///
+    /// - Note: For list of all machine readable object types, aside from QR codes or faces, click [here](https://developer.apple.com/documentation/avfoundation/avmetadatamachinereadablecodeobject/machine_readable_object_types).
+    ///
+    /// - Warning: Objects returned in array must be casted to AVMetadataObject or AVMetadataFaceObject individually.
+    ///
+    /// - Parameters:
+    ///   - controller: the instance of Lumina that is streaming the metadata
+    ///   - metadata: the array of metadata that is captured.
     func detected(controller: LuminaViewController, metadata: [Any])
+    
+    /// Triggered whenever the cancel button is tapped on Lumina.
+    ///
+    /// - Note: This is most usually used whenever
+    ///
+    /// - Parameter controller: the instance of Lumina that cancel was tapped on
     func cancelled(controller: LuminaViewController)
 }
 
+/// The position of the camera that is active on Lumina
 public enum CameraPosition {
+    /// the front facing camera of the iOS device
     case front
+    /// the back (and usually main) facing camera of the iOS device
     case back
+    /// a use case for letting Lumina decide which camera to use, and default is back
     case unspecified
 }
 
+/// The main class that developers should interact with and instantiate when using Lumina
 public final class LuminaViewController: UIViewController {
     var camera: LuminaCamera?
     
@@ -93,8 +128,12 @@ public final class LuminaViewController: UIViewController {
     
     fileprivate var isUpdating = false
     
+    /// The delegate for streaming output from Lumina
     open var delegate: LuminaDelegate! = nil
     
+    /// The position of the camera
+    ///
+    /// - Note: Responds live to being set at any time, and will update automatically
     open var position: CameraPosition = .unspecified {
         didSet {
             guard let camera = self.camera else {
@@ -104,6 +143,11 @@ public final class LuminaViewController: UIViewController {
         }
     }
     
+    /// Set this to choose whether or not Lumina will stream video frames through the delegate
+    ///
+    /// - Note: Responds live to being set at any time, and will update automatically
+    ///
+    /// - Warning: Will not do anything if delegate is not implemented
     open var streamFrames = false {
         didSet {
             if let camera = self.camera {
@@ -112,6 +156,11 @@ public final class LuminaViewController: UIViewController {
         }
     }
     
+    /// Set this to choose whether or not Lumina will stream machine readable metadata through the delegate
+    ///
+    /// - Note: Responds live to being set at any time, and will update automatically
+    ///
+    /// - Warning: Will not do anything if delegate is not implemented
     open var trackMetadata = false {
         didSet {
             if let camera = self.camera {
@@ -120,12 +169,18 @@ public final class LuminaViewController: UIViewController {
         }
     }
     
+    /// Lumina comes ready with a view for a text prompt to give instructions to the user, and this is where you can set the text of that prompt
+    ///
+    /// - Note: Responds live to being set at any time, and will update automatically
+    ///
+    /// - Warning: If left empty, or unset, no view will be present, but view will be created if changed
     open var textPrompt = "" {
         didSet {
             self.textPromptView.updateText(to: textPrompt)
         }
     }
     
+    /// run this in order to create Lumina
     public init() {
         super.init(nibName: nil, bundle: nil)
         let camera = LuminaCamera(with: self)
@@ -133,6 +188,7 @@ public final class LuminaViewController: UIViewController {
         self.camera = camera
     }
     
+    /// run this in order to create Lumina with a storyboard
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         let camera = LuminaCamera(with: self)
@@ -140,11 +196,13 @@ public final class LuminaViewController: UIViewController {
         self.camera = camera
     }
     
+    /// override with caution
     public override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         print("Camera framework is overloading on memory")
     }
     
+    /// override with caution
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let camera = self.camera {
@@ -153,6 +211,7 @@ public final class LuminaViewController: UIViewController {
         }
     }
     
+    /// override with caution
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
         if let camera = self.camera {
@@ -160,16 +219,19 @@ public final class LuminaViewController: UIViewController {
         }
     }
     
+    /// override with caution
     public override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         updateUI(orientation: UIApplication.shared.statusBarOrientation)
         updateButtonFrames()
     }
     
+    /// override with caution
     override public var prefersStatusBarHidden: Bool {
         return true
     }
     
+    /// returns a string of the version of Lumina currently in use, follows semantic versioning.
     open class func getVersion() -> String? {
         let bundle = Bundle(for: LuminaViewController.self)
         guard let infoDictionary = bundle.infoDictionary else {
@@ -317,6 +379,7 @@ extension LuminaViewController {
         })
     }
     
+    /// override with caution
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if self.isUpdating == true {
             return
