@@ -8,10 +8,12 @@
 
 import UIKit
 import AVFoundation
+import CoreML
 
 protocol LuminaCameraDelegate {
     func stillImageCaptured(camera: LuminaCamera, image: UIImage)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
+    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?)
     func finishedFocus(camera: LuminaCamera)
     func detected(camera: LuminaCamera, metadata: [Any])
 }
@@ -98,6 +100,19 @@ final class LuminaCamera: NSObject {
             }
         }
     }
+    fileprivate var recognizer: AnyObject?
+    
+    private var _streamingModel: AnyObject?
+    @available(iOS 11.0, *)
+    var streamingModel: MLModel? {
+        get {
+            return _streamingModel as? MLModel
+        }
+        set {
+            _streamingModel = newValue
+            recognizer = LuminaObjectRecognizer(model: newValue!)
+        }
+    }
     
     required init(with controller: LuminaViewController) {
         self.controller = controller
@@ -111,6 +126,7 @@ final class LuminaCamera: NSObject {
     fileprivate var currentCaptureDevice: AVCaptureDevice?
     fileprivate var videoBufferQueue = DispatchQueue(label: "com.Lumina.videoBufferQueue")
     fileprivate var metadataBufferQueue = DispatchQueue(label: "com.lumina.metadataBufferQueue")
+    fileprivate var recognitionBufferQueue = DispatchQueue(label: "com.lumina.recognitionBufferQueue")
     fileprivate var videoOutput: AVCaptureVideoDataOutput {
         let output = AVCaptureVideoDataOutput()
         output.setSampleBufferDelegate(self, queue: videoBufferQueue)
@@ -336,8 +352,22 @@ extension LuminaCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
         guard let image = sampleBuffer.normalizedVideoFrame() else {
             return
         }
-        DispatchQueue.main.async {
-            self.delegate.videoFrameCaptured(camera: self, frame: image)
+        if #available(iOS 11.0, *) {
+            guard let recognizer = self.recognizer as? LuminaObjectRecognizer else {
+                DispatchQueue.main.async {
+                    self.delegate.videoFrameCaptured(camera: self, frame: image)
+                }
+                return
+            }
+            recognizer.recognize(from: image, completion: { predictions in
+                DispatchQueue.main.async {
+                    self.delegate.videoFrameCaptured(camera: self, frame: image, predictedObjects: predictions)
+                }
+            })
+        } else {
+            DispatchQueue.main.async {
+                self.delegate.videoFrameCaptured(camera: self, frame: image)
+            }
         }
     }
 }

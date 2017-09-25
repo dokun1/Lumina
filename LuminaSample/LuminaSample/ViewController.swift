@@ -8,6 +8,7 @@
 
 import UIKit
 import Lumina
+import CoreML
 
 class ViewController: UITableViewController {
     @IBOutlet weak var frontCameraSwitch: UISwitch!
@@ -28,6 +29,9 @@ extension ViewController { //MARK: IBActions
         camera.trackMetadata = self.trackMetadataSwitch.isOn
         camera.resolution = .highest
         camera.frameRate = Int(self.frameRateLabel.text!) ?? 30
+        if #available(iOS 11.0, *) {
+            camera.streamingModel = MobileNet().model
+        }
         present(camera, animated: true, completion: nil)
     }
     
@@ -44,6 +48,17 @@ extension ViewController { //MARK: IBActions
 }
 
 extension ViewController: LuminaDelegate {
+    func detected(controller: LuminaViewController, videoFrame: UIImage, predictions: [LuminaPrediction]?) {
+        if let ensure = predictions {
+            if let bestPrediction = ensure.first {
+                DispatchQueue.main.async {
+                    controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%"
+                }
+                print("Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%")
+            }
+        }
+    }
+    
     func detected(controller: LuminaViewController, stillImage: UIImage) {
         controller.dismiss(animated: true) {
             self.performSegue(withIdentifier: "stillImageOutputSegue", sender: stillImage)

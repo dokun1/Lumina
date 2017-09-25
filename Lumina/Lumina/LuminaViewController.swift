@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import CoreML
 
 /// Delegate for returning information to the application utilizing Lumina
 public protocol LuminaDelegate {
@@ -26,6 +27,8 @@ public protocol LuminaDelegate {
     ///   - controller: the instance of Lumina that is streaming the frames
     ///   - videoFrame: the frame captured by Lumina
     func detected(controller: LuminaViewController, videoFrame: UIImage)
+    
+    func detected(controller: LuminaViewController, videoFrame: UIImage, predictions: [LuminaPrediction]?)
     
     /// Triggered whenever trackMetadata is set to true on Lumina, and streams metadata detected in the form of QR codes, bar codes, or faces
     ///
@@ -247,6 +250,21 @@ public final class LuminaViewController: UIViewController {
         }
     }
     
+    private var _streamingModel: AnyObject?
+    @available(iOS 11.0, *)
+    public var streamingModel: MLModel? {
+        get {
+            return _streamingModel as? MLModel
+        }
+        set {
+            _streamingModel = newValue
+            self.streamFrames = true
+            if let camera = self.camera {
+                camera.streamingModel = newValue
+            }
+        }
+    }
+    
     /// run this in order to create Lumina
     public init() {
         super.init(nibName: nil, bundle: nil)
@@ -397,6 +415,12 @@ fileprivate extension LuminaViewController {
 // MARK: CameraDelegate Functions
 
 extension LuminaViewController: LuminaCameraDelegate {
+    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?) {
+        if let delegate = self.delegate {
+            delegate.detected(controller: self, videoFrame: frame, predictions: predictedObjects)
+        }
+    }
+    
     func finishedFocus(camera: LuminaCamera) {
         self.isUpdating = false
     }
@@ -418,6 +442,8 @@ extension LuminaViewController: LuminaCameraDelegate {
             delegate.detected(controller: self, metadata: metadata)
         }
     }
+    
+    
 }
 
 // MARK: UIButton Functions
