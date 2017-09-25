@@ -30,11 +30,13 @@ final class LuminaTextPromptView: UIView {
     }
     
     public func updateText(to text:String) {
-        if text.isEmpty {
-            self.hide(andErase: true)
-        } else if self.alpha < 0.1 && !text.isEmpty {
-            self.textLabel.text = text
-            self.makeAppear()
+        DispatchQueue.main.async {
+            if text.isEmpty {
+                self.hide(andErase: true)
+            } else if self.alpha < 0.1 && !text.isEmpty {
+                self.textLabel.text = text
+                self.makeAppear()
+            }
         }
     }
     

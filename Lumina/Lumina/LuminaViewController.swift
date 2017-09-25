@@ -205,9 +205,31 @@ public final class LuminaViewController: UIViewController {
     /// override with caution
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        createUI()
         if let camera = self.camera {
-            camera.update()
-            createUI()
+            do {
+                try camera.update()
+                enableUI(valid: true)
+            } catch CameraError.PermissionDenied {
+                self.textPrompt = "Camera permissions for Lumina have been previously denied - please access your privacy settings to change this."
+            } catch CameraError.PermissionRestricted {
+                self.textPrompt = "Camera permissions for Lumina have been restricted - please access your privacy settings to change this."
+            } catch CameraError.RequiresAuthorization {
+                AVCaptureDevice.requestAccess(for: .video, completionHandler: { success in
+                    if success {
+                        self.enableUI(valid: true)
+                        try! camera.update()
+                    } else {
+                        self.textPrompt = "Camera permissions for Lumina have been previously denied - please access your privacy settings to change this."
+                    }
+                })
+            } catch CameraError.Other(let reason){
+                self.textPrompt = reason
+            } catch CameraError.InvalidDevice {
+                self.textPrompt = "Could not load desired camera device - please try again"
+            } catch {
+                self.textPrompt = "Unknown error occurred while loading Lumina - please try again"
+            }
         }
     }
     
@@ -254,6 +276,15 @@ fileprivate extension LuminaViewController {
         self.view.addSubview(self.switchButton)
         self.view.addSubview(self.torchButton)
         self.view.addSubview(self.textPromptView)
+        enableUI(valid: false)
+    }
+    
+    func enableUI(valid: Bool) {
+        DispatchQueue.main.async {
+            self.shutterButton.isEnabled = valid
+            self.switchButton.isEnabled = valid
+            self.torchButton.isEnabled = valid
+        }
     }
     
     func updateUI(orientation: UIInterfaceOrientation) {
@@ -402,4 +433,3 @@ extension LuminaViewController {
         }
     }
 }
-

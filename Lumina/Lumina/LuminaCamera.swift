@@ -16,6 +16,14 @@ protocol LuminaCameraDelegate {
     func detected(camera: LuminaCamera, metadata: [Any])
 }
 
+enum CameraError: Error {
+    case PermissionDenied
+    case PermissionRestricted
+    case RequiresAuthorization
+    case Other(reason: String)
+    case InvalidDevice
+}
+
 class LuminaCamera: NSObject {
     var delegate: LuminaCameraDelegate! = nil
     var controller: LuminaViewController?
@@ -50,7 +58,7 @@ class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                update()
+                try! update()
             }
         }
     }
@@ -59,7 +67,7 @@ class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                update()
+                try! update()
             }
         }
     }
@@ -68,7 +76,15 @@ class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                update()
+                do {
+                    try update()
+                } catch CameraError.InvalidDevice {
+                    if let controller = self.controller {
+                        controller.textPrompt = "Could not locate desired device"
+                    }
+                } catch {
+                    
+                }
             }
         }
     }
@@ -133,36 +149,46 @@ class LuminaCamera: NSObject {
         }
     }
     
-    func update() {
-        recycleDeviceIO()
-        self.torchState = false
-        guard let input = getNewInputDevice() else {
-            return
+    func update() throws {
+        switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
+        case .authorized:
+            recycleDeviceIO()
+            self.torchState = false
+            guard let input = getNewInputDevice() else {
+                throw CameraError.InvalidDevice
+            }
+            guard self.session.canAddInput(input) else {
+                throw CameraError.InvalidDevice
+            }
+            guard self.session.canAddOutput(self.videoOutput) else {
+                throw CameraError.InvalidDevice
+            }
+            guard self.session.canAddOutput(self.photoOutput) else {
+                throw CameraError.InvalidDevice
+            }
+            guard self.session.canAddOutput(self.metadataOutput) else {
+                throw CameraError.InvalidDevice
+            }
+            self.videoInput = input
+            self.session.addInput(input)
+            if self.streamFrames {
+                self.session.addOutput(self.videoOutput)
+            }
+            self.session.addOutput(self.photoOutput)
+            if self.trackMetadata {
+                self.session.addOutput(self.metadataOutput)
+                self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
+            }
+            self.session.commitConfiguration()
+            self.session.startRunning()
+            break
+        case .denied:
+            throw CameraError.PermissionDenied
+        case .notDetermined:
+            throw CameraError.RequiresAuthorization
+        case .restricted:
+            throw CameraError.PermissionRestricted
         }
-        guard self.session.canAddInput(input) else {
-            return
-        }
-        guard self.session.canAddOutput(self.videoOutput) else {
-            return
-        }
-        guard self.session.canAddOutput(self.photoOutput) else {
-            return
-        }
-        guard self.session.canAddOutput(self.metadataOutput) else {
-            return
-        }
-        self.videoInput = input
-        self.session.addInput(input)
-        if self.streamFrames {
-            self.session.addOutput(self.videoOutput)
-        }
-        self.session.addOutput(self.photoOutput)
-        if self.trackMetadata {
-            self.session.addOutput(self.metadataOutput)
-            self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
-        }
-        self.session.commitConfiguration()
-        self.session.startRunning()
     }
     
     func pause() {
@@ -334,4 +360,3 @@ extension LuminaCamera: AVCaptureMetadataOutputObjectsDelegate {
         }
     }
 }
-
