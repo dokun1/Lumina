@@ -51,10 +51,7 @@ extension ViewController: LuminaDelegate {
     func detected(controller: LuminaViewController, videoFrame: UIImage, predictions: [LuminaPrediction]?) {
         if let ensure = predictions {
             if let bestPrediction = ensure.first {
-                DispatchQueue.main.async {
-                    controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%"
-                }
-                print("Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%")
+                controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%"
             }
         }
     }
