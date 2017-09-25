@@ -173,11 +173,45 @@
                         <outlet property="showTextPromptViewSwitch" destination="h0C-Dt-sGe" id="Q2v-R4-Hho"/>
                         <outlet property="trackImagesSwitch" destination="sd2-7e-jsz" id="hFm-GO-ZgI"/>
                         <outlet property="trackMetadataSwitch" destination="TMa-zQ-U10" id="VJx-fk-wti"/>
+                        <segue destination="z6a-Tt-r4B" kind="show" identifier="stillImageOutputSegue" id="YMw-7T-WlT"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="H4J-JX-nXx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1028" y="7.6461769115442282"/>
+        </scene>
+        <!--Still Image Output-->
+        <scene sceneID="79u-go-Us9">
+            <objects>
+                <viewController id="z6a-Tt-r4B" customClass="ImageViewController" customModule="LuminaSample" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Xn6-il-lvj"/>
+                        <viewControllerLayoutGuide type="bottom" id="d7y-mm-YZL"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="R5W-i4-wuR">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="oRv-sL-uZo">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="oRv-sL-uZo" firstAttribute="top" secondItem="Xn6-il-lvj" secondAttribute="bottom" id="8ZB-pi-UDZ"/>
+                            <constraint firstAttribute="trailing" secondItem="oRv-sL-uZo" secondAttribute="trailing" id="EM9-Za-UHH"/>
+                            <constraint firstItem="oRv-sL-uZo" firstAttribute="leading" secondItem="R5W-i4-wuR" secondAttribute="leading" id="usO-gO-zYE"/>
+                            <constraint firstItem="d7y-mm-YZL" firstAttribute="top" secondItem="oRv-sL-uZo" secondAttribute="bottom" id="whh-WH-LfM"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Still Image Output" id="fBJ-LC-cR9"/>
+                    <connections>
+                        <outlet property="imageView" destination="oRv-sL-uZo" id="8EL-1I-xrC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="f8e-A8-u4A" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2168.8000000000002" y="7.6461769115442282"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="iOy-Bh-N7C">
