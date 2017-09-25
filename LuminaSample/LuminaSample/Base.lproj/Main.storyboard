@@ -153,6 +153,57 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="72" id="raL-4i-U4T">
+                                        <rect key="frame" x="0.0" y="288" width="375" height="72"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="raL-4i-U4T" id="S58-ov-mPe">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="71.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Frame Rate" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hf0-GQ-cdc">
+                                                    <rect key="frame" x="8" y="25" width="198" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="eoE-z7-lrG"/>
+                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="lvq-9V-AKt"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="30" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gKI-BH-7aY">
+                                                    <rect key="frame" x="316" y="25" width="51" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="51" id="FzK-S0-KTJ"/>
+                                                        <constraint firstAttribute="height" constant="21" id="Kty-k2-A32"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="30" minimumValue="1" maximumValue="300" translatesAutoresizingMaskIntoConstraints="NO" id="dGK-ch-JRo">
+                                                    <rect key="frame" x="214" y="21" width="94" height="29"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="94" id="hZc-b7-huU"/>
+                                                        <constraint firstAttribute="height" constant="29" id="uXX-io-Gbr"/>
+                                                    </constraints>
+                                                    <connections>
+                                                        <action selector="stepperValueChanged" destination="n2P-F6-2S3" eventType="valueChanged" id="d8k-Sx-ssw"/>
+                                                    </connections>
+                                                </stepper>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Hf0-GQ-cdc" firstAttribute="top" secondItem="S58-ov-mPe" secondAttribute="topMargin" constant="17" id="52u-UO-ctx"/>
+                                                <constraint firstItem="gKI-BH-7aY" firstAttribute="top" secondItem="S58-ov-mPe" secondAttribute="topMargin" constant="17" id="9aO-2V-Olx"/>
+                                                <constraint firstItem="dGK-ch-JRo" firstAttribute="top" secondItem="S58-ov-mPe" secondAttribute="topMargin" constant="13" id="E36-dK-tUo"/>
+                                                <constraint firstItem="gKI-BH-7aY" firstAttribute="trailing" secondItem="S58-ov-mPe" secondAttribute="trailingMargin" id="FVq-Nj-9wf"/>
+                                                <constraint firstItem="Hf0-GQ-cdc" firstAttribute="top" secondItem="S58-ov-mPe" secondAttribute="topMargin" constant="17" id="HYN-aV-a9d"/>
+                                                <constraint firstItem="dGK-ch-JRo" firstAttribute="leading" secondItem="Hf0-GQ-cdc" secondAttribute="trailing" constant="8" id="Izl-i5-NUr"/>
+                                                <constraint firstItem="gKI-BH-7aY" firstAttribute="leading" secondItem="dGK-ch-JRo" secondAttribute="trailing" constant="8" id="JkF-gn-IrR"/>
+                                                <constraint firstItem="Hf0-GQ-cdc" firstAttribute="leading" secondItem="S58-ov-mPe" secondAttribute="leadingMargin" id="Wpi-03-t2e"/>
+                                                <constraint firstItem="Hf0-GQ-cdc" firstAttribute="leading" secondItem="S58-ov-mPe" secondAttribute="leadingMargin" id="Wur-x7-L1G"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -169,6 +220,8 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="frameRateLabel" destination="gKI-BH-7aY" id="aNc-eV-8Gf"/>
+                        <outlet property="frameRateStepper" destination="dGK-ch-JRo" id="30q-te-TLG"/>
                         <outlet property="frontCameraSwitch" destination="nKD-LF-3bA" id="58R-9R-phO"/>
                         <outlet property="showTextPromptViewSwitch" destination="h0C-Dt-sGe" id="Q2v-R4-Hho"/>
                         <outlet property="trackImagesSwitch" destination="sd2-7e-jsz" id="hFm-GO-ZgI"/>
@@ -211,7 +264,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f8e-A8-u4A" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2168.8000000000002" y="7.6461769115442282"/>
+            <point key="canvasLocation" x="1898" y="8"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="iOy-Bh-N7C">

@@ -14,6 +14,8 @@ class ViewController: UITableViewController {
     @IBOutlet weak var trackImagesSwitch: UISwitch!
     @IBOutlet weak var trackMetadataSwitch: UISwitch!
     @IBOutlet weak var showTextPromptViewSwitch: UISwitch!
+    @IBOutlet weak var frameRateLabel: UILabel!
+    @IBOutlet weak var frameRateStepper: UIStepper!
 }
 
 extension ViewController { //MARK: IBActions
@@ -25,8 +27,12 @@ extension ViewController { //MARK: IBActions
         camera.textPrompt = self.showTextPromptViewSwitch.isOn ? "This is how to test the text prompt view" : ""
         camera.trackMetadata = self.trackMetadataSwitch.isOn
         camera.resolution = .highest
-        camera.frameRate = 120
+        camera.frameRate = Int(self.frameRateLabel.text!) ?? 30
         present(camera, animated: true, completion: nil)
+    }
+    
+    @IBAction func stepperValueChanged() {
+        frameRateLabel.text = String(Int(frameRateStepper.value))
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
