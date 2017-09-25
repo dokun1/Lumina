@@ -24,7 +24,7 @@ enum CameraError: Error {
     case InvalidDevice
 }
 
-class LuminaCamera: NSObject {
+final class LuminaCamera: NSObject {
     var delegate: LuminaCameraDelegate! = nil
     var controller: LuminaViewController?
     
@@ -81,6 +81,24 @@ class LuminaCamera: NSObject {
         }
     }
     
+    var resolution: AVCaptureSession.Preset = .high {
+        didSet {
+            if self.session.isRunning {
+                self.session.stopRunning()
+                try! update()
+            }
+        }
+    }
+    
+    var frameRate: Int = 30 {
+        didSet {
+            if self.session.isRunning {
+                self.session.stopRunning()
+                try! update()
+            }
+        }
+    }
+    
     required init(with controller: LuminaViewController) {
         self.controller = controller
     }
@@ -90,6 +108,7 @@ class LuminaCamera: NSObject {
         return AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera], mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
     }
     fileprivate var videoInput: AVCaptureDeviceInput?
+    fileprivate var currentCaptureDevice: AVCaptureDevice?
     fileprivate var videoBufferQueue = DispatchQueue(label: "com.Lumina.videoBufferQueue")
     fileprivate var metadataBufferQueue = DispatchQueue(label: "com.lumina.metadataBufferQueue")
     fileprivate var videoOutput: AVCaptureVideoDataOutput {
@@ -146,6 +165,7 @@ class LuminaCamera: NSObject {
         case .authorized:
             recycleDeviceIO()
             self.torchState = false
+            self.session.sessionPreset = .high // set to high here so that device input can be added to session. resolution can be checked for update later
             guard let input = getNewInputDevice() else {
                 throw CameraError.InvalidDevice
             }
@@ -171,6 +191,10 @@ class LuminaCamera: NSObject {
                 self.session.addOutput(self.metadataOutput)
                 self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
             }
+            if self.session.canSetSessionPreset(self.resolution) {
+                self.session.sessionPreset = self.resolution
+            }
+            configureFrameRate()
             self.session.commitConfiguration()
             self.session.startRunning()
             break
@@ -264,10 +288,30 @@ private extension LuminaCamera {
         }
         for device in discoverySession.devices {
             if device.position == position {
+                self.currentCaptureDevice = device
                 return device
             }
         }
         return nil
+    }
+    
+    func configureFrameRate() {
+        guard let device = self.currentCaptureDevice else {
+            return
+        }
+        for vFormat in device.formats {
+            let ranges = vFormat.videoSupportedFrameRateRanges as [AVFrameRateRange]
+            guard let frameRate = ranges.first else {
+                continue
+            }
+            if frameRate.maxFrameRate >= Float64(self.frameRate) && frameRate.minFrameRate <= Float64(self.frameRate) {
+                try! device.lockForConfiguration()
+                device.activeFormat = vFormat as AVCaptureDevice.Format
+                device.activeVideoMinFrameDuration = CMTimeMake(1, Int32(self.frameRate))
+                device.activeVideoMaxFrameDuration = CMTimeMake(1, Int32(self.frameRate))
+                device.unlockForConfiguration()
+            }
+        }
     }
 }
 

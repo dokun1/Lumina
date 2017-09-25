@@ -56,6 +56,51 @@ public enum CameraPosition {
     case unspecified
 }
 
+/// The resolution to set the camera to at any time - refer to AVCaptureSession.Preset definitions for matching, closest as of iOS 11
+public enum CameraResolution {
+    case low352x288
+    case vga640x480
+    case medium1280x720
+    case high1920x1080
+    case ultra3840x2160
+    case iframe1280x720
+    case iframe960x540
+    case photo
+    case lowest
+    case medium
+    case highest
+    case inputPriority
+    
+    func foundationPreset() -> AVCaptureSession.Preset {
+        switch self {
+        case .vga640x480:
+            return AVCaptureSession.Preset.vga640x480
+        case .low352x288:
+            return AVCaptureSession.Preset.cif352x288
+        case .medium1280x720:
+            return AVCaptureSession.Preset.hd1280x720
+        case .high1920x1080:
+            return AVCaptureSession.Preset.hd1920x1080
+        case .ultra3840x2160:
+            return AVCaptureSession.Preset.hd4K3840x2160
+        case .iframe1280x720:
+            return AVCaptureSession.Preset.iFrame1280x720
+        case .iframe960x540:
+            return AVCaptureSession.Preset.iFrame960x540
+        case .photo:
+            return AVCaptureSession.Preset.photo
+        case .lowest:
+            return AVCaptureSession.Preset.low
+        case .medium:
+            return AVCaptureSession.Preset.medium
+        case .highest:
+            return AVCaptureSession.Preset.high
+        case .inputPriority:
+            return AVCaptureSession.Preset.inputPriority
+        }
+    }
+}
+
 /// The main class that developers should interact with and instantiate when using Lumina
 public final class LuminaViewController: UIViewController {
     var camera: LuminaCamera?
@@ -177,6 +222,28 @@ public final class LuminaViewController: UIViewController {
     open var textPrompt = "" {
         didSet {
             self.textPromptView.updateText(to: textPrompt)
+        }
+    }
+    
+    /// Set this to choose a resolution for the camera at any time - defaults to highest resolution possible for camera
+    ///
+    /// - Note: Responds live to being set at any time, and will update automatically
+    open var resolution: CameraResolution = .highest {
+        didSet {
+            if let camera = self.camera {
+                camera.resolution = resolution.foundationPreset()
+            }
+        }
+    }
+    
+    /// Set this to choose a frame rate for the camera at any time - defaults to 30 if query is not available
+    ///
+    /// - Note: Responds live to being set at any time, and will update automatically
+    open var frameRate: Int = 30 {
+        didSet {
+            if let camera = self.camera {
+                camera.frameRate = frameRate
+            }
         }
     }
     

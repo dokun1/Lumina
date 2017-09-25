@@ -24,14 +24,23 @@ extension ViewController { //MARK: IBActions
         camera.streamFrames = self.trackImagesSwitch.isOn
         camera.textPrompt = self.showTextPromptViewSwitch.isOn ? "This is how to test the text prompt view" : ""
         camera.trackMetadata = self.trackMetadataSwitch.isOn
+        camera.resolution = .highest
+        camera.frameRate = 120
         present(camera, animated: true, completion: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "stillImageOutputSegue" {
+            let controller = segue.destination as! ImageViewController
+            controller.image = sender as? UIImage
+        }
     }
 }
 
 extension ViewController: LuminaDelegate {
     func detected(controller: LuminaViewController, stillImage: UIImage) {
         controller.dismiss(animated: true) {
-            print("image received - check debugger")
+            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: stillImage)
         }
     }
     
