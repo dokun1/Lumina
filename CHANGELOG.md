@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
-
-[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.6.2...HEAD)
+## [v0.6.3](https://github.com/dokun1/Lumina/tree/v0.6.3) (2017-09-25)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.6.2...v0.6.3)
 
 **Closed issues:**
 
