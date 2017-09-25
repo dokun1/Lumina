@@ -76,15 +76,7 @@ class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                do {
-                    try update()
-                } catch CameraError.InvalidDevice {
-                    if let controller = self.controller {
-                        controller.textPrompt = "Could not locate desired device"
-                    }
-                } catch {
-                    
-                }
+                try! update()
             }
         }
     }
