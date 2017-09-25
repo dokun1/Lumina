@@ -1,5 +1,17 @@
 # Change Log
 
+## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
+
+[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.6.3...HEAD)
+
+**Closed issues:**
+
+- Handle permissions elegantly [\#13](https://github.com/dokun1/Lumina/issues/13)
+
+**Merged pull requests:**
+
+- Handles permissions more elegantly now [\#14](https://github.com/dokun1/Lumina/pull/14) ([dokun1](https://github.com/dokun1))
+
 ## [v0.6.3](https://github.com/dokun1/Lumina/tree/v0.6.3) (2017-09-25)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/v0.6.2...v0.6.3)
 
