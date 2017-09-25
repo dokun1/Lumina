@@ -2,7 +2,19 @@
 
 ## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
 
-[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.6.3...HEAD)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.6.4...HEAD)
+
+**Closed issues:**
+
+- Custom video resolution [\#9](https://github.com/dokun1/Lumina/issues/9)
+- Custom frame rate [\#8](https://github.com/dokun1/Lumina/issues/8)
+
+**Merged pull requests:**
+
+- Added support for custom resolution & frame rate [\#15](https://github.com/dokun1/Lumina/pull/15) ([dokun1](https://github.com/dokun1))
+
+## [v0.6.4](https://github.com/dokun1/Lumina/tree/v0.6.4) (2017-09-25)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.6.3...v0.6.4)
 
 **Closed issues:**
 
