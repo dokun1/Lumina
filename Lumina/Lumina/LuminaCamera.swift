@@ -126,7 +126,7 @@ final class LuminaCamera: NSObject {
     }
     fileprivate var videoInput: AVCaptureDeviceInput?
     fileprivate var currentCaptureDevice: AVCaptureDevice?
-    fileprivate var videoBufferQueue = DispatchQueue(label: "com.Lumina.videoBufferQueue")
+    fileprivate var videoBufferQueue = DispatchQueue(label: "com.Lumina.videoBufferQueue", attributes: .concurrent)
     fileprivate var metadataBufferQueue = DispatchQueue(label: "com.lumina.metadataBufferQueue")
     fileprivate var recognitionBufferQueue = DispatchQueue(label: "com.lumina.recognitionBufferQueue")
     fileprivate var videoOutput: AVCaptureVideoDataOutput {
