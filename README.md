@@ -4,7 +4,7 @@
 
 > A camera designed in Swift that helps take still images, detect QR/bar codes, and stream video frames for post processing.
 
-Cameras are used frequently in iOS applications, and the creation of `CoreML` has precipitated a rash of applications that will want to do live object detection on a camera feed.
+Cameras are used frequently in iOS applications, and the creation of `CoreML` and `Vision` has precipitated a rash of applications that will want to do live object detection on a camera feed.
 
 Writing `AVFoundation` code can be fun, if not sometimes interesting. `Lumina` gives you an opportunity to skip having to write `AVFoundation` code, and gives you the tools you need to do anything you need with AV capture, streaming, etc.
 
@@ -14,6 +14,7 @@ Lumina can:
 - stream video frames to a delegate
 - scan any QR or barcode and output its metadata
 - detect the presence of a face and its location
+- use any CoreML compatible model to stream object predictions from the camera feed
 
 ## Table of Contents
 
@@ -26,7 +27,7 @@ Lumina can:
 
 ## Background
 
-[David Okun](https://twitter.com/dokun24) has experience working with image processing, and he thought it would be a nice thing to have a camera module that allows you to stream images, capture photos and videos, and **(eventually)** have a module that lets you plug in a CoreML model, and it streams the object predictions back to you alongside the video frames.
+[David Okun](https://twitter.com/dokun24) has experience working with image processing, and he thought it would be a nice thing to have a camera module that allows you to stream images, capture photos and videos, and have a module that lets you plug in a CoreML model, and it streams the object predictions back to you alongside the video frames.
 
 ## Install
 
@@ -113,6 +114,20 @@ camera.resolution = .highest // follows an enum
 camera.frameRate = 60 // can be any number, defaults to 30 on failure****
 ```
 
+### Object Recognition
+
+**NB:** This only works for iOS 11.0 and up.
+
+You must have a `CoreML` compatible model to try this. Ensure that you drag the model file into your project file, and add it to your current application target.
+
+The sample in this repository comes with the `MobileNet` image recognition model, but again, any `CoreML` compatible model will work with this framework. Assign your model to the framework like so:
+
+```swift
+camera.streamingModel = MobileNet().model
+```
+
+You are now set up to 
+
 ### Handling output
 
 To handle any output, such as still images, video frames, or scanned metadata, you will need to make your controller adhere to `LuminaDelegate` and assign it like so:
@@ -155,6 +170,22 @@ func detected(controller: LuminaViewController, metadata: [Any]) {
     // you must find the right kind of data to downcast from, whether it is of a barcode, qr code, or face detection
 }
 ```
+
+To handle a `CoreML` model and its predictions being streamed with each video frame, implement:
+
+```swift
+func detected(controller: LuminaViewController, videoFrame: UIImage, predictions: [LuminaPrediction]?) {
+    guard let predicted = predictions else {
+        return
+    }
+    guard let bestPrediction = predicted.first else {
+        return
+    }
+    controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%"
+    }
+```
+
+The example above also makes use of the built-in text prompt mechanism for Lumina.
 
 ## Maintainers
 
