@@ -83,7 +83,7 @@ final class LuminaCamera: NSObject {
         }
     }
     
-    var resolution: AVCaptureSession.Preset = .high {
+    var resolution: CameraResolution = .highest {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
@@ -109,8 +109,10 @@ final class LuminaCamera: NSObject {
             return _streamingModel as? MLModel
         }
         set {
-            _streamingModel = newValue
-            recognizer = LuminaObjectRecognizer(model: newValue!)
+            if newValue != nil {
+                _streamingModel = newValue
+                recognizer = LuminaObjectRecognizer(model: newValue!)
+            }
         }
     }
     
@@ -129,6 +131,7 @@ final class LuminaCamera: NSObject {
     fileprivate var recognitionBufferQueue = DispatchQueue(label: "com.lumina.recognitionBufferQueue")
     fileprivate var videoOutput: AVCaptureVideoDataOutput {
         let output = AVCaptureVideoDataOutput()
+        output.alwaysDiscardsLateVideoFrames = true
         output.setSampleBufferDelegate(self, queue: videoBufferQueue)
         return output
     }
@@ -207,8 +210,8 @@ final class LuminaCamera: NSObject {
                 self.session.addOutput(self.metadataOutput)
                 self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
             }
-            if self.session.canSetSessionPreset(self.resolution) {
-                self.session.sessionPreset = self.resolution
+            if self.session.canSetSessionPreset(self.resolution.foundationPreset()) {
+                self.session.sessionPreset = self.resolution.foundationPreset()
             }
             configureFrameRate()
             self.session.commitConfiguration()
@@ -316,16 +319,22 @@ private extension LuminaCamera {
             return
         }
         for vFormat in device.formats {
+            let dimensions = CMVideoFormatDescriptionGetDimensions(vFormat.formatDescription)
             let ranges = vFormat.videoSupportedFrameRateRanges as [AVFrameRateRange]
             guard let frameRate = ranges.first else {
                 continue
             }
-            if frameRate.maxFrameRate >= Float64(self.frameRate) && frameRate.minFrameRate <= Float64(self.frameRate) {
+            if frameRate.maxFrameRate >= Float64(self.frameRate) &&
+                frameRate.minFrameRate <= Float64(self.frameRate) &&
+                self.resolution.getDimensions().width == dimensions.width &&
+                self.resolution.getDimensions().height == dimensions.height &&
+                CMFormatDescriptionGetMediaSubType(vFormat.formatDescription) == 875704422  { // meant for full range 420f
                 try! device.lockForConfiguration()
                 device.activeFormat = vFormat as AVCaptureDevice.Format
                 device.activeVideoMinFrameDuration = CMTimeMake(1, Int32(self.frameRate))
                 device.activeVideoMaxFrameDuration = CMTimeMake(1, Int32(self.frameRate))
                 device.unlockForConfiguration()
+                break
             }
         }
     }

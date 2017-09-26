@@ -10,14 +10,17 @@ import UIKit
 import CoreML
 import Vision
 
+/// An object that represents a prediction about an object that Lumina detects
 public struct LuminaPrediction {
+    /// The name of the object, as predicted by Lumina
     public var name: String
+    /// The numeric value of the confidence of the prediction, out of 1.0
     public var confidence: Float
 }
 
 @available(iOS 11.0, *)
 final class LuminaObjectRecognizer: NSObject {
-    var model: MLModel
+    private var model: MLModel
     
     init(model: MLModel) {
         self.model = model

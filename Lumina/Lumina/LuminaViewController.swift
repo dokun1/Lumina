@@ -102,6 +102,35 @@ public enum CameraResolution {
             return AVCaptureSession.Preset.inputPriority
         }
     }
+    
+    func getDimensions() -> CMVideoDimensions {
+        switch self {
+        case .vga640x480:
+            return CMVideoDimensions(width: 640, height: 480)
+        case .low352x288:
+            return CMVideoDimensions(width: 352, height: 288)
+        case .medium1280x720:
+            return CMVideoDimensions(width: 1280, height: 720)
+        case .high1920x1080:
+            return CMVideoDimensions(width: 1920, height: 1080)
+        case .ultra3840x2160:
+            return CMVideoDimensions(width: 3840, height: 2160)
+        case .iframe1280x720:
+            return CMVideoDimensions(width: 1280, height: 720)
+        case .iframe960x540:
+            return CMVideoDimensions(width: 960, height: 540)
+        case .photo:
+            return CMVideoDimensions(width: INT32_MAX, height: INT32_MAX)
+        case .lowest:
+            return CMVideoDimensions(width: 352, height: 288)
+        case .medium:
+            return CMVideoDimensions(width: 1280, height: 720)
+        case .highest:
+            return CMVideoDimensions(width: 1920, height: 1080)
+        case .inputPriority:
+            return CMVideoDimensions(width: INT32_MAX, height: INT32_MAX)
+        }
+    }
 }
 
 /// The main class that developers should interact with and instantiate when using Lumina
@@ -234,7 +263,7 @@ public final class LuminaViewController: UIViewController {
     open var resolution: CameraResolution = .highest {
         didSet {
             if let camera = self.camera {
-                camera.resolution = resolution.foundationPreset()
+                camera.resolution = resolution
             }
         }
     }
@@ -251,16 +280,24 @@ public final class LuminaViewController: UIViewController {
     }
     
     private var _streamingModel: AnyObject?
+    
+    /// A model that will be used when streaming images for object recognition
+    ///
+    /// - Note: Only works on iOS 11 and up
+    ///
+    /// - Warning: If this is set, streamFrames is over-ridden to true
     @available(iOS 11.0, *)
     public var streamingModel: MLModel? {
         get {
             return _streamingModel as? MLModel
         }
         set {
-            _streamingModel = newValue
-            self.streamFrames = true
-            if let camera = self.camera {
-                camera.streamingModel = newValue
+            if newValue != nil {
+                _streamingModel = newValue
+                self.streamFrames = true
+                if let camera = self.camera {
+                    camera.streamingModel = newValue
+                }
             }
         }
     }
