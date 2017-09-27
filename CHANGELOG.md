@@ -1,5 +1,16 @@
 # Change Log
 
+## [v0.8.2](https://github.com/dokun1/Lumina/tree/v0.8.2) (2017-09-27)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.8.1...v0.8.2)
+
+**Closed issues:**
+
+- Pinch to Zoom [\#16](https://github.com/dokun1/Lumina/issues/16)
+
+**Merged pull requests:**
+
+- Pinch to zoom [\#20](https://github.com/dokun1/Lumina/pull/20) ([dokun1](https://github.com/dokun1))
+
 ## [v0.8.1](https://github.com/dokun1/Lumina/tree/v0.8.1) (2017-09-27)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/v0.8...v0.8.1)
 
