@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5365BFD41F79829800B8F338 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD31F79829800B8F338 /* ImageViewController.swift */; };
+		5365BFDA1F79AAA800B8F338 /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */; };
 		53B828F71EAAA09000E3A624 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828F61EAAA09000E3A624 /* AppDelegate.swift */; };
 		53B828F91EAAA09000E3A624 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828F81EAAA09000E3A624 /* ViewController.swift */; };
 		53B828FC1EAAA09000E3A624 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FA1EAAA09000E3A624 /* Main.storyboard */; };
@@ -33,6 +34,7 @@
 
 /* Begin PBXFileReference section */
 		5365BFD31F79829800B8F338 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
+		5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = MobileNet.mlmodel; path = LuminaSample/MobileNet.mlmodel; sourceTree = "<group>"; };
 		53B828F31EAAA09000E3A624 /* LuminaSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LuminaSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53B828F61EAAA09000E3A624 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		53B828F81EAAA09000E3A624 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 		53B829081EAAA16D00E3A624 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */,
 				53B829091EAAA18000E3A624 /* Lumina.framework */,
 			);
 			name = Frameworks;
@@ -168,6 +171,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5365BFDA1F79AAA800B8F338 /* MobileNet.mlmodel in Sources */,
 				53B828F91EAAA09000E3A624 /* ViewController.swift in Sources */,
 				5365BFD41F79829800B8F338 /* ImageViewController.swift in Sources */,
 				53B828F71EAAA09000E3A624 /* AppDelegate.swift in Sources */,

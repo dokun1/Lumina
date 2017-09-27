@@ -160,7 +160,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="71.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Frame Rate" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hf0-GQ-cdc">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Frame Rate (FPS)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hf0-GQ-cdc">
                                                     <rect key="frame" x="8" y="25" width="198" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="21" id="eoE-z7-lrG"/>
@@ -204,6 +204,39 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="72" id="qr3-qk-1WX">
+                                        <rect key="frame" x="0.0" y="360" width="375" height="72"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="qr3-qk-1WX" id="b7s-ME-RrJ">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="71.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use CoreML Model" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUt-sS-9wk">
+                                                    <rect key="frame" x="8" y="25" width="302" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="ff0-67-L7O"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="dh9-Ev-b96">
+                                                    <rect key="frame" x="318" y="20" width="51" height="31"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="49" id="8cj-5u-nkz"/>
+                                                        <constraint firstAttribute="height" constant="31" id="sqM-NH-LYL"/>
+                                                    </constraints>
+                                                </switch>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="dh9-Ev-b96" firstAttribute="top" secondItem="b7s-ME-RrJ" secondAttribute="topMargin" constant="12" id="F3A-2S-mYL"/>
+                                                <constraint firstItem="dh9-Ev-b96" firstAttribute="trailing" secondItem="b7s-ME-RrJ" secondAttribute="trailingMargin" id="L8m-fc-b7t"/>
+                                                <constraint firstItem="dh9-Ev-b96" firstAttribute="leading" secondItem="KUt-sS-9wk" secondAttribute="trailing" constant="8" id="Q4e-cX-kbJ"/>
+                                                <constraint firstItem="KUt-sS-9wk" firstAttribute="leading" secondItem="b7s-ME-RrJ" secondAttribute="leadingMargin" id="YnQ-cN-JsA"/>
+                                                <constraint firstItem="KUt-sS-9wk" firstAttribute="top" secondItem="b7s-ME-RrJ" secondAttribute="topMargin" constant="17" id="yaD-I9-ueY"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -226,6 +259,7 @@
                         <outlet property="showTextPromptViewSwitch" destination="h0C-Dt-sGe" id="Q2v-R4-Hho"/>
                         <outlet property="trackImagesSwitch" destination="sd2-7e-jsz" id="hFm-GO-ZgI"/>
                         <outlet property="trackMetadataSwitch" destination="TMa-zQ-U10" id="VJx-fk-wti"/>
+                        <outlet property="useCoreMLModelSwitch" destination="dh9-Ev-b96" id="Vg5-SI-J2V"/>
                         <segue destination="z6a-Tt-r4B" kind="show" identifier="stillImageOutputSegue" id="YMw-7T-WlT"/>
                     </connections>
                 </tableViewController>

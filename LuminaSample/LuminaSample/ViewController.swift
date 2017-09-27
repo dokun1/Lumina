@@ -8,6 +8,7 @@
 
 import UIKit
 import Lumina
+import CoreML
 
 class ViewController: UITableViewController {
     @IBOutlet weak var frontCameraSwitch: UISwitch!
@@ -16,6 +17,7 @@ class ViewController: UITableViewController {
     @IBOutlet weak var showTextPromptViewSwitch: UISwitch!
     @IBOutlet weak var frameRateLabel: UILabel!
     @IBOutlet weak var frameRateStepper: UIStepper!
+    @IBOutlet weak var useCoreMLModelSwitch: UISwitch!
 }
 
 extension ViewController { //MARK: IBActions
@@ -26,8 +28,11 @@ extension ViewController { //MARK: IBActions
         camera.streamFrames = self.trackImagesSwitch.isOn
         camera.textPrompt = self.showTextPromptViewSwitch.isOn ? "This is how to test the text prompt view" : ""
         camera.trackMetadata = self.trackMetadataSwitch.isOn
-        camera.resolution = .highest
+        camera.resolution = .medium1280x720
         camera.frameRate = Int(self.frameRateLabel.text!) ?? 30
+        if #available(iOS 11.0, *) {
+            camera.streamingModel = self.useCoreMLModelSwitch.isOn ? MobileNet().model : nil
+        }
         present(camera, animated: true, completion: nil)
     }
     
@@ -44,6 +49,16 @@ extension ViewController { //MARK: IBActions
 }
 
 extension ViewController: LuminaDelegate {
+    func detected(controller: LuminaViewController, videoFrame: UIImage, predictions: [LuminaPrediction]?) {
+        guard let predicted = predictions else {
+            return
+        }
+        guard let bestPrediction = predicted.first else {
+            return
+        }
+        controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%"
+    }
+    
     func detected(controller: LuminaViewController, stillImage: UIImage) {
         controller.dismiss(animated: true) {
             self.performSegue(withIdentifier: "stillImageOutputSegue", sender: stillImage)

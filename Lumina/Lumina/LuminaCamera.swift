@@ -8,10 +8,12 @@
 
 import UIKit
 import AVFoundation
+import CoreML
 
 protocol LuminaCameraDelegate {
     func stillImageCaptured(camera: LuminaCamera, image: UIImage)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
+    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?)
     func finishedFocus(camera: LuminaCamera)
     func detected(camera: LuminaCamera, metadata: [Any])
 }
@@ -81,7 +83,7 @@ final class LuminaCamera: NSObject {
         }
     }
     
-    var resolution: AVCaptureSession.Preset = .high {
+    var resolution: CameraResolution = .highest {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
@@ -98,6 +100,21 @@ final class LuminaCamera: NSObject {
             }
         }
     }
+    fileprivate var recognizer: AnyObject?
+    
+    private var _streamingModel: AnyObject?
+    @available(iOS 11.0, *)
+    var streamingModel: MLModel? {
+        get {
+            return _streamingModel as? MLModel
+        }
+        set {
+            if newValue != nil {
+                _streamingModel = newValue
+                recognizer = LuminaObjectRecognizer(model: newValue!)
+            }
+        }
+    }
     
     required init(with controller: LuminaViewController) {
         self.controller = controller
@@ -109,10 +126,12 @@ final class LuminaCamera: NSObject {
     }
     fileprivate var videoInput: AVCaptureDeviceInput?
     fileprivate var currentCaptureDevice: AVCaptureDevice?
-    fileprivate var videoBufferQueue = DispatchQueue(label: "com.Lumina.videoBufferQueue")
+    fileprivate var videoBufferQueue = DispatchQueue(label: "com.Lumina.videoBufferQueue", attributes: .concurrent)
     fileprivate var metadataBufferQueue = DispatchQueue(label: "com.lumina.metadataBufferQueue")
+    fileprivate var recognitionBufferQueue = DispatchQueue(label: "com.lumina.recognitionBufferQueue")
     fileprivate var videoOutput: AVCaptureVideoDataOutput {
         let output = AVCaptureVideoDataOutput()
+        output.alwaysDiscardsLateVideoFrames = true
         output.setSampleBufferDelegate(self, queue: videoBufferQueue)
         return output
     }
@@ -191,8 +210,8 @@ final class LuminaCamera: NSObject {
                 self.session.addOutput(self.metadataOutput)
                 self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
             }
-            if self.session.canSetSessionPreset(self.resolution) {
-                self.session.sessionPreset = self.resolution
+            if self.session.canSetSessionPreset(self.resolution.foundationPreset()) {
+                self.session.sessionPreset = self.resolution.foundationPreset()
             }
             configureFrameRate()
             self.session.commitConfiguration()
@@ -300,16 +319,22 @@ private extension LuminaCamera {
             return
         }
         for vFormat in device.formats {
+            let dimensions = CMVideoFormatDescriptionGetDimensions(vFormat.formatDescription)
             let ranges = vFormat.videoSupportedFrameRateRanges as [AVFrameRateRange]
             guard let frameRate = ranges.first else {
                 continue
             }
-            if frameRate.maxFrameRate >= Float64(self.frameRate) && frameRate.minFrameRate <= Float64(self.frameRate) {
+            if frameRate.maxFrameRate >= Float64(self.frameRate) &&
+                frameRate.minFrameRate <= Float64(self.frameRate) &&
+                self.resolution.getDimensions().width == dimensions.width &&
+                self.resolution.getDimensions().height == dimensions.height &&
+                CMFormatDescriptionGetMediaSubType(vFormat.formatDescription) == 875704422  { // meant for full range 420f
                 try! device.lockForConfiguration()
                 device.activeFormat = vFormat as AVCaptureDevice.Format
                 device.activeVideoMinFrameDuration = CMTimeMake(1, Int32(self.frameRate))
                 device.activeVideoMaxFrameDuration = CMTimeMake(1, Int32(self.frameRate))
                 device.unlockForConfiguration()
+                break
             }
         }
     }
@@ -336,8 +361,22 @@ extension LuminaCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
         guard let image = sampleBuffer.normalizedVideoFrame() else {
             return
         }
-        DispatchQueue.main.async {
-            self.delegate.videoFrameCaptured(camera: self, frame: image)
+        if #available(iOS 11.0, *) {
+            guard let recognizer = self.recognizer as? LuminaObjectRecognizer else {
+                DispatchQueue.main.async {
+                    self.delegate.videoFrameCaptured(camera: self, frame: image)
+                }
+                return
+            }
+            recognizer.recognize(from: image, completion: { predictions in
+                DispatchQueue.main.async {
+                    self.delegate.videoFrameCaptured(camera: self, frame: image, predictedObjects: predictions)
+                }
+            })
+        } else {
+            DispatchQueue.main.async {
+                self.delegate.videoFrameCaptured(camera: self, frame: image)
+            }
         }
     }
 }

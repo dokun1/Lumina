@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import CoreML
 
 /// Delegate for returning information to the application utilizing Lumina
 public protocol LuminaDelegate {
@@ -26,6 +27,16 @@ public protocol LuminaDelegate {
     ///   - controller: the instance of Lumina that is streaming the frames
     ///   - videoFrame: the frame captured by Lumina
     func detected(controller: LuminaViewController, videoFrame: UIImage)
+    
+    /// Triggered whenever a CoreML model is given to Lumina, and Lumina streams a video frame alongside a prediction
+    ///
+    /// - Note: Will not be triggered unless streamingModel resolves to not nil. Leaving the streamingModel parameter unset will not trigger this method
+    /// - Warning: The other method for passing video frames back via a delegate will not be triggered in the presence of a CoreML model
+    /// - Parameters:
+    ///   - controller: the instance of Lumina that is streaming the frames
+    ///   - videoFrame: the frame captured by Lumina
+    ///   - predictions: the predictions made by the model used with Lumina
+    func detected(controller: LuminaViewController, videoFrame: UIImage, predictions: [LuminaPrediction]?)
     
     /// Triggered whenever trackMetadata is set to true on Lumina, and streams metadata detected in the form of QR codes, bar codes, or faces
     ///
@@ -97,6 +108,35 @@ public enum CameraResolution {
             return AVCaptureSession.Preset.high
         case .inputPriority:
             return AVCaptureSession.Preset.inputPriority
+        }
+    }
+    
+    func getDimensions() -> CMVideoDimensions {
+        switch self {
+        case .vga640x480:
+            return CMVideoDimensions(width: 640, height: 480)
+        case .low352x288:
+            return CMVideoDimensions(width: 352, height: 288)
+        case .medium1280x720:
+            return CMVideoDimensions(width: 1280, height: 720)
+        case .high1920x1080:
+            return CMVideoDimensions(width: 1920, height: 1080)
+        case .ultra3840x2160:
+            return CMVideoDimensions(width: 3840, height: 2160)
+        case .iframe1280x720:
+            return CMVideoDimensions(width: 1280, height: 720)
+        case .iframe960x540:
+            return CMVideoDimensions(width: 960, height: 540)
+        case .photo:
+            return CMVideoDimensions(width: INT32_MAX, height: INT32_MAX)
+        case .lowest:
+            return CMVideoDimensions(width: 352, height: 288)
+        case .medium:
+            return CMVideoDimensions(width: 1280, height: 720)
+        case .highest:
+            return CMVideoDimensions(width: 1920, height: 1080)
+        case .inputPriority:
+            return CMVideoDimensions(width: INT32_MAX, height: INT32_MAX)
         }
     }
 }
@@ -231,7 +271,7 @@ public final class LuminaViewController: UIViewController {
     open var resolution: CameraResolution = .highest {
         didSet {
             if let camera = self.camera {
-                camera.resolution = resolution.foundationPreset()
+                camera.resolution = resolution
             }
         }
     }
@@ -243,6 +283,29 @@ public final class LuminaViewController: UIViewController {
         didSet {
             if let camera = self.camera {
                 camera.frameRate = frameRate
+            }
+        }
+    }
+    
+    private var _streamingModel: AnyObject?
+    
+    /// A model that will be used when streaming images for object recognition
+    ///
+    /// - Note: Only works on iOS 11 and up
+    ///
+    /// - Warning: If this is set, streamFrames is over-ridden to true
+    @available(iOS 11.0, *)
+    public var streamingModel: MLModel? {
+        get {
+            return _streamingModel as? MLModel
+        }
+        set {
+            if newValue != nil {
+                _streamingModel = newValue
+                self.streamFrames = true
+                if let camera = self.camera {
+                    camera.streamingModel = newValue
+                }
             }
         }
     }
@@ -397,6 +460,12 @@ fileprivate extension LuminaViewController {
 // MARK: CameraDelegate Functions
 
 extension LuminaViewController: LuminaCameraDelegate {
+    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?) {
+        if let delegate = self.delegate {
+            delegate.detected(controller: self, videoFrame: frame, predictions: predictedObjects)
+        }
+    }
+    
     func finishedFocus(camera: LuminaCamera) {
         self.isUpdating = false
     }
@@ -418,6 +487,8 @@ extension LuminaViewController: LuminaCameraDelegate {
             delegate.detected(controller: self, metadata: metadata)
         }
     }
+    
+    
 }
 
 // MARK: UIButton Functions

@@ -33,7 +33,7 @@ final class LuminaTextPromptView: UIView {
         DispatchQueue.main.async {
             if text.isEmpty {
                 self.hide(andErase: true)
-            } else if self.alpha < 0.1 && !text.isEmpty {
+            } else {
                 self.textLabel.text = text
                 self.makeAppear()
             }
