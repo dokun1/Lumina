@@ -2,7 +2,7 @@
 //  LuminaObjectRecognition.swift
 //  Lumina
 //
-//  Created by David Okun IBM on 9/25/17.
+//  Created by David Okun on 9/25/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
