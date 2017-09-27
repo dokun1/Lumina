@@ -2,7 +2,7 @@
 //  LuminaTests.swift
 //  LuminaTests
 //
-//  Created by David Okun IBM on 4/21/17.
+//  Created by David Okun on 4/21/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
