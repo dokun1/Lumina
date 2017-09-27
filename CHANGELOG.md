@@ -1,12 +1,18 @@
 # Change Log
 
-## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
-
-[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.7...HEAD)
+## [v0.8.1](https://github.com/dokun1/Lumina/tree/v0.8.1) (2017-09-27)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.8...v0.8.1)
 
 **Closed issues:**
 
 - Custom CoreML Model [\#11](https://github.com/dokun1/Lumina/issues/11)
+
+**Merged pull requests:**
+
+- New look for text prompt view [\#19](https://github.com/dokun1/Lumina/pull/19) ([dokun1](https://github.com/dokun1))
+
+## [v0.8](https://github.com/dokun1/Lumina/tree/v0.8) (2017-09-27)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.7...v0.8)
 
 **Merged pull requests:**
 
