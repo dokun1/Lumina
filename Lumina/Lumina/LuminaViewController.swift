@@ -28,6 +28,14 @@ public protocol LuminaDelegate {
     ///   - videoFrame: the frame captured by Lumina
     func detected(controller: LuminaViewController, videoFrame: UIImage)
     
+    /// Triggered whenever a CoreML model is given to Lumina, and Lumina streams a video frame alongside a prediction
+    ///
+    /// - Note: Will not be triggered unless streamingModel resolves to not nil. Leaving the streamingModel parameter unset will not trigger this method
+    /// - Warning: The other method for passing video frames back via a delegate will not be triggered in the presence of a CoreML model
+    /// - Parameters:
+    ///   - controller: the instance of Lumina that is streaming the frames
+    ///   - videoFrame: the frame captured by Lumina
+    ///   - predictions: the predictions made by the model used with Lumina
     func detected(controller: LuminaViewController, videoFrame: UIImage, predictions: [LuminaPrediction]?)
     
     /// Triggered whenever trackMetadata is set to true on Lumina, and streams metadata detected in the form of QR codes, bar codes, or faces
