@@ -1,10 +1,29 @@
-# Lumina
+<p align="center">
+	<img src="https://imgur.com/HChegN5.png">
+</p>
 
-[![version-badge](https://img.shields.io/cocoapods/v/Lumina.svg)](https://cocoapods.org/pods/lumina) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![swift-pm](https://img.shields.io/badge/SwiftPM-compatible-FC3324.svg?style=flat)](https://swift.org/package-manager/)
- [![license-badge](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/dokun1/Lumina/blob/master/LICENSE) [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg)](https://github.com/RichardLitt/standard-readme)
+<p align="center">
+	<a href="https://cocoapods.org/pods/Lumina">
+		<img src="https://img.shields.io/cocoapods/v/Lumina.svg" alt="Pods Version">
+	</a>
+	<a href="https://github.com/Carthage/Carthage">
+		<img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage Compatible">
+	</a>
+	<a href="https://swift.org/package-manager/">
+		<img src="https://img.shields.io/badge/SwiftPM-compatible-FC3324.svg?style=flat" alt="Swift PM Compatible">
+	</a>
+	<a href="https://swift.org/package-manager/">
+		<img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License">
+	</a>
+	<a href="https://github.com/RichardLitt/standard-readme">
+		<img src="https://img.shields.io/badge/standard--readme-OK-green.svg" alt="Standard README Compliant">
+	</a>
+	<a href="https://img.shields.io/cocoapods/p/Lumina.svg?style=flat">
+		<img src="https://img.shields.io/cocoapods/p/Lumina.svg?style=flat" alt="Platforms">
+	</a>
+</p>
 
-> A camera designed in Swift that helps take still images, detect QR/bar codes, and stream video frames for post processing.
+----------------
 
 Cameras are used frequently in iOS applications, and the addition of `CoreML` and `Vision` to iOS 11 has precipitated a rash of applications that will want to do live object detection on a camera feed.
 
@@ -20,12 +39,19 @@ Lumina can:
 
 ## Table of Contents
 
+- [Requirements](#requirements)
 - [Background](#background)
 - [Install](#install)
 - [Usage](#usage)
 - [Maintainers](#maintainers)
 - [Contribute](#contribute)
 - [License](#license)
+
+## Requirements
+
+- Xcode 8.0+ (by loading Swift 4 Toolchain)
+- iOS 10.0
+- Swift 4.0
 
 ## Background
 
