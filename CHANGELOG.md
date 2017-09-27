@@ -2,7 +2,18 @@
 
 ## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
 
-[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.6.4...HEAD)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.7...HEAD)
+
+**Closed issues:**
+
+- Custom CoreML Model [\#11](https://github.com/dokun1/Lumina/issues/11)
+
+**Merged pull requests:**
+
+- Core ml model [\#18](https://github.com/dokun1/Lumina/pull/18) ([dokun1](https://github.com/dokun1))
+
+## [v0.7](https://github.com/dokun1/Lumina/tree/v0.7) (2017-09-25)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.6.4...v0.7)
 
 **Closed issues:**
 
