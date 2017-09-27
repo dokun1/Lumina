@@ -18,9 +18,23 @@ class ViewController: UITableViewController {
     @IBOutlet weak var frameRateLabel: UILabel!
     @IBOutlet weak var frameRateStepper: UIStepper!
     @IBOutlet weak var useCoreMLModelSwitch: UISwitch!
+    @IBOutlet weak var resolutionLabel: UILabel!
+    @IBOutlet weak var maxZoomScaleLabel: UILabel!
+    @IBOutlet weak var maxZoomScaleStepper: UIStepper!
+    
+    var selectedResolution: CameraResolution = .high1920x1080
 }
 
 extension ViewController { //MARK: IBActions
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.resolutionLabel.text = selectedResolution.rawValue
+        if let version = LuminaViewController.getVersion() {
+            self.title = "Lumina Sample v\(version)"
+        }
+    }
+    
     @IBAction func cameraButtonTapped() {
         let camera = LuminaViewController()
         camera.delegate = self
@@ -28,7 +42,8 @@ extension ViewController { //MARK: IBActions
         camera.streamFrames = self.trackImagesSwitch.isOn
         camera.textPrompt = self.showTextPromptViewSwitch.isOn ? "This is how to test the text prompt view" : ""
         camera.trackMetadata = self.trackMetadataSwitch.isOn
-        camera.resolution = .medium1280x720
+        camera.resolution = selectedResolution
+        camera.maxZoomScale = (self.maxZoomScaleLabel.text! as NSString).floatValue
         camera.frameRate = Int(self.frameRateLabel.text!) ?? 30
         if #available(iOS 11.0, *) {
             camera.streamingModel = self.useCoreMLModelSwitch.isOn ? MobileNet().model : nil
@@ -40,10 +55,17 @@ extension ViewController { //MARK: IBActions
         frameRateLabel.text = String(Int(frameRateStepper.value))
     }
     
+    @IBAction func zoomStepperChanged() {
+        maxZoomScaleLabel.text = String(maxZoomScaleStepper.value)
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "stillImageOutputSegue" {
             let controller = segue.destination as! ImageViewController
             controller.image = sender as? UIImage
+        } else if segue.identifier == "selectResolutionSegue" {
+            let controller = segue.destination as! ResolutionViewController
+            controller.delegate = self
         }
     }
 }
@@ -75,5 +97,14 @@ extension ViewController: LuminaDelegate {
     
     func cancelled(controller: LuminaViewController) {
         controller.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension ViewController: ResolutionDelegate {
+    func didSelect(resolution: CameraResolution, controller: ResolutionViewController) {
+        selectedResolution = resolution
+        if let navigationController = self.navigationController {
+            navigationController.popToViewController(self, animated: true)
+        }
     }
 }

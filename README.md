@@ -139,7 +139,8 @@ camera.streamFrames = true // could also be false
 camera.textPrompt = "This is how to test the text prompt view" // assigning an empty string will make the view fade away
 camera.trackMetadata = true // could also be false
 camera.resolution = .highest // follows an enum
-camera.frameRate = 60 // can be any number, defaults to 30 on failure****
+camera.frameRate = 60 // can be any number, defaults to 30 on failure
+camera.maxZoomRate = 5.0 // not setting this defaults to the highest zoom rate for any given camera device
 ```
 
 ### Object Recognition

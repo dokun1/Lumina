@@ -100,6 +100,15 @@ final class LuminaCamera: NSObject {
             }
         }
     }
+    
+    var maxZoomScale: Float = MAXFLOAT
+    
+    var currentZoomScale: Float = 1.0 {
+        didSet {
+            updateZoom()
+        }
+    }
+    
     fileprivate var recognizer: AnyObject?
     
     private var _streamingModel: AnyObject?
@@ -228,6 +237,25 @@ final class LuminaCamera: NSObject {
     
     func pause() {
         self.session.stopRunning()
+    }
+}
+
+// MARK: Zoom Handling
+
+fileprivate extension LuminaCamera {
+    func updateZoom() {
+        guard let input = self.videoInput else {
+            return
+        }
+        let device = input.device
+        do {
+            try device.lockForConfiguration()
+            let newZoomScale = min(maxZoomScale, max(Float(1.0), min(currentZoomScale, Float(device.activeFormat.videoMaxZoomFactor))))
+            device.videoZoomFactor = CGFloat(newZoomScale)
+            device.unlockForConfiguration()
+        } catch {
+            device.unlockForConfiguration()
+        }
     }
 }
 

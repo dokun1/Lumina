@@ -68,19 +68,23 @@ public enum CameraPosition {
 }
 
 /// The resolution to set the camera to at any time - refer to AVCaptureSession.Preset definitions for matching, closest as of iOS 11
-public enum CameraResolution {
-    case low352x288
-    case vga640x480
-    case medium1280x720
-    case high1920x1080
-    case ultra3840x2160
-    case iframe1280x720
-    case iframe960x540
-    case photo
-    case lowest
-    case medium
-    case highest
-    case inputPriority
+public enum CameraResolution: String {
+    case low352x288 = "Low 352x288"
+    case vga640x480 = "VGA 640x480"
+    case medium1280x720 = "Medium 1280x720"
+    case high1920x1080 = "HD 1920x1080"
+    case ultra3840x2160 = "4K 3840x2160"
+    case iframe1280x720 = "iFrame 1280x720"
+    case iframe960x540 = "iFrame 960x540"
+    case photo = "Photo"
+    case lowest = "Lowest"
+    case medium = "Medium"
+    case highest = "Highest"
+    case inputPriority = "Input Priority"
+    
+    public static func all() -> [CameraResolution] {
+        return [CameraResolution.low352x288, CameraResolution.vga640x480, CameraResolution.medium1280x720, CameraResolution.high1920x1080, CameraResolution.ultra3840x2160, CameraResolution.iframe1280x720, CameraResolution.iframe960x540, CameraResolution.photo, CameraResolution.lowest, CameraResolution.medium, CameraResolution.highest, CameraResolution.inputPriority]
+    }
     
     func foundationPreset() -> AVCaptureSession.Preset {
         switch self {
@@ -156,6 +160,20 @@ public final class LuminaViewController: UIViewController {
         _previewLayer = layer
         return layer
     }
+    
+    private var _zoomRecognizer: UIPinchGestureRecognizer?
+    var zoomRecognizer: UIPinchGestureRecognizer {
+        if let currentRecognizer = _zoomRecognizer {
+            return currentRecognizer
+        }
+        let recognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGestureRecognizer(recognizer:)))
+        recognizer.delegate = self
+        self.view.addGestureRecognizer(recognizer)
+        _zoomRecognizer = recognizer
+        return recognizer
+    }
+    
+    
     
     private var _cancelButton: LuminaButton?
     var cancelButton: LuminaButton {
@@ -295,7 +313,7 @@ public final class LuminaViewController: UIViewController {
     ///
     /// - Warning: If this is set, streamFrames is over-ridden to true
     @available(iOS 11.0, *)
-    public var streamingModel: MLModel? {
+    open var streamingModel: MLModel? {
         get {
             return _streamingModel as? MLModel
         }
@@ -309,6 +327,24 @@ public final class LuminaViewController: UIViewController {
             }
         }
     }
+    
+    open var maxZoomScale: Float = MAXFLOAT {
+        didSet {
+            if let camera = camera {
+                camera.maxZoomScale = maxZoomScale
+            }
+        }
+    }
+    
+    fileprivate var currentZoomScale: Float = 1.0 {
+        didSet {
+            if let camera = self.camera {
+                camera.currentZoomScale = currentZoomScale
+            }
+        }
+    }
+    
+    fileprivate var beginZoomScale: Float = 1.0
     
     /// run this in order to create Lumina
     public init() {
@@ -399,6 +435,13 @@ public final class LuminaViewController: UIViewController {
 // MARK: User Interface Creation
 
 fileprivate extension LuminaViewController {
+    @objc func handlePinchGestureRecognizer(recognizer: UIPinchGestureRecognizer) {
+        guard self.position == .back else {
+            return
+        }
+        currentZoomScale = min(maxZoomScale, max(1.0, beginZoomScale * Float(recognizer.scale)))
+    }
+    
     func createUI() {
         self.view.layer.addSublayer(self.previewLayer)
         self.view.addSubview(self.cancelButton)
@@ -406,6 +449,7 @@ fileprivate extension LuminaViewController {
         self.view.addSubview(self.switchButton)
         self.view.addSubview(self.torchButton)
         self.view.addSubview(self.textPromptView)
+        self.view.addGestureRecognizer(self.zoomRecognizer)
         enableUI(valid: false)
     }
     
@@ -523,6 +567,17 @@ fileprivate extension LuminaViewController {
             return
         }
         camera.torchState = !camera.torchState
+    }
+}
+
+// MARK: GestureRecognizer Delegate Methods
+
+extension LuminaViewController: UIGestureRecognizerDelegate {
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer.isKind(of: UIPinchGestureRecognizer.self) {
+            beginZoomScale = currentZoomScale
+        }
+        return true
     }
 }
 
