@@ -1,10 +1,12 @@
 # Lumina
 
-[![version-badge](https://img.shields.io/cocoapods/v/Lumina.svg)](https://cocoapods.org/pods/lumina) [![license-badge](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/dokun1/Lumina/blob/master/LICENSE) [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg)](https://github.com/RichardLitt/standard-readme)
+[![version-badge](https://img.shields.io/cocoapods/v/Lumina.svg)](https://cocoapods.org/pods/lumina) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![swift-pm](https://img.shields.io/badge/SwiftPM-compatible-FC3324.svg?style=flat)](https://swift.org/package-manager/)
+ [![license-badge](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/dokun1/Lumina/blob/master/LICENSE) [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg)](https://github.com/RichardLitt/standard-readme)
 
 > A camera designed in Swift that helps take still images, detect QR/bar codes, and stream video frames for post processing.
 
-Cameras are used frequently in iOS applications, and the creation of `CoreML` and `Vision` has precipitated a rash of applications that will want to do live object detection on a camera feed.
+Cameras are used frequently in iOS applications, and the addition of `CoreML` and `Vision` to iOS 11 has precipitated a rash of applications that will want to do live object detection on a camera feed.
 
 Writing `AVFoundation` code can be fun, if not sometimes interesting. `Lumina` gives you an opportunity to skip having to write `AVFoundation` code, and gives you the tools you need to do anything you need with AV capture, streaming, etc.
 
