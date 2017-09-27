@@ -328,6 +328,9 @@ public final class LuminaViewController: UIViewController {
         }
     }
     
+    /// The maximum amout of zoom that Lumina can use
+    ///
+    /// - Note: Default value will rely on whatever the active device can handle, if this is not explicitly set
     open var maxZoomScale: Float = MAXFLOAT {
         didSet {
             if let camera = camera {
