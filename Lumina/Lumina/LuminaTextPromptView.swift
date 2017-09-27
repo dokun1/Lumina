@@ -19,12 +19,15 @@ final class LuminaTextPromptView: UIView {
         self.textLabel.backgroundColor = UIColor.clear
         self.textLabel.textColor = UIColor.white
         self.textLabel.textAlignment = .center
-        self.textLabel.font = UIFont.systemFont(ofSize: 20)
+        self.textLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         self.textLabel.numberOfLines = 3
         self.textLabel.minimumScaleFactor = 10/UIFont.labelFontSize
         self.textLabel.adjustsFontSizeToFitWidth = true
+        self.textLabel.layer.shadowOffset = CGSize(width: 0, height: 0)
+        self.textLabel.layer.shadowOpacity = 1
+        self.textLabel.layer.shadowRadius = 6
         self.addSubview(textLabel)
-        self.backgroundColor = UIColor.blue
+        self.backgroundColor = UIColor.clear
         self.alpha = 0.0
         self.layer.cornerRadius = 5.0
     }
@@ -55,13 +58,13 @@ final class LuminaTextPromptView: UIView {
     private func makeAppear() {
         DispatchQueue.main.async {
             UIView.animate(withDuration: LuminaTextPromptView.animationDuration) {
-                self.alpha = 0.65
+                self.alpha = 1
             }
         }
     }
     
     override func layoutSubviews() {
-        self.frame.size = CGSize(width: UIScreen.main.bounds.maxX - 20, height: 80)
+        self.frame.size = CGSize(width: UIScreen.main.bounds.maxX - 110, height: 80)
         self.textLabel.frame = CGRect(origin: CGPoint(x: 5, y: 5), size: CGSize(width: frame.width - 10, height: frame.height - 10))
     }
     

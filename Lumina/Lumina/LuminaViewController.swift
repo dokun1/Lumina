@@ -437,7 +437,7 @@ fileprivate extension LuminaViewController {
         }
         self.switchButton.center = CGPoint(x: self.view.frame.maxX - 25, y: self.view.frame.minY + 25)
         self.torchButton.center = CGPoint(x: self.view.frame.minX + 25, y: self.view.frame.minY + 25)
-        self.textPromptView.center = CGPoint(x: self.view.frame.midX, y: self.view.frame.minY + 95)
+        self.textPromptView.center = CGPoint(x: self.view.frame.midX, y: self.view.frame.minY + 45)
         self.textPromptView.layoutSubviews()
     }
     

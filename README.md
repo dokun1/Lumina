@@ -128,7 +128,7 @@ The sample in this repository comes with the `MobileNet` image recognition model
 camera.streamingModel = MobileNet().model
 ```
 
-You are now set up to 
+You are now set up to perform live video object recognition.
 
 ### Handling output
 
