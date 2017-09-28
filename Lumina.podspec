@@ -10,4 +10,5 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = "10.0"
   s.source   = { :git => "https://github.com/dokun1/Lumina.git", :tag => "v0.8.2" }
   s.source_files = "Lumina/Lumina/*.swift"
+  s.resource = "Lumina/Lumina/Media.xcassets"
 end
