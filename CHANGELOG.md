@@ -1,5 +1,11 @@
 # Change Log
 
+## [v0.8.4](https://github.com/dokun1/Lumina/tree/v0.8.4) (2017-10-01)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.8.3...v0.8.4)
+
+## [v0.8.3](https://github.com/dokun1/Lumina/tree/v0.8.3) (2017-09-28)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/v0.8.2...v0.8.3)
+
 ## [v0.8.2](https://github.com/dokun1/Lumina/tree/v0.8.2) (2017-09-27)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/v0.8.1...v0.8.2)
 
