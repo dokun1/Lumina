@@ -63,8 +63,6 @@ public enum CameraPosition {
     case front
     /// the back (and usually main) facing camera of the iOS device
     case back
-    /// a use case for letting Lumina decide which camera to use, and default is back
-    case unspecified
 }
 
 /// The resolution to set the camera to at any time - refer to AVCaptureSession.Preset definitions for matching, closest as of iOS 11
@@ -237,7 +235,7 @@ public final class LuminaViewController: UIViewController {
     /// The position of the camera
     ///
     /// - Note: Responds live to being set at any time, and will update automatically
-    open var position: CameraPosition = .unspecified {
+    open var position: CameraPosition = .back {
         didSet {
             guard let camera = self.camera else {
                 return

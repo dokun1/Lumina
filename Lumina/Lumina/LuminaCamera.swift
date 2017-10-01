@@ -74,7 +74,7 @@ final class LuminaCamera: NSObject {
         }
     }
     
-    var position: CameraPosition = .unspecified {
+    var position: CameraPosition = .back {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
