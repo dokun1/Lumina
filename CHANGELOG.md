@@ -81,10 +81,7 @@
 - docs: Add link to license [\#7](https://github.com/dokun1/Lumina/pull/7) ([RichardLitt](https://github.com/RichardLitt))
 
 ## [0.6.1](https://github.com/dokun1/Lumina/tree/0.6.1) (2017-09-21)
-[Full Changelog](https://github.com/dokun1/Lumina/compare/0.6.0...0.6.1)
-
-## [0.6.0](https://github.com/dokun1/Lumina/tree/0.6.0) (2017-09-21)
-[Full Changelog](https://github.com/dokun1/Lumina/compare/0.6...0.6.0)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.6...0.6.1)
 
 ## [0.6](https://github.com/dokun1/Lumina/tree/0.6) (2017-09-21)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.5.1...0.6)
