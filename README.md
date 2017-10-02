@@ -10,7 +10,7 @@
 		<img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage Compatible">
 	</a>
 	<a href="https://swift.org/package-manager/">
-		<img src="https://img.shields.io/badge/SwiftPM-compatible-FC3324.svg?style=flat" alt="Swift PM Compatible">
+		<img src="https://img.shields.io/badge/SwiftPM-futureReady-FC3324.svg?style=flat" alt="Swift PM Compatible">
 	</a>
 	<a href="https://swift.org/package-manager/">
 		<img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License">
@@ -81,6 +81,8 @@ github "dokun1/Lumina"
 ```
 
 ### Swift Package Manager
+
+#### NB: Lumina does not currently build with Swift Package Manager due to a lack of support for frameworks that require UIKit. Nonetheless, as SPM evolves, Lumina will be ready to support it!
 
 You can use [Swift Package Manager](https://swift.org/package-manager/) to install `Lumina` by adding the proper description to your `Package.swift` file:
 
