@@ -82,6 +82,8 @@ github "dokun1/Lumina"
 
 ### Swift Package Manager
 
+#### NB: Lumina does not currently build with Swift Package Manager due to a lack of support for frameworks that require UIKit. Nonetheless, as SPM evolves, Lumina will be ready to support it!
+
 You can use [Swift Package Manager](https://swift.org/package-manager/) to install `Lumina` by adding the proper description to your `Package.swift` file:
 
 ```swift
