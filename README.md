@@ -10,7 +10,7 @@
 		<img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage Compatible">
 	</a>
 	<a href="https://swift.org/package-manager/">
-		<img src="https://img.shields.io/badge/SwiftPM-compatible-FC3324.svg?style=flat" alt="Swift PM Compatible">
+		<img src="https://img.shields.io/badge/SwiftPM-futureReady-FC3324.svg?style=flat" alt="Swift PM Compatible">
 	</a>
 	<a href="https://swift.org/package-manager/">
 		<img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License">
