@@ -38,7 +38,7 @@ extension ViewController { //MARK: IBActions
     @IBAction func cameraButtonTapped() {
         let camera = LuminaViewController()
         camera.delegate = self
-//        camera.position = self.frontCameraSwitch.isOn ? .front : .back
+        camera.position = self.frontCameraSwitch.isOn ? .front : .back
         camera.streamFrames = self.trackImagesSwitch.isOn
         camera.textPrompt = self.showTextPromptViewSwitch.isOn ? "This is how to test the text prompt view" : ""
         camera.trackMetadata = self.trackMetadataSwitch.isOn
