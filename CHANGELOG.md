@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.8.5](https://github.com/dokun1/Lumina/tree/0.8.5) (2017-10-02)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.8.4...0.8.5)
+
 ## [0.8.4](https://github.com/dokun1/Lumina/tree/0.8.4) (2017-10-01)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.8.3...0.8.4)
 
@@ -78,13 +81,13 @@
 - docs: Add link to license [\#7](https://github.com/dokun1/Lumina/pull/7) ([RichardLitt](https://github.com/RichardLitt))
 
 ## [0.6.1](https://github.com/dokun1/Lumina/tree/0.6.1) (2017-09-21)
-[Full Changelog](https://github.com/dokun1/Lumina/compare/0.6...0.6.1)
-
-## [0.6](https://github.com/dokun1/Lumina/tree/0.6) (2017-09-21)
-[Full Changelog](https://github.com/dokun1/Lumina/compare/0.6.0...0.6)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.6.0...0.6.1)
 
 ## [0.6.0](https://github.com/dokun1/Lumina/tree/0.6.0) (2017-09-21)
-[Full Changelog](https://github.com/dokun1/Lumina/compare/0.5.1...0.6.0)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.6...0.6.0)
+
+## [0.6](https://github.com/dokun1/Lumina/tree/0.6) (2017-09-21)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.5.1...0.6)
 
 ## [0.5.1](https://github.com/dokun1/Lumina/tree/0.5.1) (2017-09-19)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.5...0.5.1)
