@@ -27,7 +27,7 @@ enum CameraError: Error {
 }
 
 final class LuminaCamera: NSObject {
-    var delegate: LuminaCameraDelegate! = nil
+    var delegate: LuminaCameraDelegate?
     var controller: LuminaViewController?
     
     var torchState = false {
@@ -277,10 +277,14 @@ extension LuminaCamera {
                 }
                 input.device.unlockForConfiguration()
             } else {
-                self.delegate.finishedFocus(camera: self)
+                if let delegate = self.delegate {
+                    delegate.finishedFocus(camera: self)
+                }
             }
         } catch {
-            self.delegate.finishedFocus(camera: self)
+            if let delegate = self.delegate {
+                delegate.finishedFocus(camera: self)
+            }
         }
     }
     
@@ -378,7 +382,9 @@ extension LuminaCamera: AVCapturePhotoCaptureDelegate {
         guard let image = buffer.normalizedStillImage(forCameraPosition: self.position) else {
             return
         }
-        self.delegate.stillImageCaptured(camera: self, image: image)
+        if let delegate = self.delegate {
+            delegate.stillImageCaptured(camera: self, image: image)
+        }
     }
 }
 
@@ -392,18 +398,24 @@ extension LuminaCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
         if #available(iOS 11.0, *) {
             guard let recognizer = self.recognizer as? LuminaObjectRecognizer else {
                 DispatchQueue.main.async {
-                    self.delegate.videoFrameCaptured(camera: self, frame: image)
+                    if let delegate = self.delegate {
+                        delegate.videoFrameCaptured(camera: self, frame: image)
+                    }
                 }
                 return
             }
             recognizer.recognize(from: image, completion: { predictions in
                 DispatchQueue.main.async {
-                    self.delegate.videoFrameCaptured(camera: self, frame: image, predictedObjects: predictions)
+                    if let delegate = self.delegate {
+                        delegate.videoFrameCaptured(camera: self, frame: image, predictedObjects: predictions)
+                    }
                 }
             })
         } else {
             DispatchQueue.main.async {
-                self.delegate.videoFrameCaptured(camera: self, frame: image)
+                if let delegate = self.delegate {
+                    delegate.videoFrameCaptured(camera: self, frame: image)
+                }
             }
         }
     }
@@ -459,7 +471,9 @@ extension LuminaCamera: AVCaptureMetadataOutputObjectsDelegate {
             return
         }
         DispatchQueue.main.async {
-            self.delegate.detected(camera: self, metadata: metadataObjects)
+            if let delegate = self.delegate {
+                delegate.detected(camera: self, metadata: metadataObjects)
+            }
         }
     }
 }

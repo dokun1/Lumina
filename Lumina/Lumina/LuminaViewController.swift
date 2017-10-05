@@ -166,12 +166,20 @@ public final class LuminaViewController: UIViewController {
         }
         let recognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGestureRecognizer(recognizer:)))
         recognizer.delegate = self
-        self.view.addGestureRecognizer(recognizer)
         _zoomRecognizer = recognizer
         return recognizer
     }
     
-    
+    private var _focusRecognizer: UITapGestureRecognizer?
+    var focusRecognizer: UITapGestureRecognizer {
+        if let currentRecognizer = _focusRecognizer {
+            return currentRecognizer
+        }
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGestureRecognizer(recognizer:)))
+        recognizer.delegate = self
+        _focusRecognizer = recognizer
+        return recognizer
+    }
     
     private var _cancelButton: LuminaButton?
     var cancelButton: LuminaButton {
@@ -230,7 +238,7 @@ public final class LuminaViewController: UIViewController {
     fileprivate var isUpdating = false
     
     /// The delegate for streaming output from Lumina
-    open var delegate: LuminaDelegate! = nil
+    open var delegate: LuminaDelegate?
     
     /// The position of the camera
     ///
@@ -443,6 +451,10 @@ fileprivate extension LuminaViewController {
         currentZoomScale = min(maxZoomScale, max(1.0, beginZoomScale * Float(recognizer.scale)))
     }
     
+    @objc func handleTapGestureRecognizer(recognizer: UITapGestureRecognizer) {
+        focusCamera(at: recognizer.location(in: self.view))
+    }
+    
     func createUI() {
         self.view.layer.addSublayer(self.previewLayer)
         self.view.addSubview(self.cancelButton)
@@ -451,6 +463,7 @@ fileprivate extension LuminaViewController {
         self.view.addSubview(self.torchButton)
         self.view.addSubview(self.textPromptView)
         self.view.addGestureRecognizer(self.zoomRecognizer)
+        self.view.addGestureRecognizer(self.focusRecognizer)
         enableUI(valid: false)
     }
     
@@ -532,8 +545,6 @@ extension LuminaViewController: LuminaCameraDelegate {
             delegate.detected(controller: self, metadata: metadata)
         }
     }
-    
-    
 }
 
 // MARK: UIButton Functions
@@ -585,6 +596,25 @@ extension LuminaViewController: UIGestureRecognizerDelegate {
 // MARK: Tap to Focus Methods
 
 extension LuminaViewController {
+    func focusCamera(at point: CGPoint) {
+        if self.isUpdating == true {
+            return
+        } else {
+            self.isUpdating = true
+        }
+        let focusX = point.x/UIScreen.main.bounds.size.width
+        let focusY = point.y/UIScreen.main.bounds.size.height
+        guard let camera = self.camera else {
+            return
+        }
+        camera.handleFocus(at: CGPoint(x: focusX, y: focusY))
+        showFocusView(at: point)
+        let deadlineTime = DispatchTime.now() + .seconds(1)
+        DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
+            camera.resetCameraToContinuousExposureAndFocus()
+        }
+    }
+    
     private func showFocusView(at: CGPoint) {
         let focusView: UIImageView = UIImageView(image: UIImage(named: "cameraFocus", in: Bundle(for: LuminaViewController.self), compatibleWith: nil))
         focusView.contentMode = .scaleAspectFit
@@ -602,28 +632,5 @@ extension LuminaViewController {
                 self.isUpdating = false
             })
         })
-    }
-    
-    /// override with caution
-    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if self.isUpdating == true {
-            return
-        } else {
-            self.isUpdating = true
-        }
-        for touch in touches {
-            let point = touch.location(in: touch.view)
-            let focusX = point.x/UIScreen.main.bounds.size.width
-            let focusY = point.y/UIScreen.main.bounds.size.height
-            guard let camera = self.camera else {
-                return
-            }
-            camera.handleFocus(at: CGPoint(x: focusX, y: focusY))
-            showFocusView(at: point)
-            let deadlineTime = DispatchTime.now() + .seconds(1)
-            DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-                camera.resetCameraToContinuousExposureAndFocus()
-            }
-        }
     }
 }
