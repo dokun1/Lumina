@@ -134,6 +134,7 @@
 					53B828F21EAAA09000E3A624 = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = RQ632LL2X3;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 				};
