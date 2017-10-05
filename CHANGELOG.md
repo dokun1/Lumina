@@ -1,5 +1,13 @@
 # Change Log
 
+## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
+
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.8.5...HEAD)
+
+**Merged pull requests:**
+
+- Fixed delegates, updated focus method [\#21](https://github.com/dokun1/Lumina/pull/21) ([dokun1](https://github.com/dokun1))
+
 ## [0.8.5](https://github.com/dokun1/Lumina/tree/0.8.5) (2017-10-02)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.8.4...0.8.5)
 
