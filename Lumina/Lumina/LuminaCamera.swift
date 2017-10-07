@@ -63,7 +63,7 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                update(withResult: { result in
+                update({ result in
                     if result == .success {
                         self.start()
                     } else {
@@ -78,7 +78,7 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                update(withResult: { result in
+                update({ result in
                     if result == .success {
                         self.start()
                     } else {
@@ -95,7 +95,7 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                update(withResult: { result in
+                update({ result in
                     if result == .success {
                         self.start()
                     } else {
@@ -112,7 +112,7 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                update(withResult: { result in
+                update({ result in
                     if result == .success {
                         self.start()
                     } else {
@@ -129,7 +129,7 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                update(withResult: { result in
+                update({ result in
                     if result == .success {
                         self.start()
                     } else {
@@ -221,7 +221,7 @@ final class LuminaCamera: NSObject {
         }
     }
     
-    func update(withResult completion: @escaping (_ result: CameraSetupResult) -> Void) {
+    func update(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
         self.sessionQueue.async {
             switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
             case .authorized:

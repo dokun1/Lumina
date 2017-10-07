@@ -383,7 +383,7 @@ public final class LuminaViewController: UIViewController {
         super.viewWillAppear(animated)
         createUI()
         if let camera = self.camera {
-            camera.update(withResult: { result in
+            camera.update({ result in
                 self.handleCameraSetupResult(result)
             })
         }
