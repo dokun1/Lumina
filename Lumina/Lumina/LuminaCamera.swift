@@ -16,19 +16,22 @@ protocol LuminaCameraDelegate {
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?)
     func finishedFocus(camera: LuminaCamera)
     func detected(camera: LuminaCamera, metadata: [Any])
+    func cameraSetupCompleted(camera: LuminaCamera, result: CameraSetupResult)
 }
 
-enum CameraError: Error {
-    case PermissionDenied
-    case PermissionRestricted
-    case RequiresAuthorization
-    case Other(reason: String)
-    case InvalidDevice
+enum CameraSetupResult: String {
+    typealias RawValue = String
+    
+    case permissionDenied = "AV Permissions Denied"
+    case permissionRestricted = "AV Permissions Restricted"
+    case requiresAuthorization = "AV Permissions Require Authorization"
+    case unknownError = "Unknown Error"
+    case invalidDevice = "Invalid AV Device"
+    case success = "Success"
 }
 
 final class LuminaCamera: NSObject {
     var delegate: LuminaCameraDelegate?
-    var controller: LuminaViewController?
     
     var torchState = false {
         didSet {
@@ -60,7 +63,13 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                try! update()
+                update({ result in
+                    if result == .success {
+                        self.start()
+                    } else {
+                        
+                    }
+                })
             }
         }
     }
@@ -69,7 +78,15 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                try! update()
+                update({ result in
+                    if result == .success {
+                        self.start()
+                    } else {
+                        if let delegate = self.delegate {
+                            delegate.cameraSetupCompleted(camera: self, result: result)
+                        }
+                    }
+                })
             }
         }
     }
@@ -78,7 +95,15 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                try! update()
+                update({ result in
+                    if result == .success {
+                        self.start()
+                    } else {
+                        if let delegate = self.delegate {
+                            delegate.cameraSetupCompleted(camera: self, result: result)
+                        }
+                    }
+                })
             }
         }
     }
@@ -87,7 +112,15 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                try! update()
+                update({ result in
+                    if result == .success {
+                        self.start()
+                    } else {
+                        if let delegate = self.delegate {
+                            delegate.cameraSetupCompleted(camera: self, result: result)
+                        }
+                    }
+                })
             }
         }
     }
@@ -96,7 +129,15 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                try! update()
+                update({ result in
+                    if result == .success {
+                        self.start()
+                    } else {
+                        if let delegate = self.delegate {
+                            delegate.cameraSetupCompleted(camera: self, result: result)
+                        }
+                    }
+                })
             }
         }
     }
@@ -125,10 +166,6 @@ final class LuminaCamera: NSObject {
         }
     }
     
-    required init(with controller: LuminaViewController) {
-        self.controller = controller
-    }
-    
     fileprivate var session = AVCaptureSession()
     fileprivate var discoverySession: AVCaptureDevice.DiscoverySession? {
         return AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera], mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
@@ -138,6 +175,7 @@ final class LuminaCamera: NSObject {
     fileprivate var videoBufferQueue = DispatchQueue(label: "com.Lumina.videoBufferQueue", attributes: .concurrent)
     fileprivate var metadataBufferQueue = DispatchQueue(label: "com.lumina.metadataBufferQueue")
     fileprivate var recognitionBufferQueue = DispatchQueue(label: "com.lumina.recognitionBufferQueue")
+    fileprivate var sessionQueue = DispatchQueue(label: "com.lumina.sessionQueue")
     fileprivate var videoOutput: AVCaptureVideoDataOutput {
         let output = AVCaptureVideoDataOutput()
         output.alwaysDiscardsLateVideoFrames = true
@@ -158,13 +196,8 @@ final class LuminaCamera: NSObject {
     }
     
     func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
-        guard let controller = self.controller else {
-            return nil
-        }
         let previewLayer = AVCaptureVideoPreviewLayer(session: self.session)
-        previewLayer.frame = controller.view.bounds
-        previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-        
+        previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill        
         return previewLayer
     }
     
@@ -188,55 +221,86 @@ final class LuminaCamera: NSObject {
         }
     }
     
-    func update() throws {
-        switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
-        case .authorized:
-            recycleDeviceIO()
-            self.torchState = false
-            self.session.sessionPreset = .high // set to high here so that device input can be added to session. resolution can be checked for update later
-            guard let input = getNewInputDevice() else {
-                throw CameraError.InvalidDevice
+    func update(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
+        self.sessionQueue.async {
+            switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
+            case .authorized:
+                self.recycleDeviceIO()
+                self.torchState = false
+                self.session.sessionPreset = .high // set to high here so that device input can be added to session. resolution can be checked for update later
+                guard let input = self.getNewInputDevice() else {
+                    completion(CameraSetupResult.invalidDevice)
+                    return
+                }
+                guard self.session.canAddInput(input) else {
+                    completion(CameraSetupResult.invalidDevice)
+                    return
+                }
+                guard self.session.canAddOutput(self.videoOutput) else {
+                    completion(CameraSetupResult.invalidDevice)
+                    return
+                }
+                guard self.session.canAddOutput(self.photoOutput) else {
+                    completion(CameraSetupResult.invalidDevice)
+                    return
+                }
+                guard self.session.canAddOutput(self.metadataOutput) else {
+                    completion(CameraSetupResult.invalidDevice)
+                    return
+                }
+                self.videoInput = input
+                self.session.addInput(input)
+                if self.streamFrames {
+                    self.session.addOutput(self.videoOutput)
+                }
+                self.session.addOutput(self.photoOutput)
+                if self.trackMetadata {
+                    self.session.addOutput(self.metadataOutput)
+                    self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
+                }
+                if self.session.canSetSessionPreset(self.resolution.foundationPreset()) {
+                    self.session.sessionPreset = self.resolution.foundationPreset()
+                }
+                self.configureFrameRate()
+                self.session.commitConfiguration()
+                completion(CameraSetupResult.success)
+                break
+            case .denied:
+                completion(CameraSetupResult.permissionDenied)
+                return
+            case .notDetermined:
+                completion(CameraSetupResult.requiresAuthorization)
+                return
+            case .restricted:
+                completion(CameraSetupResult.permissionRestricted)
+                return
             }
-            guard self.session.canAddInput(input) else {
-                throw CameraError.InvalidDevice
-            }
-            guard self.session.canAddOutput(self.videoOutput) else {
-                throw CameraError.InvalidDevice
-            }
-            guard self.session.canAddOutput(self.photoOutput) else {
-                throw CameraError.InvalidDevice
-            }
-            guard self.session.canAddOutput(self.metadataOutput) else {
-                throw CameraError.InvalidDevice
-            }
-            self.videoInput = input
-            self.session.addInput(input)
-            if self.streamFrames {
-                self.session.addOutput(self.videoOutput)
-            }
-            self.session.addOutput(self.photoOutput)
-            if self.trackMetadata {
-                self.session.addOutput(self.metadataOutput)
-                self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
-            }
-            if self.session.canSetSessionPreset(self.resolution.foundationPreset()) {
-                self.session.sessionPreset = self.resolution.foundationPreset()
-            }
-            configureFrameRate()
-            self.session.commitConfiguration()
+        }
+    }
+    
+    func start() {
+        self.sessionQueue.async {
             self.session.startRunning()
-            break
-        case .denied:
-            throw CameraError.PermissionDenied
-        case .notDetermined:
-            throw CameraError.RequiresAuthorization
-        case .restricted:
-            throw CameraError.PermissionRestricted
         }
     }
     
     func pause() {
         self.session.stopRunning()
+    }
+    
+    func requestPermissions() {
+        guard let delegate = self.delegate else {
+            return
+        }
+        self.sessionQueue.suspend()
+        AVCaptureDevice.requestAccess(for: .video) { success in
+            if success {
+                self.sessionQueue.resume()
+                delegate.cameraSetupCompleted(camera: self, result: .success)
+            } else {
+                delegate.cameraSetupCompleted(camera: self, result: .permissionDenied)
+            }
+        }
     }
 }
 
@@ -263,27 +327,29 @@ fileprivate extension LuminaCamera {
 
 extension LuminaCamera {
     func handleFocus(at focusPoint: CGPoint) {
-        guard let input = self.videoInput else {
-            return
-        }
-        do {
-            if input.device.isFocusModeSupported(.autoFocus) && input.device.isFocusPointOfInterestSupported {
-                try input.device.lockForConfiguration()
-                input.device.focusMode = .autoFocus
-                input.device.focusPointOfInterest = CGPoint(x: focusPoint.x, y: focusPoint.y)
-                if input.device.isExposureModeSupported(.autoExpose) && input.device.isExposurePointOfInterestSupported {
-                    input.device.exposureMode = .autoExpose
-                    input.device.exposurePointOfInterest = CGPoint(x: focusPoint.x, y: focusPoint.y)
+        self.sessionQueue.async {
+            guard let input = self.videoInput else {
+                return
+            }
+            do {
+                if input.device.isFocusModeSupported(.autoFocus) && input.device.isFocusPointOfInterestSupported {
+                    try input.device.lockForConfiguration()
+                    input.device.focusMode = .autoFocus
+                    input.device.focusPointOfInterest = CGPoint(x: focusPoint.x, y: focusPoint.y)
+                    if input.device.isExposureModeSupported(.autoExpose) && input.device.isExposurePointOfInterestSupported {
+                        input.device.exposureMode = .autoExpose
+                        input.device.exposurePointOfInterest = CGPoint(x: focusPoint.x, y: focusPoint.y)
+                    }
+                    input.device.unlockForConfiguration()
+                } else {
+                    if let delegate = self.delegate {
+                        delegate.finishedFocus(camera: self)
+                    }
                 }
-                input.device.unlockForConfiguration()
-            } else {
+            } catch {
                 if let delegate = self.delegate {
                     delegate.finishedFocus(camera: self)
                 }
-            }
-        } catch {
-            if let delegate = self.delegate {
-                delegate.finishedFocus(camera: self)
             }
         }
     }
@@ -375,15 +441,55 @@ private extension LuminaCamera {
 // MARK: Still Photo Capture
 
 extension LuminaCamera: AVCapturePhotoCaptureDelegate {
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
-        guard let buffer = photoSampleBuffer else {
-            return
-        }
-        guard let image = buffer.normalizedStillImage(forCameraPosition: self.position) else {
+    @available (iOS 11.0, *)
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        guard let image = photo.normalizedImage(forCameraPosition: self.position) else {
             return
         }
         if let delegate = self.delegate {
             delegate.stillImageCaptured(camera: self, image: image)
+        }
+    }
+    
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+        if #available(iOS 11.0, *) { // make use of AVCapturePhotoOut
+            return
+        } else {
+            guard let buffer = photoSampleBuffer else {
+                return
+            }
+            guard let image = buffer.normalizedStillImage(forCameraPosition: self.position) else {
+                return
+            }
+            if let delegate = self.delegate {
+                delegate.stillImageCaptured(camera: self, image: image)
+            }
+        }
+    }
+}
+
+// MARK: AVCapturePhoto Methods
+@available (iOS 11.0, *)
+extension AVCapturePhoto {
+    func normalizedImage(forCameraPosition position: CameraPosition) -> UIImage? {
+        guard let cgImage = self.cgImageRepresentation() else {
+            return nil
+        }
+        return UIImage(cgImage: cgImage.takeUnretainedValue() , scale: 1.0, orientation: getImageOrientation(forCamera: position))
+    }
+    
+    private func getImageOrientation(forCamera: CameraPosition) -> UIImageOrientation {
+        switch UIApplication.shared.statusBarOrientation {
+        case .landscapeLeft:
+            return forCamera == .back ? .down : .upMirrored
+        case .landscapeRight:
+            return forCamera == .back ? .up : .downMirrored
+        case .portraitUpsideDown:
+            return forCamera == .back ? .left : .rightMirrored
+        case .portrait:
+            return forCamera == .back ? .right : .leftMirrored
+        case .unknown:
+            return forCamera == .back ? .right : .leftMirrored
         }
     }
 }

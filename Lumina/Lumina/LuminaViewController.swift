@@ -155,6 +155,7 @@ public final class LuminaViewController: UIViewController {
         guard let camera = self.camera, let layer = camera.getPreviewLayer() else {
             return AVCaptureVideoPreviewLayer()
         }
+        layer.frame = self.view.bounds
         _previewLayer = layer
         return layer
     }
@@ -358,7 +359,7 @@ public final class LuminaViewController: UIViewController {
     /// run this in order to create Lumina
     public init() {
         super.init(nibName: nil, bundle: nil)
-        let camera = LuminaCamera(with: self)
+        let camera = LuminaCamera()
         camera.delegate = self
         self.camera = camera
     }
@@ -366,7 +367,7 @@ public final class LuminaViewController: UIViewController {
     /// run this in order to create Lumina with a storyboard
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        let camera = LuminaCamera(with: self)
+        let camera = LuminaCamera()
         camera.delegate = self
         self.camera = camera
     }
@@ -382,29 +383,9 @@ public final class LuminaViewController: UIViewController {
         super.viewWillAppear(animated)
         createUI()
         if let camera = self.camera {
-            do {
-                try camera.update()
-                enableUI(valid: true)
-            } catch CameraError.PermissionDenied {
-                self.textPrompt = "Camera permissions for Lumina have been previously denied - please access your privacy settings to change this."
-            } catch CameraError.PermissionRestricted {
-                self.textPrompt = "Camera permissions for Lumina have been restricted - please access your privacy settings to change this."
-            } catch CameraError.RequiresAuthorization {
-                AVCaptureDevice.requestAccess(for: .video, completionHandler: { success in
-                    if success {
-                        self.enableUI(valid: true)
-                        try! camera.update()
-                    } else {
-                        self.textPrompt = "Camera permissions for Lumina have been previously denied - please access your privacy settings to change this."
-                    }
-                })
-            } catch CameraError.Other(let reason){
-                self.textPrompt = reason
-            } catch CameraError.InvalidDevice {
-                self.textPrompt = "Could not load desired camera device - please try again"
-            } catch {
-                self.textPrompt = "Unknown error occurred while loading Lumina - please try again"
-            }
+            camera.update({ result in
+                self.handleCameraSetupResult(result)
+            })
         }
     }
     
@@ -452,7 +433,9 @@ fileprivate extension LuminaViewController {
     }
     
     @objc func handleTapGestureRecognizer(recognizer: UITapGestureRecognizer) {
-        focusCamera(at: recognizer.location(in: self.view))
+        if self.position == .back {
+            focusCamera(at: recognizer.location(in: self.view))
+        }
     }
     
     func createUI() {
@@ -499,6 +482,38 @@ fileprivate extension LuminaViewController {
         self.textPromptView.layoutSubviews()
     }
     
+    private func handleCameraSetupResult(_ result: CameraSetupResult) {
+        DispatchQueue.main.async {
+            switch result {
+            case .success:
+                guard let camera = self.camera else {
+                    return
+                }
+                self.enableUI(valid: true)
+                camera.start()
+                break
+            case .permissionDenied:
+                self.textPrompt = "Camera permissions for Lumina have been previously denied - please access your privacy settings to change this."
+                break
+            case .permissionRestricted:
+                self.textPrompt = "Camera permissions for Lumina have been restricted - please access your privacy settings to change this."
+                break
+            case .requiresAuthorization:
+                guard let camera = self.camera else {
+                    break
+                }
+                camera.requestPermissions()
+                break
+            case .invalidDevice:
+                self.textPrompt = "Could not load desired camera device - please try again"
+                break
+            case .unknownError:
+                self.textPrompt = "Unknown error occurred while loading Lumina - please try again"
+                break
+            }
+        }
+    }
+    
     private func necessaryVideoOrientation(for statusBarOrientation: UIInterfaceOrientation) -> AVCaptureVideoOrientation {
         switch statusBarOrientation {
         case .portrait:
@@ -525,7 +540,9 @@ extension LuminaViewController: LuminaCameraDelegate {
     }
     
     func finishedFocus(camera: LuminaCamera) {
-        self.isUpdating = false
+        DispatchQueue.main.async {
+            self.isUpdating = false
+        }
     }
     
     func stillImageCaptured(camera: LuminaCamera, image: UIImage) {
@@ -544,6 +561,10 @@ extension LuminaViewController: LuminaCameraDelegate {
         if let delegate = self.delegate {
             delegate.detected(controller: self, metadata: metadata)
         }
+    }
+    
+    func cameraSetupCompleted(camera: LuminaCamera, result: CameraSetupResult) {
+        handleCameraSetupResult(result)
     }
 }
 

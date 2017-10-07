@@ -16,11 +16,11 @@ class ViewController: UITableViewController {
     @IBOutlet weak var trackMetadataSwitch: UISwitch!
     @IBOutlet weak var showTextPromptViewSwitch: UISwitch!
     @IBOutlet weak var frameRateLabel: UILabel!
-    @IBOutlet weak var frameRateStepper: UIStepper!
+    @IBOutlet weak var frameRateSlider: UISlider!
     @IBOutlet weak var useCoreMLModelSwitch: UISwitch!
     @IBOutlet weak var resolutionLabel: UILabel!
     @IBOutlet weak var maxZoomScaleLabel: UILabel!
-    @IBOutlet weak var maxZoomScaleStepper: UIStepper!
+    @IBOutlet weak var maxZoomScaleSlider: UISlider!
     
     var selectedResolution: CameraResolution = .high1920x1080
 }
@@ -51,12 +51,12 @@ extension ViewController { //MARK: IBActions
         present(camera, animated: true, completion: nil)
     }
     
-    @IBAction func stepperValueChanged() {
-        frameRateLabel.text = String(Int(frameRateStepper.value))
+    @IBAction func frameRateSliderChanged() {
+        frameRateLabel.text = String(Int(frameRateSlider.value))
     }
     
-    @IBAction func zoomStepperChanged() {
-        maxZoomScaleLabel.text = String(maxZoomScaleStepper.value)
+    @IBAction func zoomScaleSliderChanged() {
+        maxZoomScaleLabel.text = String(format: "%.01f", maxZoomScaleSlider.value)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
