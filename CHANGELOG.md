@@ -1,8 +1,14 @@
 # Change Log
 
-## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
+## [0.9](https://github.com/dokun1/Lumina/tree/0.9) (2017-10-07)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.8.6...0.9)
 
-[Full Changelog](https://github.com/dokun1/Lumina/compare/0.8.5...HEAD)
+**Merged pull requests:**
+
+- Memory leaks fixes [\#22](https://github.com/dokun1/Lumina/pull/22) ([dokun1](https://github.com/dokun1))
+
+## [0.8.6](https://github.com/dokun1/Lumina/tree/0.8.6) (2017-10-05)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.8.5...0.8.6)
 
 **Merged pull requests:**
 
