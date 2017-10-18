@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.9.1](https://github.com/dokun1/Lumina/tree/0.9.1) (2017-10-18)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.9...0.9.1)
+
+**Merged pull requests:**
+
+- Made delegates weak[\#24](https://github.com/dokun1/Lumina/pull/24) ([dokun1](https://github.com/dokun1))
+
 ## [0.9](https://github.com/dokun1/Lumina/tree/0.9) (2017-10-07)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.8.6...0.9)
 
