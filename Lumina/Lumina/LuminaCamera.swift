@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import CoreML
 
-protocol LuminaCameraDelegate {
+protocol LuminaCameraDelegate: class {
     func stillImageCaptured(camera: LuminaCamera, image: UIImage)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?)
@@ -31,7 +31,7 @@ enum CameraSetupResult: String {
 }
 
 final class LuminaCamera: NSObject {
-    var delegate: LuminaCameraDelegate?
+    weak var delegate: LuminaCameraDelegate?
     
     var torchState = false {
         didSet {
