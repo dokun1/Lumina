@@ -11,7 +11,7 @@ import AVFoundation
 import CoreML
 
 /// Delegate for returning information to the application utilizing Lumina
-public protocol LuminaDelegate {
+public protocol LuminaDelegate: class {
     
     /// Triggered whenever a still image is captured by the user of Lumina
     ///
@@ -239,7 +239,7 @@ public final class LuminaViewController: UIViewController {
     fileprivate var isUpdating = false
     
     /// The delegate for streaming output from Lumina
-    open var delegate: LuminaDelegate?
+    weak open var delegate: LuminaDelegate?
     
     /// The position of the camera
     ///
