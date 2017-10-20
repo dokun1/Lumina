@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5332084E1F9A99CA008354F7 /* LuminaDeviceUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5332084D1F9A99CA008354F7 /* LuminaDeviceUtil.swift */; };
 		5365BFD61F79941900B8F338 /* LuminaObjectRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD51F79941900B8F338 /* LuminaObjectRecognizer.swift */; };
 		53806FA41F6618230009A0E8 /* LuminaCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53806FA31F6618230009A0E8 /* LuminaCamera.swift */; };
 		53806FA61F672F780009A0E8 /* LuminaButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53806FA51F672F780009A0E8 /* LuminaButton.swift */; };
@@ -31,6 +32,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5332084D1F9A99CA008354F7 /* LuminaDeviceUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaDeviceUtil.swift; sourceTree = "<group>"; };
 		5365BFD51F79941900B8F338 /* LuminaObjectRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaObjectRecognizer.swift; sourceTree = "<group>"; };
 		53806FA31F6618230009A0E8 /* LuminaCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaCamera.swift; sourceTree = "<group>"; };
 		53806FA51F672F780009A0E8 /* LuminaButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaButton.swift; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 				53B9CCFC1EBFD22E008E4A43 /* LuminaTextPromptView.swift */,
 				53883FD01EC4DE5B00D1DE40 /* LuminaMetadataBorderView.swift */,
 				53806FA51F672F780009A0E8 /* LuminaButton.swift */,
+				5332084D1F9A99CA008354F7 /* LuminaDeviceUtil.swift */,
 				53B9CCFA1EBF6C62008E4A43 /* Media.xcassets */,
 			);
 			path = Lumina;
@@ -239,6 +242,7 @@
 				53806FA61F672F780009A0E8 /* LuminaButton.swift in Sources */,
 				53B9CCFD1EBFD22E008E4A43 /* LuminaTextPromptView.swift in Sources */,
 				5365BFD61F79941900B8F338 /* LuminaObjectRecognizer.swift in Sources */,
+				5332084E1F9A99CA008354F7 /* LuminaDeviceUtil.swift in Sources */,
 				53883FD11EC4DE5B00D1DE40 /* LuminaMetadataBorderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

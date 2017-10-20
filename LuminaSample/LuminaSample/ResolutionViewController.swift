@@ -9,18 +9,12 @@
 import UIKit
 import Lumina
 
-protocol ResolutionDelegate {
+protocol ResolutionDelegate: class {
     func didSelect(resolution: CameraResolution, controller: ResolutionViewController)
 }
 
 class ResolutionViewController: UITableViewController {
-
-    var delegate: ResolutionDelegate?
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-    }
+    weak var delegate: ResolutionDelegate?
 
     // MARK: - Table view data source
 
@@ -43,8 +37,6 @@ class ResolutionViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedResolution = CameraResolution.all()[indexPath.row]
-        if let delegate = self.delegate {
-            delegate.didSelect(resolution: selectedResolution, controller: self)
-        }
+        delegate?.didSelect(resolution: selectedResolution, controller: self)
     }
 }

@@ -14,6 +14,7 @@ protocol LuminaCameraDelegate: class {
     func stillImageCaptured(camera: LuminaCamera, image: UIImage)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?)
+    func videoRecordingCaptured(camera: LuminaCamera, videoURL: URL)
     func finishedFocus(camera: LuminaCamera)
     func detected(camera: LuminaCamera, metadata: [Any])
     func cameraSetupCompleted(camera: LuminaCamera, result: CameraSetupResult)
@@ -22,12 +23,19 @@ protocol LuminaCameraDelegate: class {
 enum CameraSetupResult: String {
     typealias RawValue = String
     
-    case permissionDenied = "AV Permissions Denied"
-    case permissionRestricted = "AV Permissions Restricted"
-    case requiresAuthorization = "AV Permissions Require Authorization"
+    case videoPermissionDenied = "Video Permissions Denied"
+    case videoPermissionRestricted = "Video Permissions Restricted"
+    case videoRequiresAuthorization = "Video Permissions Require Authorization"
+    case audioPermissionDenied = "Audio Permissions Denied"
+    case audioPermissionRestricted = "Audio Permissions Restricted"
+    case audioRequiresAuthorization = "Audio Permissions Require Authorization"
     case unknownError = "Unknown Error"
-    case invalidDevice = "Invalid AV Device"
-    case success = "Success"
+    case invalidVideoDevice = "Invalid Video Device"
+    case invalidAudioDevice = "Invalid Audio Device"
+    case requiresUpdate = "Requires AV Update"
+    case videoSuccess = "Video Setup Success"
+    case audioSuccess = "Audio Setup Success"
+    
 }
 
 final class LuminaCamera: NSObject {
@@ -63,7 +71,7 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                update({ result in
+                updateVideo({ result in
                     if result == .success {
                         self.start()
                     } else {
@@ -78,30 +86,28 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                update({ result in
+                updateVideo({ result in
                     if result == .success {
                         self.start()
                     } else {
-                        if let delegate = self.delegate {
-                            delegate.cameraSetupCompleted(camera: self, result: result)
-                        }
+                        self.delegate?.cameraSetupCompleted(camera: self, result: result)
                     }
                 })
             }
         }
     }
     
+    private(set) var recordingVideo: Bool = false
+    
     var position: CameraPosition = .back {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                update({ result in
+                updateVideo({ result in
                     if result == .success {
                         self.start()
                     } else {
-                        if let delegate = self.delegate {
-                            delegate.cameraSetupCompleted(camera: self, result: result)
-                        }
+                        self.delegate?.cameraSetupCompleted(camera: self, result: result)
                     }
                 })
             }
@@ -112,13 +118,11 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                update({ result in
+                updateVideo({ result in
                     if result == .success {
                         self.start()
                     } else {
-                        if let delegate = self.delegate {
-                            delegate.cameraSetupCompleted(camera: self, result: result)
-                        }
+                        self.delegate?.cameraSetupCompleted(camera: self, result: result)
                     }
                 })
             }
@@ -129,13 +133,11 @@ final class LuminaCamera: NSObject {
         didSet {
             if self.session.isRunning {
                 self.session.stopRunning()
-                update({ result in
+                updateVideo({ result in
                     if result == .success {
                         self.start()
                     } else {
-                        if let delegate = self.delegate {
-                            delegate.cameraSetupCompleted(camera: self, result: result)
-                        }
+                        self.delegate?.cameraSetupCompleted(camera: self, result: result)
                     }
                 })
             }
@@ -171,6 +173,7 @@ final class LuminaCamera: NSObject {
         return AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera], mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
     }
     fileprivate var videoInput: AVCaptureDeviceInput?
+    fileprivate var audioInput: AVCaptureDeviceInput?
     fileprivate var currentCaptureDevice: AVCaptureDevice?
     fileprivate var videoBufferQueue = DispatchQueue(label: "com.Lumina.videoBufferQueue", attributes: .concurrent)
     fileprivate var metadataBufferQueue = DispatchQueue(label: "com.lumina.metadataBufferQueue")
@@ -195,6 +198,16 @@ final class LuminaCamera: NSObject {
         return output
     }
     
+    private var _videoFileOutput: AVCaptureMovieFileOutput?
+    fileprivate var videoFileOutput: AVCaptureMovieFileOutput {
+        if let existingOutput = _videoFileOutput {
+            return existingOutput
+        }
+        let output = AVCaptureMovieFileOutput()
+        _videoFileOutput = output
+        return output
+    }
+    
     func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
         let previewLayer = AVCaptureVideoPreviewLayer(session: self.session)
         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill        
@@ -206,6 +219,25 @@ final class LuminaCamera: NSObject {
         settings.isAutoStillImageStabilizationEnabled = true
         settings.flashMode = self.torchState ? .on : .off
         self.photoOutput.capturePhoto(with: settings, delegate: self)
+    }
+    
+    func startVideoRecording() {
+        recordingVideo = true
+        sessionQueue.async {
+            if let connection = self.videoFileOutput.connection(with: AVMediaType.video), let videoConnection = self.videoOutput.connection(with: AVMediaType.video) {
+                connection.videoOrientation = videoConnection.videoOrientation
+                connection.isVideoMirrored = self.position == .front ? true : false
+            }
+            let fileName = NSTemporaryDirectory().appending(Date().iso8601 + ".mov")
+            self.videoFileOutput.startRecording(to: URL(fileURLWithPath: fileName), recordingDelegate: self)
+        }
+    }
+    
+    func stopVideoRecording() {
+        recordingVideo = false
+        sessionQueue.async {
+            self.videoFileOutput.stopRecording()
+        }
     }
     
     func updateOutputVideoOrientation(_ orientation: AVCaptureVideoOrientation) {
@@ -221,58 +253,94 @@ final class LuminaCamera: NSObject {
         }
     }
     
-    func update(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
+    func updateAudio(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
+        self.sessionQueue.async {
+            switch AVCaptureDevice.authorizationStatus(for: AVMediaType.audio) {
+            case .authorized:
+                guard let audioInput = self.getNewAudioInputDevice() else {
+                    completion(CameraSetupResult.invalidAudioDevice)
+                    return
+                }
+                guard self.session.canAddInput(audioInput) else {
+                    completion(CameraSetupResult.invalidAudioDevice)
+                    return
+                }
+                self.audioInput = audioInput
+                self.session.addInput(audioInput)
+                completion(CameraSetupResult.audioSuccess)
+                return
+            case .denied:
+                completion(CameraSetupResult.audioPermissionDenied)
+                return
+            case .notDetermined:
+                completion(CameraSetupResult.audioRequiresAuthorization)
+                return
+            case .restricted:
+                completion(CameraSetupResult.audioPermissionRestricted)
+                return
+            }
+        }
+    }
+    
+    func updateVideo(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
+        self.recycleDeviceIO()
         self.sessionQueue.async {
             switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
             case .authorized:
-                self.recycleDeviceIO()
                 self.torchState = false
                 self.session.sessionPreset = .high // set to high here so that device input can be added to session. resolution can be checked for update later
-                guard let input = self.getNewInputDevice() else {
-                    completion(CameraSetupResult.invalidDevice)
+                guard let videoInput = self.getNewVideoInputDevice() else {
+                    completion(CameraSetupResult.invalidVideoDevice)
                     return
                 }
-                guard self.session.canAddInput(input) else {
-                    completion(CameraSetupResult.invalidDevice)
+                
+                guard self.session.canAddInput(videoInput) else {
+                    completion(CameraSetupResult.invalidVideoDevice)
                     return
                 }
+                
                 guard self.session.canAddOutput(self.videoOutput) else {
-                    completion(CameraSetupResult.invalidDevice)
+                    completion(CameraSetupResult.invalidVideoDevice)
                     return
                 }
                 guard self.session.canAddOutput(self.photoOutput) else {
-                    completion(CameraSetupResult.invalidDevice)
+                    completion(CameraSetupResult.invalidVideoDevice)
                     return
                 }
                 guard self.session.canAddOutput(self.metadataOutput) else {
-                    completion(CameraSetupResult.invalidDevice)
+                    completion(CameraSetupResult.invalidVideoDevice)
                     return
                 }
-                self.videoInput = input
-                self.session.addInput(input)
+                guard self.session.canAddOutput(self.videoFileOutput) else {
+                    completion(CameraSetupResult.invalidVideoDevice)
+                    return
+                }
+                self.videoInput = videoInput
+                self.session.addInput(videoInput)
                 if self.streamFrames {
                     self.session.addOutput(self.videoOutput)
                 }
                 self.session.addOutput(self.photoOutput)
+                self.session.addOutput(self.videoFileOutput)
                 if self.trackMetadata {
                     self.session.addOutput(self.metadataOutput)
                     self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
                 }
+                
                 if self.session.canSetSessionPreset(self.resolution.foundationPreset()) {
                     self.session.sessionPreset = self.resolution.foundationPreset()
                 }
                 self.configureFrameRate()
                 self.session.commitConfiguration()
-                completion(CameraSetupResult.success)
                 break
             case .denied:
-                completion(CameraSetupResult.permissionDenied)
+                completion(CameraSetupResult.videoPermissionDenied)
                 return
             case .notDetermined:
-                completion(CameraSetupResult.requiresAuthorization)
+                completion(CameraSetupResult.videoRequiresAuthorization)
                 return
             case .restricted:
-                completion(CameraSetupResult.permissionRestricted)
+                completion(CameraSetupResult.videoPermissionRestricted)
                 return
             }
         }
@@ -288,7 +356,7 @@ final class LuminaCamera: NSObject {
         self.session.stopRunning()
     }
     
-    func requestPermissions() {
+    func requestVideoPermissions() {
         guard let delegate = self.delegate else {
             return
         }
@@ -296,9 +364,24 @@ final class LuminaCamera: NSObject {
         AVCaptureDevice.requestAccess(for: .video) { success in
             if success {
                 self.sessionQueue.resume()
-                delegate.cameraSetupCompleted(camera: self, result: .success)
+                delegate.cameraSetupCompleted(camera: self, result: .requiresUpdate)
             } else {
-                delegate.cameraSetupCompleted(camera: self, result: .permissionDenied)
+                delegate.cameraSetupCompleted(camera: self, result: .videoPermissionDenied)
+            }
+        }
+    }
+    
+    func requestAudioPermissions() {
+        guard let delegate = self.delegate else {
+            return
+        }
+        self.sessionQueue.suspend()
+        AVCaptureDevice.requestAccess(for: AVMediaType.audio) { success in
+            if success {
+                self.sessionQueue.resume()
+                delegate.cameraSetupCompleted(camera: self, result: .requiresUpdate)
+            } else {
+                delegate.cameraSetupCompleted(camera: self, result: .audioPermissionDenied)
             }
         }
     }
@@ -342,14 +425,10 @@ extension LuminaCamera {
                     }
                     input.device.unlockForConfiguration()
                 } else {
-                    if let delegate = self.delegate {
-                        delegate.finishedFocus(camera: self)
-                    }
+                    self.delegate?.finishedFocus(camera: self)
                 }
             } catch {
-                if let delegate = self.delegate {
-                    delegate.finishedFocus(camera: self)
-                }
+                self.delegate?.finishedFocus(camera: self)
             }
         }
     }
@@ -377,7 +456,7 @@ extension LuminaCamera {
 // MARK: CaptureDevice Handling
 
 private extension LuminaCamera {
-    func getNewInputDevice() -> AVCaptureDeviceInput? {
+    func getNewVideoInputDevice() -> AVCaptureDeviceInput? {
         do {
             guard let device = getDevice(with: self.position == .front ? AVCaptureDevice.Position.front : AVCaptureDevice.Position.back) else {
                 print("could not find valid AVCaptureDevice")
@@ -390,9 +469,21 @@ private extension LuminaCamera {
         }
     }
     
+    func getNewAudioInputDevice() -> AVCaptureDeviceInput? {
+        do {
+            guard let device = AVCaptureDevice.default(for: AVMediaType.audio) else {
+                return nil
+            }
+            let deviceInput = try AVCaptureDeviceInput(device: device)
+            return deviceInput
+        } catch {
+            return nil
+        }
+    }
+    
     func recycleDeviceIO() {
         for oldInput in self.session.inputs {
-            self.session.removeInput(oldInput)
+            self.session.removeInput(oldInput) // TODO: check if type is video, and remove then
         }
         for oldOutput in self.session.outputs {
             self.session.removeOutput(oldOutput)
@@ -446,9 +537,7 @@ extension LuminaCamera: AVCapturePhotoCaptureDelegate {
         guard let image = photo.normalizedImage(forCameraPosition: self.position) else {
             return
         }
-        if let delegate = self.delegate {
-            delegate.stillImageCaptured(camera: self, image: image)
-        }
+        delegate?.stillImageCaptured(camera: self, image: image)
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
@@ -461,9 +550,7 @@ extension LuminaCamera: AVCapturePhotoCaptureDelegate {
             guard let image = buffer.normalizedStillImage(forCameraPosition: self.position) else {
                 return
             }
-            if let delegate = self.delegate {
-                delegate.stillImageCaptured(camera: self, image: image)
-            }
+            delegate?.stillImageCaptured(camera: self, image: image)
         }
     }
 }
@@ -504,24 +591,18 @@ extension LuminaCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
         if #available(iOS 11.0, *) {
             guard let recognizer = self.recognizer as? LuminaObjectRecognizer else {
                 DispatchQueue.main.async {
-                    if let delegate = self.delegate {
-                        delegate.videoFrameCaptured(camera: self, frame: image)
-                    }
+                    self.delegate?.videoFrameCaptured(camera: self, frame: image)
                 }
                 return
             }
             recognizer.recognize(from: image, completion: { predictions in
                 DispatchQueue.main.async {
-                    if let delegate = self.delegate {
-                        delegate.videoFrameCaptured(camera: self, frame: image, predictedObjects: predictions)
-                    }
+                    self.delegate?.videoFrameCaptured(camera: self, frame: image, predictedObjects: predictions)
                 }
             })
         } else {
             DispatchQueue.main.async {
-                if let delegate = self.delegate {
-                    delegate.videoFrameCaptured(camera: self, frame: image)
-                }
+                self.delegate?.videoFrameCaptured(camera: self, frame: image)
             }
         }
     }
@@ -577,9 +658,33 @@ extension LuminaCamera: AVCaptureMetadataOutputObjectsDelegate {
             return
         }
         DispatchQueue.main.async {
-            if let delegate = self.delegate {
-                delegate.detected(camera: self, metadata: metadataObjects)
+            self.delegate?.detected(camera: self, metadata: metadataObjects)
+        }
+    }
+}
+
+extension LuminaCamera: AVCaptureFileOutputRecordingDelegate {
+    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+        DispatchQueue.main.async {
+            if error == nil, let delegate = self.delegate {
+                delegate.videoRecordingCaptured(camera: self, videoURL: outputFileURL)
             }
         }
+    }
+}
+
+extension Formatter {
+    static let iso8601: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .iso8601)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
+        return formatter
+    }()
+}
+extension Date {
+    var iso8601: String {
+        return Formatter.iso8601.string(from: self)
     }
 }

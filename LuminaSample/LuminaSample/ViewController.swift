@@ -9,6 +9,7 @@
 import UIKit
 import Lumina
 import CoreML
+import AVKit
 
 class ViewController: UITableViewController {
     @IBOutlet weak var frontCameraSwitch: UISwitch!
@@ -71,7 +72,24 @@ extension ViewController { //MARK: IBActions
 }
 
 extension ViewController: LuminaDelegate {
-    func detected(controller: LuminaViewController, videoFrame: UIImage, predictions: [LuminaPrediction]?) {
+    func captured(stillImage: UIImage, from controller: LuminaViewController) {
+        controller.dismiss(animated: true) {
+            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: stillImage)
+        }
+    }
+    
+    func captured(videoAtURL: URL, from controller: LuminaViewController) {
+        controller.dismiss(animated: true) {
+            let player = AVPlayer(url: videoAtURL)
+            let playerViewController = AVPlayerViewController()
+            playerViewController.player = player
+            self.present(playerViewController, animated: true) {
+                playerViewController.player?.play()
+            }
+        }
+    }
+    
+    func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController) {
         guard let predicted = predictions else {
             return
         }
@@ -81,21 +99,15 @@ extension ViewController: LuminaDelegate {
         controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%"
     }
     
-    func detected(controller: LuminaViewController, stillImage: UIImage) {
-        controller.dismiss(animated: true) {
-            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: stillImage)
-        }
-    }
-    
-    func detected(controller: LuminaViewController, videoFrame: UIImage) {
-        print("video frame received")
-    }
-    
-    func detected(controller: LuminaViewController, metadata: [Any]) {
+    func detected(metadata: [Any], from controller: LuminaViewController) {
         print(metadata)
     }
     
-    func cancelled(controller: LuminaViewController) {
+    func streamed(videoFrame: UIImage, from controller: LuminaViewController) {
+        print("video frame received")
+    }
+    
+    func dismissed(controller: LuminaViewController) {
         controller.dismiss(animated: true, completion: nil)
     }
 }

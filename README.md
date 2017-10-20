@@ -25,13 +25,14 @@
 
 ----------------
 
-Cameras are used frequently in iOS applications, and the addition of `CoreML` and `Vision` to iOS 11 has precipitated a rash of applications that will want to do live object detection on a camera feed.
+Cameras are used frequently in iOS applications, and the addition of `CoreML` and `Vision` to iOS 11 has precipitated a rash of applications that perform live object recognition from images - whether from a still image or via a camera feed.
 
-Writing `AVFoundation` code can be fun, if not sometimes interesting. `Lumina` gives you an opportunity to skip having to write `AVFoundation` code, and gives you the tools you need to do anything you need with AV capture, streaming, etc.
+Writing `AVFoundation` code can be fun, if not sometimes interesting. `Lumina` gives you an opportunity to skip having to write `AVFoundation` code, and gives you the tools you need to do anything you need with a camera you've already built.
 
 Lumina can:
 
 - capture still images
+- capture videos
 - stream video frames to a delegate
 - scan any QR or barcode and output its metadata
 - detect the presence of a face and its location
@@ -141,7 +142,7 @@ camera.streamFrames = true // could also be false
 camera.textPrompt = "This is how to test the text prompt view" // assigning an empty string will make the view fade away
 camera.trackMetadata = true // could also be false
 camera.resolution = .highest // follows an enum
-camera.frameRate = 60 // can be any number, defaults to 30 on failure
+camera.frameRate = 60 // can be any number, defaults to 30 if selection cannot be loaded
 camera.maxZoomRate = 5.0 // not setting this defaults to the highest zoom rate for any given camera device
 ```
 
@@ -172,7 +173,7 @@ Because the functionality of the camera can be updated at runtime, all delegate 
 To handle the `Cancel` button being pushed, which is likely used to dismiss the camera in most use cases, implement:
 
 ```swift
-func cancelled(controller: LuminaViewController) {
+func dismissed(controller: LuminaViewController) {
     // here you can call controller.dismiss(animated: true, completion:nil)
 }
 ```
@@ -180,15 +181,23 @@ func cancelled(controller: LuminaViewController) {
 To handle a still image being captured with the photo shutter button, implement:
 
 ```swift
-func detected(controller: LuminaViewController, stillImage: UIImage) {
+func captured(stillImage: UIImage, from controller: LuminaViewController) {
     // here you can take the image called stillImage and handle it however you'd like
+}
+```
+
+To handle a video being captured with the photo shutter button being held down, implement:
+
+```swift
+func captured(videoAtURL: URL, from controller: LuminaViewController) {
+    // here you can load the video file from the URL, which is located in NSTemporaryDirectory()
 }
 ```
 
 To handle a video frame being streamed from the camera, implement:
 
 ```swift
-func detected(controller: LuminaViewController, videoFrame: UIImage) {
+func streamed(videoFrame: UIImage, from controller: LuminaViewController) {
     // here you can take the image called videoFrame and handle it however you'd like
 }
 ```
@@ -196,7 +205,7 @@ func detected(controller: LuminaViewController, videoFrame: UIImage) {
 To handle metadata being detected and streamed from the camera, implement: 
 
 ```swift
-func detected(controller: LuminaViewController, metadata: [Any]) {
+func detected(metadata: [Any], from controller: LuminaViewController) {
     // here you can take the metadata and handle it however you'd like
     // you must find the right kind of data to downcast from, whether it is of a barcode, qr code, or face detection
 }
@@ -205,7 +214,7 @@ func detected(controller: LuminaViewController, metadata: [Any]) {
 To handle a `CoreML` model and its predictions being streamed with each video frame, implement:
 
 ```swift
-func detected(controller: LuminaViewController, videoFrame: UIImage, predictions: [LuminaPrediction]?) {
+func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController) {
     guard let predicted = predictions else {
         return
     }
