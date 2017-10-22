@@ -32,7 +32,7 @@ final class LuminaTextPromptView: UIView {
         self.layer.cornerRadius = 5.0
     }
     
-    public func updateText(to text:String) {
+    func updateText(to text:String) {
         DispatchQueue.main.async {
             if text.isEmpty {
                 self.hide(andErase: true)
@@ -43,7 +43,7 @@ final class LuminaTextPromptView: UIView {
         }
     }
     
-    public func hide(andErase: Bool) {
+    func hide(andErase: Bool) {
         DispatchQueue.main.async {
             UIView.animate(withDuration: LuminaTextPromptView.animationDuration, animations: {
                 self.alpha = 0.0

@@ -16,27 +16,34 @@ public protocol LuminaDelegate: class {
     /// Triggered whenever a still image is captured by the user of Lumina
     ///
     /// - Parameters:
-    ///   - controller: the instance of Lumina that captured the still image
     ///   - stillImage: the image captured by Lumina
-    func detected(controller: LuminaViewController, stillImage: UIImage)
+    ///   - controller: the instance of Lumina that captured the still image
+    func captured(stillImage: UIImage, from controller: LuminaViewController)
+    
+    /// Triggered whenever a video is captured by the user of Lumina
+    ///
+    /// - Parameters:
+    ///   - videoAtURL: the URL where the video file can be located and used
+    ///   - controller: the instance of Lumina that captured the still image
+    func captured(videoAtURL: URL, from controller: LuminaViewController)
     
     /// Triggered whenever streamFrames is set to true on Lumina, and streams video frames as UIImage instances
     ///
     /// - Note: Will not be triggered unless streamFrames is true. False is default value
     /// - Parameters:
-    ///   - controller: the instance of Lumina that is streaming the frames
     ///   - videoFrame: the frame captured by Lumina
-    func detected(controller: LuminaViewController, videoFrame: UIImage)
+    ///   - controller: the instance of Lumina that is streaming the frames
+    func streamed(videoFrame: UIImage, from controller: LuminaViewController)
     
     /// Triggered whenever a CoreML model is given to Lumina, and Lumina streams a video frame alongside a prediction
     ///
     /// - Note: Will not be triggered unless streamingModel resolves to not nil. Leaving the streamingModel parameter unset will not trigger this method
     /// - Warning: The other method for passing video frames back via a delegate will not be triggered in the presence of a CoreML model
     /// - Parameters:
-    ///   - controller: the instance of Lumina that is streaming the frames
     ///   - videoFrame: the frame captured by Lumina
     ///   - predictions: the predictions made by the model used with Lumina
-    func detected(controller: LuminaViewController, videoFrame: UIImage, predictions: [LuminaPrediction]?)
+    ///   - controller: the instance of Lumina that is streaming the frames
+    func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController)
     
     /// Triggered whenever trackMetadata is set to true on Lumina, and streams metadata detected in the form of QR codes, bar codes, or faces
     ///
@@ -45,16 +52,27 @@ public protocol LuminaDelegate: class {
     /// - Warning: Objects returned in array must be casted to AVMetadataObject or AVMetadataFaceObject individually.
     ///
     /// - Parameters:
-    ///   - controller: the instance of Lumina that is streaming the metadata
     ///   - metadata: the array of metadata that is captured.
-    func detected(controller: LuminaViewController, metadata: [Any])
+    ///   - controller: the instance of Lumina that is streaming the metadata
+    func detected(metadata: [Any], from controller: LuminaViewController)
     
-    /// Triggered whenever the cancel button is tapped on Lumina.
+    /// Triggered whenever the cancel button is tapped on Lumina, with the intent of dismissing the UIViewController
     ///
     /// - Note: This is most usually used whenever
     ///
     /// - Parameter controller: the instance of Lumina that cancel was tapped on
-    func cancelled(controller: LuminaViewController)
+    func dismissed(controller: LuminaViewController)
+}
+
+// MARK: Extension to make delegate functions optional
+
+public extension LuminaDelegate {
+    func captured(stillImage: UIImage, from controller: LuminaViewController) {}
+    func captured(videoAtURL: URL, from controller: LuminaViewController) {}
+    func streamed(videoFrame: UIImage, from controller: LuminaViewController) {}
+    func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController) {}
+    func detected(metadata: [Any], from controller: LuminaViewController) {}
+    func dismissed(controller: LuminaViewController) {}
 }
 
 /// The position of the camera that is active on Lumina
@@ -182,6 +200,16 @@ public final class LuminaViewController: UIViewController {
         return recognizer
     }
     
+    private var _feedbackGenerator: LuminaHapticFeedbackGenerator?
+    var feedbackGenerator: LuminaHapticFeedbackGenerator {
+        if let currentGenerator = _feedbackGenerator {
+            return currentGenerator
+        }
+        let generator = LuminaHapticFeedbackGenerator()
+        _feedbackGenerator = generator
+        return generator
+    }
+    
     private var _cancelButton: LuminaButton?
     var cancelButton: LuminaButton {
         if let currentButton = _cancelButton {
@@ -199,7 +227,8 @@ public final class LuminaViewController: UIViewController {
             return currentButton
         }
         let button = LuminaButton(with: SystemButtonType.shutter)
-        button.addTarget(self, action: #selector(shutterButtonTapped), for: .touchUpInside)
+        button.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(shutterButtonTapped)))
+        button.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(shutterButtonLongPressed)))
         _shutterButton = button
         return button
     }
@@ -250,6 +279,19 @@ public final class LuminaViewController: UIViewController {
                 return
             }
             camera.position = position
+        }
+    }
+    
+    /// Set this to choose whether or not Lumina will be able to record video by holding down the capture button
+    ///
+    /// - Note: Responds live to being set at any time, and will update automatically
+    ///
+    /// - Warning: This setting takes precedence over video data streaming - if this is turned on, frames cannot be streamed, nor can CoreML be used via Lumina's recognizer mechanism. 
+    open var recordsVideo = false {
+        didSet {
+            if let camera = self.camera {
+                camera.recordsVideo = recordsVideo
+            }
         }
     }
     
@@ -383,10 +425,20 @@ public final class LuminaViewController: UIViewController {
         super.viewWillAppear(animated)
         createUI()
         if let camera = self.camera {
-            camera.update({ result in
+            camera.updateVideo({ result in
+                self.handleCameraSetupResult(result)
+            })
+            camera.updateAudio({ result in
                 self.handleCameraSetupResult(result)
             })
         }
+    }
+    
+    public override var shouldAutorotate: Bool {
+        guard let camera = self.camera else {
+            return true
+        }
+        return !camera.recordingVideo
     }
     
     /// override with caution
@@ -400,6 +452,9 @@ public final class LuminaViewController: UIViewController {
     /// override with caution
     public override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        if self.camera?.recordingVideo == true {
+            return
+        }
         updateUI(orientation: UIApplication.shared.statusBarOrientation)
         updateButtonFrames()
     }
@@ -485,27 +540,55 @@ fileprivate extension LuminaViewController {
     private func handleCameraSetupResult(_ result: CameraSetupResult) {
         DispatchQueue.main.async {
             switch result {
-            case .success:
+            case .videoSuccess:
                 guard let camera = self.camera else {
                     return
                 }
                 self.enableUI(valid: true)
                 camera.start()
                 break
-            case .permissionDenied:
+            case .audioSuccess:
+                break
+            case .requiresUpdate:
+                guard let camera = self.camera else {
+                    return
+                }
+                camera.updateVideo({ result in
+                    self.handleCameraSetupResult(result)
+                })
+                break
+            case .videoPermissionDenied:
                 self.textPrompt = "Camera permissions for Lumina have been previously denied - please access your privacy settings to change this."
                 break
-            case .permissionRestricted:
+            case .videoPermissionRestricted:
                 self.textPrompt = "Camera permissions for Lumina have been restricted - please access your privacy settings to change this."
                 break
-            case .requiresAuthorization:
+            case .videoRequiresAuthorization:
                 guard let camera = self.camera else {
                     break
                 }
-                camera.requestPermissions()
+                camera.requestVideoPermissions()
                 break
-            case .invalidDevice:
-                self.textPrompt = "Could not load desired camera device - please try again"
+            case .audioPermissionRestricted:
+                self.textPrompt = "Audio permissions for Lumina have been restricted - please access your privacy settings to change this."
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self.textPrompt = ""
+                }
+                break
+            case .audioRequiresAuthorization:
+                guard let camera = self.camera else {
+                    break
+                }
+                camera.requestAudioPermissions()
+                break
+            case .audioPermissionDenied:
+                self.textPrompt = "Audio permissions for Lumina have been previously denied - please access your privacy settings to change this."
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self.textPrompt = ""
+                }
+                break
+            case .invalidVideoDataOutput, .invalidVideoInput, .invalidPhotoOutput, .invalidVideoMetadataOutput, .invalidVideoFileOutput, .invalidAudioInput:
+                self.textPrompt = "\(result.rawValue) - please try again"
                 break
             case .unknownError:
                 self.textPrompt = "Unknown error occurred while loading Lumina - please try again"
@@ -533,10 +616,12 @@ fileprivate extension LuminaViewController {
 // MARK: CameraDelegate Functions
 
 extension LuminaViewController: LuminaCameraDelegate {
+    func videoRecordingCaptured(camera: LuminaCamera, videoURL: URL) {
+        delegate?.captured(videoAtURL: videoURL, from: self)
+    }
+    
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?) {
-        if let delegate = self.delegate {
-            delegate.detected(controller: self, videoFrame: frame, predictions: predictedObjects)
-        }
+        delegate?.streamed(videoFrame: frame, with: predictedObjects, from: self)
     }
     
     func finishedFocus(camera: LuminaCamera) {
@@ -546,21 +631,15 @@ extension LuminaViewController: LuminaCameraDelegate {
     }
     
     func stillImageCaptured(camera: LuminaCamera, image: UIImage) {
-        if let delegate = self.delegate {
-            delegate.detected(controller: self, stillImage: image)
-        }
+        delegate?.captured(stillImage: image, from: self)
     }
     
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage) {
-        if let delegate = self.delegate {
-            delegate.detected(controller: self, videoFrame: frame)
-        }
+        delegate?.streamed(videoFrame: frame, from: self)
     }
     
     func detected(camera: LuminaCamera, metadata: [Any]) {
-        if let delegate = self.delegate {
-            delegate.detected(controller: self, metadata: metadata)
-        }
+        delegate?.detected(metadata: metadata, from: self)
     }
     
     func cameraSetupCompleted(camera: LuminaCamera, result: CameraSetupResult) {
@@ -572,16 +651,41 @@ extension LuminaViewController: LuminaCameraDelegate {
 
 fileprivate extension LuminaViewController {
     @objc func cancelButtonTapped() {
-        if let delegate = self.delegate {
-            delegate.cancelled(controller: self)
-        }
+        delegate?.dismissed(controller: self)
     }
     
     @objc func shutterButtonTapped() {
+        shutterButton.takePhoto()
         guard let camera = self.camera else {
             return
         }
         camera.captureStillImage()
+    }
+    
+    @objc func shutterButtonLongPressed(_ sender: UILongPressGestureRecognizer) {
+        guard let camera = self.camera else {
+            return
+        }
+        switch sender.state {
+        case .began:
+            if recordsVideo && !camera.recordingVideo {
+                shutterButton.startRecordingVideo()
+                camera.startVideoRecording()
+                feedbackGenerator.startRecordingVideoFeedback()
+            }
+            break
+        case .ended:
+            if recordsVideo && camera.recordingVideo {
+                shutterButton.stopRecordingVideo()
+                camera.stopVideoRecording()
+                feedbackGenerator.endRecordingVideoFeedback()
+            } else {
+                feedbackGenerator.errorFeedback()
+            }
+            break
+        default:
+            break
+        }
     }
     
     @objc func switchButtonTapped() {

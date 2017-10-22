@@ -9,9 +9,11 @@
 import UIKit
 import Lumina
 import CoreML
+import AVKit
 
 class ViewController: UITableViewController {
     @IBOutlet weak var frontCameraSwitch: UISwitch!
+    @IBOutlet weak var recordsVideoSwitch: UISwitch!
     @IBOutlet weak var trackImagesSwitch: UISwitch!
     @IBOutlet weak var trackMetadataSwitch: UISwitch!
     @IBOutlet weak var showTextPromptViewSwitch: UISwitch!
@@ -39,6 +41,7 @@ extension ViewController { //MARK: IBActions
         let camera = LuminaViewController()
         camera.delegate = self
         camera.position = self.frontCameraSwitch.isOn ? .front : .back
+        camera.recordsVideo = self.recordsVideoSwitch.isOn
         camera.streamFrames = self.trackImagesSwitch.isOn
         camera.textPrompt = self.showTextPromptViewSwitch.isOn ? "This is how to test the text prompt view" : ""
         camera.trackMetadata = self.trackMetadataSwitch.isOn
@@ -48,7 +51,16 @@ extension ViewController { //MARK: IBActions
         if #available(iOS 11.0, *) {
             camera.streamingModel = self.useCoreMLModelSwitch.isOn ? MobileNet().model : nil
         }
-        present(camera, animated: true, completion: nil)
+        if camera.recordsVideo == true {
+            let alert = UIAlertController(title: "Warning", message: "You are loading video recording mode - streaming images and CoreML with Lumina are disabled when in this mode.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            alert.addAction(UIAlertAction(title: "Proceed", style: .default, handler: { action in
+                self.present(camera, animated: true, completion: nil)
+            }))
+            present(alert, animated: true, completion: nil)
+        } else {
+            present(camera, animated: true, completion: nil)
+        }
     }
     
     @IBAction func frameRateSliderChanged() {
@@ -71,7 +83,24 @@ extension ViewController { //MARK: IBActions
 }
 
 extension ViewController: LuminaDelegate {
-    func detected(controller: LuminaViewController, videoFrame: UIImage, predictions: [LuminaPrediction]?) {
+    func captured(stillImage: UIImage, from controller: LuminaViewController) {
+        controller.dismiss(animated: true) {
+            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: stillImage)
+        }
+    }
+    
+    func captured(videoAtURL: URL, from controller: LuminaViewController) {
+        controller.dismiss(animated: true) {
+            let player = AVPlayer(url: videoAtURL)
+            let playerViewController = AVPlayerViewController()
+            playerViewController.player = player
+            self.present(playerViewController, animated: true) {
+                playerViewController.player?.play()
+            }
+        }
+    }
+    
+    func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController) {
         guard let predicted = predictions else {
             return
         }
@@ -81,21 +110,15 @@ extension ViewController: LuminaDelegate {
         controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%"
     }
     
-    func detected(controller: LuminaViewController, stillImage: UIImage) {
-        controller.dismiss(animated: true) {
-            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: stillImage)
-        }
-    }
-    
-    func detected(controller: LuminaViewController, videoFrame: UIImage) {
-        print("video frame received")
-    }
-    
-    func detected(controller: LuminaViewController, metadata: [Any]) {
+    func detected(metadata: [Any], from controller: LuminaViewController) {
         print(metadata)
     }
     
-    func cancelled(controller: LuminaViewController) {
+    func streamed(videoFrame: UIImage, from controller: LuminaViewController) {
+        print("video frame received")
+    }
+    
+    func dismissed(controller: LuminaViewController) {
         controller.dismiss(animated: true, completion: nil)
     }
 }
