@@ -412,7 +412,10 @@ public final class LuminaViewController: UIViewController {
         super.viewWillAppear(animated)
         createUI()
         if let camera = self.camera {
-            camera.update({ result in
+            camera.updateVideo({ result in
+                self.handleCameraSetupResult(result)
+            })
+            camera.updateAudio({ result in
                 self.handleCameraSetupResult(result)
             })
         }
@@ -524,18 +527,20 @@ fileprivate extension LuminaViewController {
     private func handleCameraSetupResult(_ result: CameraSetupResult) {
         DispatchQueue.main.async {
             switch result {
-            case .success:
+            case .videoSuccess:
                 guard let camera = self.camera else {
                     return
                 }
                 self.enableUI(valid: true)
                 camera.start()
                 break
+            case .audioSuccess:
+                break
             case .requiresUpdate:
                 guard let camera = self.camera else {
                     return
                 }
-                camera.update({ result in
+                camera.updateVideo({ result in
                     self.handleCameraSetupResult(result)
                 })
                 break

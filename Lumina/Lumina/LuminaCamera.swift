@@ -72,7 +72,7 @@ final class LuminaCamera: NSObject {
             if self.session.isRunning {
                 self.session.stopRunning()
                 updateVideo({ result in
-                    if result == .success {
+                    if result == .videoSuccess {
                         self.start()
                     } else {
                         
@@ -87,7 +87,7 @@ final class LuminaCamera: NSObject {
             if self.session.isRunning {
                 self.session.stopRunning()
                 updateVideo({ result in
-                    if result == .success {
+                    if result == .videoSuccess {
                         self.start()
                     } else {
                         self.delegate?.cameraSetupCompleted(camera: self, result: result)
@@ -104,7 +104,7 @@ final class LuminaCamera: NSObject {
             if self.session.isRunning {
                 self.session.stopRunning()
                 updateVideo({ result in
-                    if result == .success {
+                    if result == .videoSuccess {
                         self.start()
                     } else {
                         self.delegate?.cameraSetupCompleted(camera: self, result: result)
@@ -119,7 +119,7 @@ final class LuminaCamera: NSObject {
             if self.session.isRunning {
                 self.session.stopRunning()
                 updateVideo({ result in
-                    if result == .success {
+                    if result == .videoSuccess {
                         self.start()
                     } else {
                         self.delegate?.cameraSetupCompleted(camera: self, result: result)
@@ -134,7 +134,7 @@ final class LuminaCamera: NSObject {
             if self.session.isRunning {
                 self.session.stopRunning()
                 updateVideo({ result in
-                    if result == .success {
+                    if result == .videoSuccess {
                         self.start()
                     } else {
                         self.delegate?.cameraSetupCompleted(camera: self, result: result)
