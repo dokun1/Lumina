@@ -655,6 +655,7 @@ fileprivate extension LuminaViewController {
     }
     
     @objc func shutterButtonTapped() {
+        shutterButton.takePhoto()
         guard let camera = self.camera else {
             return
         }
@@ -667,13 +668,17 @@ fileprivate extension LuminaViewController {
         }
         switch sender.state {
         case .began:
-            feedbackGenerator.startRecordingVideoFeedback()
-            camera.startVideoRecording()
+            if recordsVideo && !camera.recordingVideo {
+                shutterButton.startRecordingVideo()
+                camera.startVideoRecording()
+                feedbackGenerator.startRecordingVideoFeedback()
+            }
             break
         case .ended:
-            if camera.recordingVideo {
-                feedbackGenerator.endRecordingVideoFeedback()
+            if recordsVideo && camera.recordingVideo {
+                shutterButton.stopRecordingVideo()
                 camera.stopVideoRecording()
+                feedbackGenerator.endRecordingVideoFeedback()
             } else {
                 feedbackGenerator.errorFeedback()
             }
