@@ -254,6 +254,7 @@ final class LuminaCamera: NSObject {
     }
     
     func updateAudio(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
+        purgeAudioDevices()
         self.sessionQueue.async {
             switch AVCaptureDevice.authorizationStatus(for: AVMediaType.audio) {
             case .authorized:
@@ -283,7 +284,7 @@ final class LuminaCamera: NSObject {
     }
     
     func updateVideo(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
-        self.recycleDeviceIO()
+        purgeVideoDevices()
         self.sessionQueue.async {
             switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
             case .authorized:
@@ -332,6 +333,7 @@ final class LuminaCamera: NSObject {
                 }
                 self.configureFrameRate()
                 self.session.commitConfiguration()
+                completion(CameraSetupResult.videoSuccess)
                 break
             case .denied:
                 completion(CameraSetupResult.videoPermissionDenied)
@@ -357,31 +359,25 @@ final class LuminaCamera: NSObject {
     }
     
     func requestVideoPermissions() {
-        guard let delegate = self.delegate else {
-            return
-        }
         self.sessionQueue.suspend()
         AVCaptureDevice.requestAccess(for: .video) { success in
             if success {
                 self.sessionQueue.resume()
-                delegate.cameraSetupCompleted(camera: self, result: .requiresUpdate)
+                self.delegate?.cameraSetupCompleted(camera: self, result: .requiresUpdate)
             } else {
-                delegate.cameraSetupCompleted(camera: self, result: .videoPermissionDenied)
+                self.delegate?.cameraSetupCompleted(camera: self, result: .videoPermissionDenied)
             }
         }
     }
     
     func requestAudioPermissions() {
-        guard let delegate = self.delegate else {
-            return
-        }
         self.sessionQueue.suspend()
         AVCaptureDevice.requestAccess(for: AVMediaType.audio) { success in
             if success {
                 self.sessionQueue.resume()
-                delegate.cameraSetupCompleted(camera: self, result: .requiresUpdate)
+                self.delegate?.cameraSetupCompleted(camera: self, result: .requiresUpdate)
             } else {
-                delegate.cameraSetupCompleted(camera: self, result: .audioPermissionDenied)
+                self.delegate?.cameraSetupCompleted(camera: self, result: .audioPermissionDenied)
             }
         }
     }
@@ -481,12 +477,24 @@ private extension LuminaCamera {
         }
     }
     
-    func recycleDeviceIO() {
+    func purgeAudioDevices() {
         for oldInput in self.session.inputs {
-            self.session.removeInput(oldInput) // TODO: check if type is video, and remove then
+            if oldInput == self.audioInput {
+                self.session.removeInput(oldInput)
+            }
+        }
+    }
+    
+    func purgeVideoDevices() {
+        for oldInput in self.session.inputs {
+            if oldInput == self.videoInput {
+                self.session.removeInput(oldInput)
+            }
         }
         for oldOutput in self.session.outputs {
-            self.session.removeOutput(oldOutput)
+            if oldOutput == self.videoOutput || oldOutput == self.photoOutput || oldOutput == self.metadataOutput || oldOutput == self.videoFileOutput  {
+                self.session.removeOutput(oldOutput)
+            }
         }
     }
     
@@ -652,6 +660,8 @@ extension CMSampleBuffer {
     }
 }
 
+// MARK: MetadataOutput Delegate Methods
+
 extension LuminaCamera: AVCaptureMetadataOutputObjectsDelegate {
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         guard case self.trackMetadata = true else {
@@ -662,6 +672,8 @@ extension LuminaCamera: AVCaptureMetadataOutputObjectsDelegate {
         }
     }
 }
+
+// MARK: RecordingOutput Delegate Methods
 
 extension LuminaCamera: AVCaptureFileOutputRecordingDelegate {
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {

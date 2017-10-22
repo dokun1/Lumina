@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		500FA2FB1F9CA543004467BA /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 500FA2FA1F9CA53D004467BA /* Lumina.framework */; };
+		500FA2FC1F9CA543004467BA /* Lumina.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 500FA2FA1F9CA53D004467BA /* Lumina.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		534C1E9E1F7C3C59001127BC /* ResolutionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534C1E9D1F7C3C59001127BC /* ResolutionViewController.swift */; };
 		5365BFD41F79829800B8F338 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD31F79829800B8F338 /* ImageViewController.swift */; };
 		5365BFDA1F79AAA800B8F338 /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */; };
@@ -15,8 +17,6 @@
 		53B828FC1EAAA09000E3A624 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FA1EAAA09000E3A624 /* Main.storyboard */; };
 		53B828FE1EAAA09000E3A624 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FD1EAAA09000E3A624 /* Assets.xcassets */; };
 		53B829011EAAA09000E3A624 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FF1EAAA09000E3A624 /* LaunchScreen.storyboard */; };
-		53B8290B1EAAA1A100E3A624 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53B829091EAAA18000E3A624 /* Lumina.framework */; };
-		53B8290C1EAAA1A100E3A624 /* Lumina.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 53B829091EAAA18000E3A624 /* Lumina.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,7 +26,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				53B8290C1EAAA1A100E3A624 /* Lumina.framework in Embed Frameworks */,
+				500FA2FC1F9CA543004467BA /* Lumina.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -34,6 +34,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		500FA2FA1F9CA53D004467BA /* Lumina.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lumina.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Lumina-ahdbulwlusgxemcxeqxwjhqgazwd/Build/Products/Debug-iphoneos/Lumina.framework"; sourceTree = "<group>"; };
 		534C1E9D1F7C3C59001127BC /* ResolutionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResolutionViewController.swift; sourceTree = "<group>"; };
 		5365BFD31F79829800B8F338 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = MobileNet.mlmodel; path = LuminaSample/MobileNet.mlmodel; sourceTree = "<group>"; };
@@ -44,7 +45,6 @@
 		53B828FD1EAAA09000E3A624 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		53B829001EAAA09000E3A624 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		53B829021EAAA09000E3A624 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		53B829091EAAA18000E3A624 /* Lumina.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lumina.framework; path = "../../../Library/Developer/Xcode/DerivedData/Lumina-ayddllynafnebvdypcqglyhzrbnw/Build/Products/Debug-iphoneos/Lumina.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,7 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				53B8290B1EAAA1A100E3A624 /* Lumina.framework in Frameworks */,
+				500FA2FB1F9CA543004467BA /* Lumina.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,8 +94,8 @@
 		53B829081EAAA16D00E3A624 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				500FA2FA1F9CA53D004467BA /* Lumina.framework */,
 				5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */,
-				53B829091EAAA18000E3A624 /* Lumina.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
