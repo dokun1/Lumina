@@ -11,7 +11,6 @@
 		5365BFD61F79941900B8F338 /* LuminaObjectRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD51F79941900B8F338 /* LuminaObjectRecognizer.swift */; };
 		53806FA41F6618230009A0E8 /* LuminaCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53806FA31F6618230009A0E8 /* LuminaCamera.swift */; };
 		53806FA61F672F780009A0E8 /* LuminaButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53806FA51F672F780009A0E8 /* LuminaButton.swift */; };
-		53883FD11EC4DE5B00D1DE40 /* LuminaMetadataBorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53883FD01EC4DE5B00D1DE40 /* LuminaMetadataBorderView.swift */; };
 		539848301EB8F14300F77AEA /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5398482F1EB8F14300F77AEA /* AVFoundation.framework */; };
 		53B828DA1EAAA07F00E3A624 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53B828D01EAAA07F00E3A624 /* Lumina.framework */; };
 		53B828DF1EAAA07F00E3A624 /* LuminaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828DE1EAAA07F00E3A624 /* LuminaTests.swift */; };
@@ -32,11 +31,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		509FF65F1F9D2F6300FD62CD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		5332084D1F9A99CA008354F7 /* LuminaDeviceUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaDeviceUtil.swift; sourceTree = "<group>"; };
 		5365BFD51F79941900B8F338 /* LuminaObjectRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaObjectRecognizer.swift; sourceTree = "<group>"; };
 		53806FA31F6618230009A0E8 /* LuminaCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaCamera.swift; sourceTree = "<group>"; };
 		53806FA51F672F780009A0E8 /* LuminaButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaButton.swift; sourceTree = "<group>"; };
-		53883FD01EC4DE5B00D1DE40 /* LuminaMetadataBorderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LuminaMetadataBorderView.swift; sourceTree = "<group>"; };
 		5398482F1EB8F14300F77AEA /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		53B828D01EAAA07F00E3A624 /* Lumina.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Lumina.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		53B828D31EAAA07F00E3A624 /* Lumina.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lumina.h; sourceTree = "<group>"; };
@@ -80,6 +79,7 @@
 		53B828C61EAAA07F00E3A624 = {
 			isa = PBXGroup;
 			children = (
+				509FF65F1F9D2F6300FD62CD /* README.md */,
 				53B828D21EAAA07F00E3A624 /* Lumina */,
 				53B828DD1EAAA07F00E3A624 /* LuminaTests */,
 				53B828D11EAAA07F00E3A624 /* Products */,
@@ -105,7 +105,6 @@
 				53806FA31F6618230009A0E8 /* LuminaCamera.swift */,
 				5365BFD51F79941900B8F338 /* LuminaObjectRecognizer.swift */,
 				53B9CCFC1EBFD22E008E4A43 /* LuminaTextPromptView.swift */,
-				53883FD01EC4DE5B00D1DE40 /* LuminaMetadataBorderView.swift */,
 				53806FA51F672F780009A0E8 /* LuminaButton.swift */,
 				5332084D1F9A99CA008354F7 /* LuminaDeviceUtil.swift */,
 				53B9CCFA1EBF6C62008E4A43 /* Media.xcassets */,
@@ -243,7 +242,6 @@
 				53B9CCFD1EBFD22E008E4A43 /* LuminaTextPromptView.swift in Sources */,
 				5365BFD61F79941900B8F338 /* LuminaObjectRecognizer.swift in Sources */,
 				5332084E1F9A99CA008354F7 /* LuminaDeviceUtil.swift in Sources */,
-				53883FD11EC4DE5B00D1DE40 /* LuminaMetadataBorderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

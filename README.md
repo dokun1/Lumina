@@ -138,6 +138,7 @@ There are a number of properties you can set before presenting `Lumina`. You can
 
 ```swift
 camera.position = .front // could also be .back
+camera.recordsVidoe = true // if this is set, streamFrames and streamingModel are invalid
 camera.streamFrames = true // could also be false
 camera.textPrompt = "This is how to test the text prompt view" // assigning an empty string will make the view fade away
 camera.trackMetadata = true // could also be false
@@ -193,6 +194,8 @@ func captured(videoAtURL: URL, from controller: LuminaViewController) {
     // here you can load the video file from the URL, which is located in NSTemporaryDirectory()
 }
 ```
+
+**NB**: It's import to note that, if you are in video recording mode with Lumina, streaming frames is not possible. In order to enable frame streaming, you must set `.recordsVideo` to false, and `.streamFrames` to true.
 
 To handle a video frame being streamed from the camera, implement:
 

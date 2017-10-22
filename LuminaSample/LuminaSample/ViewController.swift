@@ -13,6 +13,7 @@ import AVKit
 
 class ViewController: UITableViewController {
     @IBOutlet weak var frontCameraSwitch: UISwitch!
+    @IBOutlet weak var recordsVideoSwitch: UISwitch!
     @IBOutlet weak var trackImagesSwitch: UISwitch!
     @IBOutlet weak var trackMetadataSwitch: UISwitch!
     @IBOutlet weak var showTextPromptViewSwitch: UISwitch!
@@ -40,6 +41,7 @@ extension ViewController { //MARK: IBActions
         let camera = LuminaViewController()
         camera.delegate = self
         camera.position = self.frontCameraSwitch.isOn ? .front : .back
+        camera.recordsVideo = self.recordsVideoSwitch.isOn
         camera.streamFrames = self.trackImagesSwitch.isOn
         camera.textPrompt = self.showTextPromptViewSwitch.isOn ? "This is how to test the text prompt view" : ""
         camera.trackMetadata = self.trackMetadataSwitch.isOn
@@ -49,7 +51,16 @@ extension ViewController { //MARK: IBActions
         if #available(iOS 11.0, *) {
             camera.streamingModel = self.useCoreMLModelSwitch.isOn ? MobileNet().model : nil
         }
-        present(camera, animated: true, completion: nil)
+        if camera.recordsVideo == true {
+            let alert = UIAlertController(title: "Warning", message: "You are loading video recording mode - streaming images and CoreML with Lumina are disabled when in this mode.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            alert.addAction(UIAlertAction(title: "Proceed", style: .default, handler: { action in
+                self.present(camera, animated: true, completion: nil)
+            }))
+            present(alert, animated: true, completion: nil)
+        } else {
+            present(camera, animated: true, completion: nil)
+        }
     }
     
     @IBAction func frameRateSliderChanged() {

@@ -282,6 +282,19 @@ public final class LuminaViewController: UIViewController {
         }
     }
     
+    /// Set this to choose whether or not Lumina will be able to record video by holding down the capture button
+    ///
+    /// - Note: Responds live to being set at any time, and will update automatically
+    ///
+    /// - Warning: This setting takes precedence over video data streaming - if this is turned on, frames cannot be streamed, nor can CoreML be used via Lumina's recognizer mechanism. 
+    open var recordsVideo = false {
+        didSet {
+            if let camera = self.camera {
+                camera.recordsVideo = recordsVideo
+            }
+        }
+    }
+    
     /// Set this to choose whether or not Lumina will stream video frames through the delegate
     ///
     /// - Note: Responds live to being set at any time, and will update automatically
@@ -574,11 +587,8 @@ fileprivate extension LuminaViewController {
                     self.textPrompt = ""
                 }
                 break
-            case .invalidVideoDevice:
-                self.textPrompt = "Could not load desired video device - please try again"
-                break
-            case .invalidAudioDevice:
-                self.textPrompt = "Could not load desired audio device - please try again"
+            case .invalidVideoDataOutput, .invalidVideoInput, .invalidPhotoOutput, .invalidVideoMetadataOutput, .invalidVideoFileOutput, .invalidAudioInput:
+                self.textPrompt = "\(result.rawValue) - please try again"
                 break
             case .unknownError:
                 self.textPrompt = "Unknown error occurred while loading Lumina - please try again"
