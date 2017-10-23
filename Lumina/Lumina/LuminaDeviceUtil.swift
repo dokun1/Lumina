@@ -15,6 +15,11 @@ final class LuminaHapticFeedbackGenerator {
     private let impactGeneratorSharedInstance = UIImpactFeedbackGenerator(style: .medium)
     private let notificationGeneratorSharedInstance = UINotificationFeedbackGenerator()
     
+    func prepare() {
+        impactGeneratorSharedInstance.prepare()
+        notificationGeneratorSharedInstance.prepare()
+    }
+    
     func startRecordingVideoFeedback() {
         if UIDevice.current.hasHapticFeedback {
             impactGeneratorSharedInstance.impactOccurred()
@@ -26,7 +31,7 @@ final class LuminaHapticFeedbackGenerator {
     
     func endRecordingVideoFeedback() {
         if UIDevice.current.hasHapticFeedback {
-            notificationGeneratorSharedInstance.prepare()
+//            notificationGeneratorSharedInstance.prepare()
             notificationGeneratorSharedInstance.notificationOccurred(.success)
         } else if UIDevice.current.hasTapticEngine {
             let pop = SystemSoundID(1520)
@@ -37,7 +42,7 @@ final class LuminaHapticFeedbackGenerator {
     
     func errorFeedback() {
         if UIDevice.current.hasHapticFeedback {
-            notificationGeneratorSharedInstance.prepare()
+//            notificationGeneratorSharedInstance.prepare()
             notificationGeneratorSharedInstance.notificationOccurred(.error)
         } else if UIDevice.current.hasTapticEngine {
             let tryAgain = SystemSoundID(1102)

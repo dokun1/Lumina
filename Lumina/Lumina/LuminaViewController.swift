@@ -206,6 +206,7 @@ public final class LuminaViewController: UIViewController {
             return currentGenerator
         }
         let generator = LuminaHapticFeedbackGenerator()
+        generator.prepare()
         _feedbackGenerator = generator
         return generator
     }
