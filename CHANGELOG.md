@@ -1,8 +1,14 @@
 # Change Log
 
-## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
+## [0.10.1](https://github.com/dokun1/Lumina/tree/0.10.1) (2017-10-25)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.10.0...0.10.1)
 
-[Full Changelog](https://github.com/dokun1/Lumina/compare/0.9.1...HEAD)
+**Merged pull requests:**
+
+- UI Updates [\#26](https://github.com/dokun1/Lumina/pull/26) ([dokun1](https://github.com/dokun1))
+
+## [0.10.0](https://github.com/dokun1/Lumina/tree/0.10.0) (2017-10-22)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.9.1...0.10.0)
 
 **Fixed bugs:**
 
