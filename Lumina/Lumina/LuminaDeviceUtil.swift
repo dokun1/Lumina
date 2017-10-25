@@ -31,7 +31,6 @@ final class LuminaHapticFeedbackGenerator {
     
     func endRecordingVideoFeedback() {
         if UIDevice.current.hasHapticFeedback {
-//            notificationGeneratorSharedInstance.prepare()
             notificationGeneratorSharedInstance.notificationOccurred(.success)
         } else if UIDevice.current.hasTapticEngine {
             let pop = SystemSoundID(1520)
