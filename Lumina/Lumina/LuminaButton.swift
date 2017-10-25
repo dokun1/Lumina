@@ -78,19 +78,11 @@ final class LuminaButton: UIButton {
             self.frame = CGRect(origin: CGPoint(x: 10, y: UIScreen.main.bounds.maxY - 50), size: CGSize(width: self.cancelButtonWidth, height: self.cancelButtonHeight))
             break
         case .shutter:
-            self.backgroundColor = UIColor.white
+            self.backgroundColor = UIColor.normalState
             self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.midX - 35, y: UIScreen.main.bounds.maxY - 80), size: CGSize(width: self.shutterButtonDimension, height: self.shutterButtonDimension))
-            self.alpha = 0.65
             self.layer.cornerRadius = CGFloat(self.shutterButtonDimension / 2)
-            
-            let border = UIView(frame: self.frame)
-            border.backgroundColor = UIColor.blue
-            border.layer.cornerRadius = self.layer.cornerRadius
-            border.layer.borderWidth = 3.0
-            border.layer.borderColor = UIColor.white.cgColor
-            self.border = border
-            self.addSubview(border)
-            
+            self.layer.borderWidth = 3
+            self.layer.borderColor = UIColor.borderNormalState
             break
         default:
             break
@@ -101,8 +93,8 @@ final class LuminaButton: UIButton {
         if style == .shutter {
             DispatchQueue.main.async {
                 UIView.animate(withDuration: 0.1, animations: {
-                    self.backgroundColor = UIColor.red
-                    self.border?.backgroundColor = UIColor.red
+                    self.backgroundColor = UIColor.recordingState
+                    self.layer.borderColor = UIColor.borderRecordingState
                     self.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
                 })
             }
@@ -113,8 +105,8 @@ final class LuminaButton: UIButton {
         if style == .shutter {
             DispatchQueue.main.async {
                 UIView.animate(withDuration: 0.1, animations: {
-                    self.backgroundColor = UIColor.white
-                    self.border?.backgroundColor = UIColor.white
+                    self.backgroundColor = UIColor.normalState
+                    self.layer.borderColor = UIColor.borderNormalState
                     self.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
                 })
             }
@@ -125,12 +117,12 @@ final class LuminaButton: UIButton {
         if style == .shutter {
             DispatchQueue.main.async {
                 UIView.animate(withDuration: 0.1, animations: {
-                    self.backgroundColor = UIColor.lightGray
-                    self.border?.backgroundColor = UIColor.lightGray
+                    self.backgroundColor = UIColor.takePhotoState
+                    self.layer.borderColor = UIColor.borderTakePhotoState
                 }) { complete in
                     UIView.animate(withDuration: 0.1, animations: {
-                        self.backgroundColor = UIColor.white
-                        self.border?.backgroundColor = UIColor.white
+                        self.backgroundColor = UIColor.normalState
+                        self.layer.borderColor = UIColor.borderNormalState
                     })
                 }
             }
@@ -140,4 +132,32 @@ final class LuminaButton: UIButton {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
+}
+
+fileprivate extension UIColor {
+    class var normalState: UIColor {
+        return UIColor(white: 1.0, alpha: 0.65)
+    }
+    
+    class var recordingState: UIColor {
+        return UIColor.red.withAlphaComponent(0.65)
+    }
+    
+    class var takePhotoState: UIColor {
+        return UIColor.lightGray.withAlphaComponent(0.65)
+    }
+    
+    class var borderNormalState: CGColor {
+        return UIColor.gray.cgColor
+    }
+    
+    class var borderRecordingState: CGColor {
+        return UIColor.red.cgColor
+    }
+    
+    class var borderTakePhotoState: CGColor {
+        return UIColor.darkGray.cgColor
+    }
+    
+    
 }

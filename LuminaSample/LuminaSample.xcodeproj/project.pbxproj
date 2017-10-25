@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		500FA3011F9D1FAB004467BA /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 500FA3001F9D1F5B004467BA /* Lumina.framework */; };
-		500FA3021F9D1FAB004467BA /* Lumina.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 500FA3001F9D1F5B004467BA /* Lumina.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		509FF6611FA0AC8000FD62CD /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 509FF6601FA0AC1B00FD62CD /* Lumina.framework */; };
+		509FF6621FA0AC8000FD62CD /* Lumina.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 509FF6601FA0AC1B00FD62CD /* Lumina.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		534C1E9E1F7C3C59001127BC /* ResolutionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534C1E9D1F7C3C59001127BC /* ResolutionViewController.swift */; };
 		5365BFD41F79829800B8F338 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD31F79829800B8F338 /* ImageViewController.swift */; };
 		5365BFDA1F79AAA800B8F338 /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */; };
@@ -26,7 +26,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				500FA3021F9D1FAB004467BA /* Lumina.framework in Embed Frameworks */,
+				509FF6621FA0AC8000FD62CD /* Lumina.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -34,7 +34,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		500FA3001F9D1F5B004467BA /* Lumina.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lumina.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Lumina-ahdbulwlusgxemcxeqxwjhqgazwd/Build/Products/Debug-iphoneos/Lumina.framework"; sourceTree = "<group>"; };
+		509FF6601FA0AC1B00FD62CD /* Lumina.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lumina.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Lumina-ahdbulwlusgxemcxeqxwjhqgazwd/Build/Products/Debug-iphoneos/Lumina.framework"; sourceTree = "<group>"; };
 		534C1E9D1F7C3C59001127BC /* ResolutionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResolutionViewController.swift; sourceTree = "<group>"; };
 		5365BFD31F79829800B8F338 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = MobileNet.mlmodel; path = LuminaSample/MobileNet.mlmodel; sourceTree = "<group>"; };
@@ -52,7 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				500FA3011F9D1FAB004467BA /* Lumina.framework in Frameworks */,
+				509FF6611FA0AC8000FD62CD /* Lumina.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,7 +94,7 @@
 		53B829081EAAA16D00E3A624 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				500FA3001F9D1F5B004467BA /* Lumina.framework */,
+				509FF6601FA0AC1B00FD62CD /* Lumina.framework */,
 				5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */,
 			);
 			name = Frameworks;
