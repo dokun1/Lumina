@@ -94,7 +94,7 @@ final class LuminaButton: UIButton {
             DispatchQueue.main.async {
                 UIView.animate(withDuration: 0.1, animations: {
                     self.backgroundColor = UIColor.recordingState
-                    self.layer.backgroundColor = UIColor.borderRecordingState
+                    self.layer.borderColor = UIColor.borderRecordingState
                     self.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
                 })
             }
@@ -118,11 +118,11 @@ final class LuminaButton: UIButton {
             DispatchQueue.main.async {
                 UIView.animate(withDuration: 0.1, animations: {
                     self.backgroundColor = UIColor.takePhotoState
-                    self.layer.backgroundColor = UIColor.borderTakePhotoState
+                    self.layer.borderColor = UIColor.borderTakePhotoState
                 }) { complete in
                     UIView.animate(withDuration: 0.1, animations: {
                         self.backgroundColor = UIColor.normalState
-                        self.layer.backgroundColor = UIColor.borderNormalState
+                        self.layer.borderColor = UIColor.borderNormalState
                     })
                 }
             }

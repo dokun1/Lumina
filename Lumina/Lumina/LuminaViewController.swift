@@ -206,7 +206,6 @@ public final class LuminaViewController: UIViewController {
             return currentGenerator
         }
         let generator = LuminaHapticFeedbackGenerator()
-        generator.prepare()
         _feedbackGenerator = generator
         return generator
     }
@@ -433,6 +432,12 @@ public final class LuminaViewController: UIViewController {
                 self.handleCameraSetupResult(result)
             })
         }
+    }
+    
+    /// override with caution
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        feedbackGenerator.prepare()
     }
     
     public override var shouldAutorotate: Bool {
@@ -745,11 +750,13 @@ extension LuminaViewController {
         let focusView: UIImageView = UIImageView(image: UIImage(named: "cameraFocus", in: Bundle(for: LuminaViewController.self), compatibleWith: nil))
         focusView.contentMode = .scaleAspectFit
         focusView.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        focusView.transform = CGAffineTransform(scaleX: 1.7, y: 1.7)
         focusView.center = at
         focusView.alpha = 0.0
         self.view.addSubview(focusView)
-        UIView.animate(withDuration: 0.2, animations: {
+        UIView.animate(withDuration: 0.3, animations: {
             focusView.alpha = 1.0
+            focusView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
         }, completion: { complete in
             UIView.animate(withDuration: 1.0, animations: {
                 focusView.alpha = 0.0

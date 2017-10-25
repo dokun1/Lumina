@@ -41,7 +41,6 @@ final class LuminaHapticFeedbackGenerator {
     
     func errorFeedback() {
         if UIDevice.current.hasHapticFeedback {
-//            notificationGeneratorSharedInstance.prepare()
             notificationGeneratorSharedInstance.notificationOccurred(.error)
         } else if UIDevice.current.hasTapticEngine {
             let tryAgain = SystemSoundID(1102)

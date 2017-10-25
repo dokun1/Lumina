@@ -247,6 +247,10 @@ final class LuminaCamera: NSObject {
             if let connection = self.videoFileOutput.connection(with: AVMediaType.video), let videoConnection = self.videoDataOutput.connection(with: AVMediaType.video) {
                 connection.videoOrientation = videoConnection.videoOrientation
                 connection.isVideoMirrored = self.position == .front ? true : false
+                if connection.isVideoStabilizationSupported {
+                    connection.preferredVideoStabilizationMode = .cinematic
+                }
+                self.session.commitConfiguration()
             }
             let fileName = NSTemporaryDirectory().appending(Date().iso8601 + ".mov")
             self.videoFileOutput.startRecording(to: URL(fileURLWithPath: fileName), recordingDelegate: self)
@@ -338,6 +342,7 @@ final class LuminaCamera: NSObject {
                 if self.streamFrames {
                     self.session.addOutput(self.videoDataOutput)
                 }
+                
                 self.session.addOutput(self.photoOutput)
                 if self.recordsVideo {
                     // adding this invalidates the video data output
@@ -346,6 +351,11 @@ final class LuminaCamera: NSObject {
                         return
                     }
                     self.session.addOutput(self.videoFileOutput)
+                    if let connection = self.videoFileOutput.connection(with: .video) {
+                        if connection.isVideoStabilizationSupported {
+                            connection.preferredVideoStabilizationMode = .auto
+                        }
+                    }
                 }
                 if self.trackMetadata {
                     self.session.addOutput(self.metadataOutput)
@@ -461,7 +471,7 @@ extension LuminaCamera {
             }
             if input.device.isFocusModeSupported(.continuousAutoFocus) {
                 try input.device.lockForConfiguration()
-                input.device.focusMode = .continuousAutoFocus
+                input.device.focusMode = .autoFocus
                 if input.device.isExposureModeSupported(.continuousAutoExposure) {
                     input.device.exposureMode = .continuousAutoExposure
                 }
