@@ -29,6 +29,10 @@ Cameras are used frequently in iOS applications, and the addition of `CoreML` an
 
 Writing `AVFoundation` code can be fun, if not sometimes interesting. `Lumina` gives you an opportunity to skip having to write `AVFoundation` code, and gives you the tools you need to do anything you need with a camera you've already built.
 
+<p align="center">
+	<img src="./Assets/luminaDemo.gif">
+</p>
+
 Lumina can:
 
 - capture still images
