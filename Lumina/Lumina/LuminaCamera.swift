@@ -434,8 +434,6 @@ final class LuminaCamera: NSObject {
                 if self.session.canSetSessionPreset(self.resolution.foundationPreset()) {
                     self.session.sessionPreset = self.resolution.foundationPreset()
                 }
-                
-                self.configureFrameRate()
  
                 if self.capturesHighResolutionImages && self.photoOutput.isHighResolutionCaptureEnabled {
                     self.photoOutput.isHighResolutionCaptureEnabled = true
@@ -460,6 +458,7 @@ final class LuminaCamera: NSObject {
                 }
                 
                 self.session.commitConfiguration()
+                self.configureFrameRate()
                 completion(CameraSetupResult.videoSuccess)
                 break
             case .denied:
@@ -621,6 +620,9 @@ private extension LuminaCamera {
         for oldOutput in self.session.outputs {
             if oldOutput == self.videoDataOutput || oldOutput == self.photoOutput || oldOutput == self.metadataOutput || oldOutput == self.videoFileOutput  {
                 self.session.removeOutput(oldOutput)
+            }
+            if let dataOutput = oldOutput as? AVCaptureVideoDataOutput {
+                self.session.removeOutput(dataOutput)
             }
         }
     }
