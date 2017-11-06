@@ -37,6 +37,8 @@ Lumina can:
 
 - capture still images
 - capture videos
+- capture live photos
+- capture depth data for still images from dual camera systems
 - stream video frames to a delegate
 - scan any QR or barcode and output its metadata
 - detect the presence of a face and its location
@@ -147,6 +149,8 @@ camera.streamFrames = true // could also be false
 camera.textPrompt = "This is how to test the text prompt view" // assigning an empty string will make the view fade away
 camera.trackMetadata = true // could also be false
 camera.resolution = .highest // follows an enum
+camera.capturesLivePhotos = true // for this to work, .resolution must be set to .photo
+camera.capturesDepthData = true // for this to work, .resolution must be set to .photo, .medium1280x720, or .vga640x480
 camera.frameRate = 60 // can be any number, defaults to 30 if selection cannot be loaded
 camera.maxZoomRate = 5.0 // not setting this defaults to the highest zoom rate for any given camera device
 ```
@@ -186,15 +190,17 @@ func dismissed(controller: LuminaViewController) {
 To handle a still image being captured with the photo shutter button, implement:
 
 ```swift
-func captured(stillImage: UIImage, from controller: LuminaViewController) {
-    // here you can take the image called stillImage and handle it however you'd like
+func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController) {
+        controller.dismiss(animated: true) {
+    // still images always come back through this function, but live photos and depth data are returned here as well for a given still image
+    // depth data must be manually cast to AVDepthData, as AVDepthData is only available in iOS 11.0 or higher.
 }
 ```
 
 To handle a video being captured with the photo shutter button being held down, implement:
 
 ```swift
-func captured(videoAtURL: URL, from controller: LuminaViewController) {
+func captured(videoAt: URL, from controller: LuminaViewController) {
     // here you can load the video file from the URL, which is located in NSTemporaryDirectory()
 }
 ```
