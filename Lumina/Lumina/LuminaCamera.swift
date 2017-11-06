@@ -11,13 +11,15 @@ import AVFoundation
 import CoreML
 
 protocol LuminaCameraDelegate: class {
-    func stillImageCaptured(camera: LuminaCamera, image: UIImage)
+    func stillImageCaptured(camera: LuminaCamera, image: UIImage, livePhotoURL: URL?, depthData: Any?)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?)
     func videoRecordingCaptured(camera: LuminaCamera, videoURL: URL)
     func finishedFocus(camera: LuminaCamera)
     func detected(camera: LuminaCamera, metadata: [Any])
     func cameraSetupCompleted(camera: LuminaCamera, result: CameraSetupResult)
+    func cameraBeganTakingLivePhoto(camera: LuminaCamera)
+    func cameraFinishedTakingLivePhoto(camera: LuminaCamera)
 }
 
 enum CameraSetupResult: String {
@@ -34,12 +36,71 @@ enum CameraSetupResult: String {
     case invalidVideoFileOutput = "Invalid Video File Output"
     case invalidVideoMetadataOutput = "Invalid Video Metadata Output"
     case invalidPhotoOutput = "Invalid Photo Output"
+    case invalidDepthDataOutput = "Invalid Depth Data Output"
     case invalidVideoInput = "Invalid Video Input"
     case invalidAudioInput = "Invalid Audio Input"
     case requiresUpdate = "Requires AV Update"
     case videoSuccess = "Video Setup Success"
     case audioSuccess = "Audio Setup Success"
     
+}
+
+struct LuminaPhotoCapture {
+    var camera: LuminaCamera?
+    
+    var stillImage: UIImage? {
+        didSet {
+            collectionUpdated()
+        }
+    }
+    
+    var livePhotoURL: URL? {
+        didSet {
+            collectionUpdated()
+        }
+    }
+    
+    private var _depthData: Any?
+    @available(iOS 11.0, *)
+    var depthData: AVDepthData? {
+        get {
+            return _depthData as? AVDepthData
+        }
+        set {
+            if newValue != nil {
+                _depthData = newValue
+                collectionUpdated()
+            }
+        }
+    }
+    
+    fileprivate func collectionUpdated() {
+        var sendingLivePhotoURL: URL?
+        var sendingDepthData: Any?
+        
+        guard let sendingCamera = camera, let image = stillImage else {
+            return
+        }
+        
+        if sendingCamera.capturesLivePhotos == true {
+            if let url = livePhotoURL {
+                sendingLivePhotoURL = url
+            } else {
+                return
+            }
+        }
+        
+        if sendingCamera.capturesDepthData == true, #available(iOS 11.0, *) {
+            if let data = depthData {
+                sendingDepthData = data
+            } else {
+                return
+            }
+        }
+        DispatchQueue.main.async {
+            sendingCamera.delegate?.stillImageCaptured(camera: sendingCamera, image: image, livePhotoURL: sendingLivePhotoURL, depthData: sendingDepthData)
+        }
+    }
 }
 
 final class LuminaCamera: NSObject {
@@ -73,46 +134,37 @@ final class LuminaCamera: NSObject {
     
     var recordsVideo = false {
         didSet {
-            if self.session.isRunning {
-                self.session.stopRunning()
-                updateVideo({ result in
-                    if result == .videoSuccess {
-                        self.start()
-                    } else {
-                        self.delegate?.cameraSetupCompleted(camera: self, result: result)
-                    }
-                })
-            }
+            restartVideo()
         }
     }
     
     var streamFrames = false {
         didSet {
-            if self.session.isRunning {
-                self.session.stopRunning()
-                updateVideo({ result in
-                    if result == .videoSuccess {
-                        self.start()
-                    } else {
-                        self.delegate?.cameraSetupCompleted(camera: self, result: result)
-                    }
-                })
-            }
+            restartVideo()
         }
     }
     
     var trackMetadata = false {
         didSet {
-            if self.session.isRunning {
-                self.session.stopRunning()
-                updateVideo({ result in
-                    if result == .videoSuccess {
-                        self.start()
-                    } else {
-                        self.delegate?.cameraSetupCompleted(camera: self, result: result)
-                    }
-                })
-            }
+            restartVideo()
+        }
+    }
+    
+    var capturesLivePhotos = false {
+        didSet {
+            restartVideo()
+        }
+    }
+    
+    var capturesDepthData = false {
+        didSet {
+            restartVideo()
+        }
+    }
+    
+    var capturesHighResolutionImages = false {
+        didSet {
+            restartVideo()
         }
     }
     
@@ -120,46 +172,32 @@ final class LuminaCamera: NSObject {
     
     var position: CameraPosition = .back {
         didSet {
-            if self.session.isRunning {
-                self.session.stopRunning()
-                updateVideo({ result in
-                    if result == .videoSuccess {
-                        self.start()
-                    } else {
-                        self.delegate?.cameraSetupCompleted(camera: self, result: result)
-                    }
-                })
-            }
+            restartVideo()
         }
     }
     
     var resolution: CameraResolution = .highest {
         didSet {
-            if self.session.isRunning {
-                self.session.stopRunning()
-                updateVideo({ result in
-                    if result == .videoSuccess {
-                        self.start()
-                    } else {
-                        self.delegate?.cameraSetupCompleted(camera: self, result: result)
-                    }
-                })
-            }
+            restartVideo()
         }
     }
     
     var frameRate: Int = 30 {
         didSet {
-            if self.session.isRunning {
-                self.session.stopRunning()
-                updateVideo({ result in
-                    if result == .videoSuccess {
-                        self.start()
-                    } else {
-                        self.delegate?.cameraSetupCompleted(camera: self, result: result)
-                    }
-                })
-            }
+            restartVideo()
+        }
+    }
+    
+    private func restartVideo() {
+        if self.session.isRunning {
+            self.session.stopRunning()
+            updateVideo({ result in
+                if result == .videoSuccess {
+                    self.start()
+                } else {
+                    self.delegate?.cameraSetupCompleted(camera: self, result: result)
+                }
+            })
         }
     }
     
@@ -170,6 +208,8 @@ final class LuminaCamera: NSObject {
             updateZoom()
         }
     }
+    
+    var currentPhotoCollection: LuminaPhotoCapture?
     
     fileprivate var recognizer: AnyObject?
     
@@ -189,7 +229,15 @@ final class LuminaCamera: NSObject {
     
     fileprivate var session = AVCaptureSession()
     fileprivate var discoverySession: AVCaptureDevice.DiscoverySession? {
-        return AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera], mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
+        var deviceTypes = [AVCaptureDevice.DeviceType]()
+        deviceTypes.append(.builtInWideAngleCamera)
+        if #available(iOS 10.2, *) {
+            deviceTypes.append(.builtInDualCamera)
+        }
+        if #available(iOS 11.1, *), self.capturesDepthData == true {
+            deviceTypes.append(.builtInTrueDepthCamera)
+        }
+        return AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
     }
     fileprivate var videoInput: AVCaptureDeviceInput?
     fileprivate var audioInput: AVCaptureDeviceInput?
@@ -198,6 +246,7 @@ final class LuminaCamera: NSObject {
     fileprivate var metadataBufferQueue = DispatchQueue(label: "com.lumina.metadataBufferQueue")
     fileprivate var recognitionBufferQueue = DispatchQueue(label: "com.lumina.recognitionBufferQueue")
     fileprivate var sessionQueue = DispatchQueue(label: "com.lumina.sessionQueue")
+    fileprivate var photoCollectionQueue = DispatchQueue(label: "com.lumina.photoCollectionQueue")
     
     fileprivate var videoDataOutput: AVCaptureVideoDataOutput {
         let output = AVCaptureVideoDataOutput()
@@ -235,9 +284,27 @@ final class LuminaCamera: NSObject {
     }
     
     func captureStillImage() {
-        let settings = AVCapturePhotoSettings()
+        var settings = AVCapturePhotoSettings()
+        if #available(iOS 11.0, *) {
+            if self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
+                settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
+            }
+        }
+        
         settings.isAutoStillImageStabilizationEnabled = true
         settings.flashMode = self.torchState ? .on : .off
+        if self.capturesLivePhotos {
+            let fileName = NSTemporaryDirectory().appending("livePhoto" + Date().iso8601 + ".mov")
+            settings.livePhotoMovieFileURL = URL(fileURLWithPath: fileName)
+        }
+        if self.capturesHighResolutionImages {
+            settings.isHighResolutionPhotoEnabled = true
+        }
+        if #available(iOS 11.0, *) {
+            if self.capturesDepthData && self.photoOutput.isDepthDataDeliverySupported {
+                settings.isDepthDataDeliveryEnabled = true
+            }
+        }
         self.photoOutput.capturePhoto(with: settings, delegate: self)
     }
     
@@ -344,6 +411,8 @@ final class LuminaCamera: NSObject {
                 }
                 
                 self.session.addOutput(self.photoOutput)
+                self.session.commitConfiguration()
+
                 if self.recordsVideo {
                     // adding this invalidates the video data output
                     guard self.session.canAddOutput(self.videoFileOutput) else {
@@ -365,8 +434,31 @@ final class LuminaCamera: NSObject {
                 if self.session.canSetSessionPreset(self.resolution.foundationPreset()) {
                     self.session.sessionPreset = self.resolution.foundationPreset()
                 }
-                self.configureFrameRate()
+ 
+                if self.capturesHighResolutionImages && self.photoOutput.isHighResolutionCaptureEnabled {
+                    self.photoOutput.isHighResolutionCaptureEnabled = true
+                } else {
+                    self.capturesHighResolutionImages = false
+                }
+                
+                if self.capturesLivePhotos && self.photoOutput.isLivePhotoCaptureSupported {
+                    self.photoOutput.isLivePhotoCaptureEnabled = true
+                } else {
+                    self.capturesLivePhotos = false
+                }
+                
+                if #available(iOS 11.0, *) {
+                    if self.capturesDepthData && self.photoOutput.isDepthDataDeliverySupported {
+                        self.photoOutput.isDepthDataDeliveryEnabled = true
+                    } else {
+                        self.capturesDepthData = false
+                    }
+                } else {
+                    self.capturesDepthData = false
+                }
+                
                 self.session.commitConfiguration()
+                self.configureFrameRate()
                 completion(CameraSetupResult.videoSuccess)
                 break
             case .denied:
@@ -529,18 +621,17 @@ private extension LuminaCamera {
             if oldOutput == self.videoDataOutput || oldOutput == self.photoOutput || oldOutput == self.metadataOutput || oldOutput == self.videoFileOutput  {
                 self.session.removeOutput(oldOutput)
             }
+            if let dataOutput = oldOutput as? AVCaptureVideoDataOutput {
+                self.session.removeOutput(dataOutput)
+            }
         }
     }
     
     func getDevice(with position: AVCaptureDevice.Position) -> AVCaptureDevice? {
-        guard let discoverySession = self.discoverySession else {
-            return nil
-        }
-        for device in discoverySession.devices {
-            if device.position == position {
-                self.currentCaptureDevice = device
-                return device
-            }
+        if #available(iOS 10.2, *), let device = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: position) {
+            return device
+        } else if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position) {
+            return device
         }
         return nil
     }
@@ -579,11 +670,27 @@ extension LuminaCamera: AVCapturePhotoCaptureDelegate {
         guard let image = photo.normalizedImage(forCameraPosition: self.position) else {
             return
         }
-        delegate?.stillImageCaptured(camera: self, image: image)
+        photoCollectionQueue.sync {
+            if self.currentPhotoCollection == nil {
+                var collection = LuminaPhotoCapture()
+                collection.camera = self
+                collection.depthData = photo.depthData
+                collection.stillImage = image
+                self.currentPhotoCollection = collection
+            } else {
+                guard var collection = self.currentPhotoCollection else {
+                    return
+                }
+                collection.camera = self
+                collection.depthData = photo.depthData
+                collection.stillImage = image
+                self.currentPhotoCollection = collection
+            }
+        }
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
-        if #available(iOS 11.0, *) { // make use of AVCapturePhotoOut
+        if #available(iOS 11.0, *) { // make use of AVCapturePhotoOutput
             return
         } else {
             guard let buffer = photoSampleBuffer else {
@@ -592,7 +699,7 @@ extension LuminaCamera: AVCapturePhotoCaptureDelegate {
             guard let image = buffer.normalizedStillImage(forCameraPosition: self.position) else {
                 return
             }
-            delegate?.stillImageCaptured(camera: self, image: image)
+            delegate?.stillImageCaptured(camera: self, image: image, livePhotoURL: nil, depthData: nil)
         }
     }
 }
@@ -707,6 +814,37 @@ extension LuminaCamera: AVCaptureMetadataOutputObjectsDelegate {
     }
 }
 
+// MARK: DepthDataOutput Delegate Methods
+
+@available(iOS 11.0, *)
+extension LuminaCamera: AVCaptureDepthDataOutputDelegate {
+    func depthDataOutput(_ output: AVCaptureDepthDataOutput, didOutput depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection) {
+        photoCollectionQueue.sync {
+            if self.currentPhotoCollection != nil {
+                self.currentPhotoCollection = LuminaPhotoCapture()
+            }
+            guard var collection = self.currentPhotoCollection else {
+                return
+            }
+            collection.camera = self
+            collection.depthData = depthData
+        }
+    }
+    
+    func depthDataOutput(_ output: AVCaptureDepthDataOutput, didDrop depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection, reason: AVCaptureOutput.DataDroppedReason) {
+        photoCollectionQueue.async {
+            if self.currentPhotoCollection != nil {
+                self.currentPhotoCollection = LuminaPhotoCapture()
+            }
+            guard var collection = self.currentPhotoCollection else {
+                return
+            }
+            collection.camera = self
+            collection.depthData = nil
+        }
+    }
+}
+
 // MARK: RecordingOutput Delegate Methods
 
 extension LuminaCamera: AVCaptureFileOutputRecordingDelegate {
@@ -714,6 +852,37 @@ extension LuminaCamera: AVCaptureFileOutputRecordingDelegate {
         DispatchQueue.main.async {
             if error == nil, let delegate = self.delegate {
                 delegate.videoRecordingCaptured(camera: self, videoURL: outputFileURL)
+            }
+        }
+    }
+    
+    func photoOutput(_ output: AVCapturePhotoOutput, willBeginCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
+        if self.capturesLivePhotos {
+            self.delegate?.cameraBeganTakingLivePhoto(camera: self)
+        }
+    }
+    
+    
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishRecordingLivePhotoMovieForEventualFileAt outputFileURL: URL, resolvedSettings: AVCaptureResolvedPhotoSettings) {
+        if self.capturesLivePhotos {
+            self.delegate?.cameraFinishedTakingLivePhoto(camera: self)
+        }
+    }
+    
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingLivePhotoToMovieFileAt outputFileURL: URL, duration: CMTime, photoDisplayTime: CMTime, resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
+        photoCollectionQueue.sync {
+            if self.currentPhotoCollection == nil {
+                var collection = LuminaPhotoCapture()
+                collection.camera = self
+                collection.livePhotoURL = outputFileURL
+                self.currentPhotoCollection = collection
+            } else {
+                guard var collection = self.currentPhotoCollection else {
+                    return
+                }
+                collection.camera = self
+                collection.livePhotoURL = outputFileURL
+                self.currentPhotoCollection = collection
             }
         }
     }

@@ -16,6 +16,8 @@ class ViewController: UITableViewController {
     @IBOutlet weak var recordsVideoSwitch: UISwitch!
     @IBOutlet weak var trackImagesSwitch: UISwitch!
     @IBOutlet weak var trackMetadataSwitch: UISwitch!
+    @IBOutlet weak var capturesLivePhotosSwitch: UISwitch!
+    @IBOutlet weak var capturesDepthDataSwitch: UISwitch!
     @IBOutlet weak var showTextPromptViewSwitch: UISwitch!
     @IBOutlet weak var frameRateLabel: UILabel!
     @IBOutlet weak var frameRateSlider: UISlider!
@@ -24,7 +26,7 @@ class ViewController: UITableViewController {
     @IBOutlet weak var maxZoomScaleLabel: UILabel!
     @IBOutlet weak var maxZoomScaleSlider: UISlider!
     
-    var selectedResolution: CameraResolution = .high1920x1080
+    var selectedResolution: CameraResolution = .photo
 }
 
 extension ViewController { //MARK: IBActions
@@ -45,22 +47,15 @@ extension ViewController { //MARK: IBActions
         camera.streamFrames = self.trackImagesSwitch.isOn
         camera.textPrompt = self.showTextPromptViewSwitch.isOn ? "This is how to test the text prompt view" : ""
         camera.trackMetadata = self.trackMetadataSwitch.isOn
+        camera.capturesLivePhotos = self.capturesLivePhotosSwitch.isOn
+        camera.capturesDepthData = self.capturesDepthDataSwitch.isOn
         camera.resolution = selectedResolution
         camera.maxZoomScale = (self.maxZoomScaleLabel.text! as NSString).floatValue
         camera.frameRate = Int(self.frameRateLabel.text!) ?? 30
         if #available(iOS 11.0, *) {
             camera.streamingModel = self.useCoreMLModelSwitch.isOn ? MobileNet().model : nil
         }
-        if camera.recordsVideo == true {
-            let alert = UIAlertController(title: "Warning", message: "You are loading video recording mode - streaming images and CoreML with Lumina are disabled when in this mode.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            alert.addAction(UIAlertAction(title: "Proceed", style: .default, handler: { action in
-                self.present(camera, animated: true, completion: nil)
-            }))
-            present(alert, animated: true, completion: nil)
-        } else {
-            present(camera, animated: true, completion: nil)
-        }
+        present(camera, animated: true, completion: nil)
     }
     
     @IBAction func frameRateSliderChanged() {
@@ -74,7 +69,13 @@ extension ViewController { //MARK: IBActions
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "stillImageOutputSegue" {
             let controller = segue.destination as! ImageViewController
-            controller.image = sender as? UIImage
+            if let map = sender as? [String : Any] {
+                controller.image = map["stillImage"] as? UIImage
+                controller.livePhotoURL = map["livePhotoURL"] as? URL
+                if #available(iOS 11.0, *) {
+                    controller.depthData = map["depthData"] as? AVDepthData
+                }
+            } else { return }
         } else if segue.identifier == "selectResolutionSegue" {
             let controller = segue.destination as! ResolutionViewController
             controller.delegate = self
@@ -83,15 +84,15 @@ extension ViewController { //MARK: IBActions
 }
 
 extension ViewController: LuminaDelegate {
-    func captured(stillImage: UIImage, from controller: LuminaViewController) {
+    func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController) {
         controller.dismiss(animated: true) {
-            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: stillImage)
+            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage" : stillImage, "livePhotoURL" : livePhotoAt as Any, "depthData" : depthData])
         }
     }
     
-    func captured(videoAtURL: URL, from controller: LuminaViewController) {
+    func captured(videoAt: URL, from controller: LuminaViewController) {
         controller.dismiss(animated: true) {
-            let player = AVPlayer(url: videoAtURL)
+            let player = AVPlayer(url: videoAt)
             let playerViewController = AVPlayerViewController()
             playerViewController.player = player
             self.present(playerViewController, animated: true) {
