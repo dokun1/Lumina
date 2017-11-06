@@ -17,15 +17,18 @@ public protocol LuminaDelegate: class {
     ///
     /// - Parameters:
     ///   - stillImage: the image captured by Lumina
+    ///   - livePhotoAt: the URL where the live photo file can be located and used, if enabled and available
+    ///   - depthData: the depth data associated with the captured still image, if enabled and available
     ///   - controller: the instance of Lumina that captured the still image
-    func captured(stillImage: UIImage, from controller: LuminaViewController)
+    func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController)
     
     /// Triggered whenever a video is captured by the user of Lumina
     ///
     /// - Parameters:
-    ///   - videoAtURL: the URL where the video file can be located and used
+    ///   - videoAt: the URL where the video file can be located and used
+    ///   TODO: change name to indicate temporary url?
     ///   - controller: the instance of Lumina that captured the still image
-    func captured(videoAtURL: URL, from controller: LuminaViewController)
+    func captured(videoAt: URL, from controller: LuminaViewController)
     
     /// Triggered whenever streamFrames is set to true on Lumina, and streams video frames as UIImage instances
     ///
@@ -67,8 +70,8 @@ public protocol LuminaDelegate: class {
 // MARK: Extension to make delegate functions optional
 
 public extension LuminaDelegate {
-    func captured(stillImage: UIImage, from controller: LuminaViewController) {}
-    func captured(videoAtURL: URL, from controller: LuminaViewController) {}
+    func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController) {}
+    func captured(videoAt: URL, from controller: LuminaViewController) {}
     func streamed(videoFrame: UIImage, from controller: LuminaViewController) {}
     func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController) {}
     func detected(metadata: [Any], from controller: LuminaViewController) {}
@@ -377,7 +380,7 @@ public final class LuminaViewController: UIViewController {
         }
     }
     
-    /// The maximum amout of zoom that Lumina can use
+    /// The maximum amount of zoom that Lumina can use
     ///
     /// - Note: Default value will rely on whatever the active device can handle, if this is not explicitly set
     open var maxZoomScale: Float = MAXFLOAT {
@@ -387,6 +390,40 @@ public final class LuminaViewController: UIViewController {
             }
         }
     }
+    
+    /// Set this to decide whether live photos will be captured whenever a still image is captured.
+    ///
+    /// - Note: Overrides cameraResolution to .photo
+    ///
+    /// - Warning: If video recording is enabled, live photos will not work.
+    open var capturesLivePhotos: Bool = false {
+        didSet {
+            if let camera = camera {
+                camera.capturesLivePhotos = capturesLivePhotos
+            }
+        }
+    }
+    
+    /// Set this to return AVDepthData with a still captured image
+    ///
+    /// - Note: Only works on iOS 11.0 or higher
+    /// - Note: Only works with .photo, .medium1280x720, and .vga640x480 resolutions
+    open var capturesDepthData: Bool = false {
+        didSet {
+            if let camera = camera {
+                camera.capturesDepthData = capturesDepthData
+            }
+        }
+    }
+
+    // TODO: need to iterate through activeFormats to find highest resolution of still images for given cameraResolution, and set to that.
+//    open var capturesHighResolutionImages: Bool = false {
+//        didSet {
+//            if let camera = camera {
+//                camera.capturesHighResolutionImages = capturesHighResolutionImages
+//            }
+//        }
+//    }
     
     fileprivate var currentZoomScale: Float = 1.0 {
         didSet {
@@ -593,7 +630,7 @@ fileprivate extension LuminaViewController {
                     self.textPrompt = ""
                 }
                 break
-            case .invalidVideoDataOutput, .invalidVideoInput, .invalidPhotoOutput, .invalidVideoMetadataOutput, .invalidVideoFileOutput, .invalidAudioInput:
+            case .invalidVideoDataOutput, .invalidVideoInput, .invalidPhotoOutput, .invalidVideoMetadataOutput, .invalidVideoFileOutput, .invalidAudioInput, .invalidDepthDataOutput:
                 self.textPrompt = "\(result.rawValue) - please try again"
                 break
             case .unknownError:
@@ -623,7 +660,7 @@ fileprivate extension LuminaViewController {
 
 extension LuminaViewController: LuminaCameraDelegate {
     func videoRecordingCaptured(camera: LuminaCamera, videoURL: URL) {
-        delegate?.captured(videoAtURL: videoURL, from: self)
+        delegate?.captured(videoAt: videoURL, from: self)
     }
     
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?) {
@@ -636,8 +673,9 @@ extension LuminaViewController: LuminaCameraDelegate {
         }
     }
     
-    func stillImageCaptured(camera: LuminaCamera, image: UIImage) {
-        delegate?.captured(stillImage: image, from: self)
+    func stillImageCaptured(camera: LuminaCamera, image: UIImage, livePhotoURL: URL?, depthData: Any?) {
+        camera.currentPhotoCollection = nil
+        delegate?.captured(stillImage: image, livePhotoAt: livePhotoURL, depthData: depthData, from: self)
     }
     
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage) {
@@ -651,6 +689,18 @@ extension LuminaViewController: LuminaCameraDelegate {
     func cameraSetupCompleted(camera: LuminaCamera, result: CameraSetupResult) {
         handleCameraSetupResult(result)
     }
+    
+    func cameraBeganTakingLivePhoto(camera: LuminaCamera) {
+        DispatchQueue.main.async {
+            self.textPrompt = "Capturing live photo..."
+        }
+    }
+    
+    func cameraFinishedTakingLivePhoto(camera: LuminaCamera) {
+        DispatchQueue.main.async {
+            self.textPrompt = ""
+        }
+    }
 }
 
 // MARK: UIButton Functions
@@ -662,6 +712,10 @@ fileprivate extension LuminaViewController {
     
     @objc func shutterButtonTapped() {
         shutterButton.takePhoto()
+        previewLayer.opacity = 0
+        UIView.animate(withDuration: 0.25) {
+            self.previewLayer.opacity = 1
+        }
         guard let camera = self.camera else {
             return
         }
