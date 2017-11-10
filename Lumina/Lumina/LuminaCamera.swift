@@ -83,7 +83,7 @@ struct LuminaPhotoCapture {
             return
         }
         
-        if sendingCamera.capturesLivePhotos == true {
+        if sendingCamera.captureLivePhotos == true {
             if let url = livePhotoURL {
                 sendingLivePhotoURL = url
             } else {
@@ -91,7 +91,7 @@ struct LuminaPhotoCapture {
             }
         }
         
-        if sendingCamera.capturesDepthData == true, #available(iOS 11.0, *) {
+        if sendingCamera.captureDepthData == true, #available(iOS 11.0, *) {
             if let data = depthData {
                 sendingDepthData = data
             } else {
@@ -151,13 +151,13 @@ final class LuminaCamera: NSObject {
         }
     }
     
-    var capturesLivePhotos = false {
+    var captureLivePhotos = false {
         didSet {
             restartVideo()
         }
     }
     
-    var capturesDepthData = false {
+    var captureDepthData = false {
         didSet {
             restartVideo()
         }
@@ -169,7 +169,7 @@ final class LuminaCamera: NSObject {
         }
     }
     
-    var capturesHighResolutionImages = false {
+    var captureHighResolutionImages = false {
         didSet {
             restartVideo()
         }
@@ -241,7 +241,7 @@ final class LuminaCamera: NSObject {
         if #available(iOS 10.2, *) {
             deviceTypes.append(.builtInDualCamera)
         }
-        if #available(iOS 11.1, *), self.capturesDepthData == true {
+        if #available(iOS 11.1, *), self.captureDepthData == true {
             deviceTypes.append(.builtInTrueDepthCamera)
         }
         return AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
@@ -318,15 +318,15 @@ final class LuminaCamera: NSObject {
         
         settings.isAutoStillImageStabilizationEnabled = true
         settings.flashMode = self.torchState ? .on : .off
-        if self.capturesLivePhotos {
+        if self.captureLivePhotos {
             let fileName = NSTemporaryDirectory().appending("livePhoto" + Date().iso8601 + ".mov")
             settings.livePhotoMovieFileURL = URL(fileURLWithPath: fileName)
         }
-        if self.capturesHighResolutionImages {
+        if self.captureHighResolutionImages {
             settings.isHighResolutionPhotoEnabled = true
         }
         if #available(iOS 11.0, *) {
-            if self.capturesDepthData && self.photoOutput.isDepthDataDeliverySupported {
+            if self.captureDepthData && self.photoOutput.isDepthDataDeliverySupported {
                 settings.isDepthDataDeliveryEnabled = true
             }
         }
@@ -467,26 +467,26 @@ final class LuminaCamera: NSObject {
                     self.session.sessionPreset = self.resolution.foundationPreset()
                 }
  
-                if self.capturesHighResolutionImages && self.photoOutput.isHighResolutionCaptureEnabled {
+                if self.captureHighResolutionImages && self.photoOutput.isHighResolutionCaptureEnabled {
                     self.photoOutput.isHighResolutionCaptureEnabled = true
                 } else {
-                    self.capturesHighResolutionImages = false
+                    self.captureHighResolutionImages = false
                 }
                 
-                if self.capturesLivePhotos && self.photoOutput.isLivePhotoCaptureSupported {
+                if self.captureLivePhotos && self.photoOutput.isLivePhotoCaptureSupported {
                     self.photoOutput.isLivePhotoCaptureEnabled = true
                 } else {
-                    self.capturesLivePhotos = false
+                    self.captureLivePhotos = false
                 }
                 
                 if #available(iOS 11.0, *) {
-                    if self.capturesDepthData && self.photoOutput.isDepthDataDeliverySupported {
+                    if self.captureDepthData && self.photoOutput.isDepthDataDeliverySupported {
                         self.photoOutput.isDepthDataDeliveryEnabled = true
                     } else {
-                        self.capturesDepthData = false
+                        self.captureDepthData = false
                     }
                 } else {
-                    self.capturesDepthData = false
+                    self.captureDepthData = false
                 }
                 
                 if #available(iOS 11.0, *) {
@@ -868,16 +868,7 @@ extension LuminaCamera: AVCaptureDepthDataOutputDelegate {
     }
     
     func depthDataOutput(_ output: AVCaptureDepthDataOutput, didDrop depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection, reason: AVCaptureOutput.DataDroppedReason) {
-//        photoCollectionQueue.async {
-//            if self.currentPhotoCollection != nil {
-//                self.currentPhotoCollection = LuminaPhotoCapture()
-//            }
-//            guard var collection = self.currentPhotoCollection else {
-//                return
-//            }
-//            collection.camera = self
-//            collection.depthData = nil
-//        }
+        // place to handle dropped AVDepthData if we need it
     }
 }
 
@@ -893,14 +884,14 @@ extension LuminaCamera: AVCaptureFileOutputRecordingDelegate {
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, willBeginCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
-        if self.capturesLivePhotos {
+        if self.captureLivePhotos {
             self.delegate?.cameraBeganTakingLivePhoto(camera: self)
         }
     }
     
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishRecordingLivePhotoMovieForEventualFileAt outputFileURL: URL, resolvedSettings: AVCaptureResolvedPhotoSettings) {
-        if self.capturesLivePhotos {
+        if self.captureLivePhotos {
             self.delegate?.cameraFinishedTakingLivePhoto(camera: self)
         }
     }

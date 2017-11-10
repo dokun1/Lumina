@@ -406,10 +406,10 @@ public final class LuminaViewController: UIViewController {
     /// - Note: Overrides cameraResolution to .photo
     ///
     /// - Warning: If video recording is enabled, live photos will not work.
-    open var capturesLivePhotos: Bool = false {
+    open var captureLivePhotos: Bool = false {
         didSet {
             if let camera = camera {
-                camera.capturesLivePhotos = capturesLivePhotos
+                camera.captureLivePhotos = captureLivePhotos
             }
         }
     }
@@ -418,10 +418,10 @@ public final class LuminaViewController: UIViewController {
     ///
     /// - Note: Only works on iOS 11.0 or higher
     /// - Note: Only works with .photo, .medium1280x720, and .vga640x480 resolutions
-    open var capturesDepthData: Bool = false {
+    open var captureDepthData: Bool = false {
         didSet {
             if let camera = camera {
-                camera.capturesDepthData = capturesDepthData
+                camera.captureDepthData = captureDepthData
             }
         }
     }

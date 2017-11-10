@@ -48,8 +48,8 @@ extension ViewController { //MARK: IBActions
         camera.streamFrames = self.trackImagesSwitch.isOn
         camera.textPrompt = self.showTextPromptViewSwitch.isOn ? "This is how to test the text prompt view" : ""
         camera.trackMetadata = self.trackMetadataSwitch.isOn
-        camera.capturesLivePhotos = self.capturesLivePhotosSwitch.isOn
-        camera.capturesDepthData = self.capturesDepthDataSwitch.isOn
+        camera.captureLivePhotos = self.capturesLivePhotosSwitch.isOn
+        camera.captureDepthData = self.capturesDepthDataSwitch.isOn
         camera.streamDepthData = self.streamsDepthDataSwitch.isOn
         camera.resolution = selectedResolution
         camera.maxZoomScale = (self.maxZoomScaleLabel.text! as NSString).floatValue
