@@ -673,6 +673,13 @@ private extension LuminaCamera {
     }
     
     func getDevice(with position: AVCaptureDevice.Position) -> AVCaptureDevice? {
+        #if swift(>=4.0.2)
+        if #available(iOS 11.1, *), position == .front {
+            if let device = AVCaptureDevice.default(.builtInTrueDepthCamera, for: .video, position: .front) {
+                return device
+            }
+        }
+        #endif
         if #available(iOS 10.2, *), let device = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: position) {
             return device
         } else if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position) {

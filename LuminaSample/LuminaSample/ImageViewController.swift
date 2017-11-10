@@ -8,6 +8,7 @@
 
 import UIKit
 import AVKit
+import Lumina
 
 class ImageViewController: UIViewController {
     @IBOutlet public weak var imageView: UIImageView!
@@ -17,6 +18,7 @@ class ImageViewController: UIViewController {
     var image: UIImage?
     var livePhotoURL: URL?
     var showingDepth: Bool = false
+    var position: CameraPosition = .back
     private var _depthData: Any?
     
     @available(iOS 11.0, *)
@@ -59,7 +61,7 @@ class ImageViewController: UIViewController {
         if #available(iOS 11.0, *) {
             if let data = depthData {
                 if self.showingDepth == false {
-                    if let map = getImage(from: data.depthDataMap) {
+                    if let map = data.depthDataMap.normalizedImage(with: self.position) {
                         self.imageView.image = map
                     } else {
                         self.showingDepth = true
@@ -69,37 +71,6 @@ class ImageViewController: UIViewController {
                 }
                 self.showingDepth = !self.showingDepth
             }
-        }
-    }
-    
-    private func getImage(from depthDataMap: CVPixelBuffer) -> UIImage? {
-        let ciImage = CIImage(cvPixelBuffer: depthDataMap)
-        let context = CIContext(options: nil)
-        if let cgImage = context.createCGImage(ciImage, from: CGRect(x: 0, y: 0, width: CVPixelBufferGetWidth(depthDataMap), height: CVPixelBufferGetHeight(depthDataMap))) {
-            return cgImage.normalizedImage()
-        } else {
-            return nil
-        }
-    }
-}
-
-private extension CGImage {
-    func normalizedImage() -> UIImage? {
-        return UIImage(cgImage: self , scale: 1.0, orientation: getImageOrientation())
-    }
-    
-    private func getImageOrientation() -> UIImageOrientation {
-        switch UIApplication.shared.statusBarOrientation {
-        case .landscapeLeft:
-            return .down
-        case .landscapeRight:
-            return .up
-        case .portraitUpsideDown:
-            return .left
-        case .portrait:
-            return .right
-        case .unknown:
-            return .right
         }
     }
 }
