@@ -151,6 +151,7 @@ camera.trackMetadata = true // could also be false
 camera.resolution = .highest // follows an enum
 camera.capturesLivePhotos = true // for this to work, .resolution must be set to .photo
 camera.capturesDepthData = true // for this to work, .resolution must be set to .photo, .medium1280x720, or .vga640x480
+camera.streamDepthData = true // for this to work, .resolution must be set to .photo, .medium1280x720, or .vga640x480
 camera.frameRate = 60 // can be any number, defaults to 30 if selection cannot be loaded
 camera.maxZoomRate = 5.0 // not setting this defaults to the highest zoom rate for any given camera device
 ```
@@ -212,6 +213,14 @@ To handle a video frame being streamed from the camera, implement:
 ```swift
 func streamed(videoFrame: UIImage, from controller: LuminaViewController) {
     // here you can take the image called videoFrame and handle it however you'd like
+}
+```
+
+To handle depth data being streamed from the camera on iOS 11.0 or higher, implement:
+```swift
+func streamed(depthData: Any, from controller: LuminaViewController) {
+    // here you can take the depth data and handle it however you'd like
+    // NB: you must cast the object to AVDepthData manually. It is returned as Any to maintain backwards compatibility with iOS 10.0
 }
 ```
 

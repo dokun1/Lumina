@@ -14,6 +14,7 @@ protocol LuminaCameraDelegate: class {
     func stillImageCaptured(camera: LuminaCamera, image: UIImage, livePhotoURL: URL?, depthData: Any?)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?)
+    func depthDataCaptured(camera: LuminaCamera, depthData: Any)
     func videoRecordingCaptured(camera: LuminaCamera, videoURL: URL)
     func finishedFocus(camera: LuminaCamera)
     func detected(camera: LuminaCamera, metadata: [Any])
@@ -162,6 +163,12 @@ final class LuminaCamera: NSObject {
         }
     }
     
+    var streamDepthData = false {
+        didSet {
+            restartVideo()
+        }
+    }
+    
     var capturesHighResolutionImages = false {
         didSet {
             restartVideo()
@@ -247,6 +254,7 @@ final class LuminaCamera: NSObject {
     fileprivate var recognitionBufferQueue = DispatchQueue(label: "com.lumina.recognitionBufferQueue")
     fileprivate var sessionQueue = DispatchQueue(label: "com.lumina.sessionQueue")
     fileprivate var photoCollectionQueue = DispatchQueue(label: "com.lumina.photoCollectionQueue")
+    fileprivate var depthDataQueue = DispatchQueue(label: "com.lumina.depthDataQueue")
     
     fileprivate var videoDataOutput: AVCaptureVideoDataOutput {
         let output = AVCaptureVideoDataOutput()
@@ -275,6 +283,23 @@ final class LuminaCamera: NSObject {
         let output = AVCaptureMovieFileOutput()
         _videoFileOutput = output
         return output
+    }
+    
+    private var _depthDataOutput: AnyObject?
+    @available(iOS 11.0, *)
+    fileprivate var depthDataOutput: AVCaptureDepthDataOutput? {
+        get {
+            if let existingOutput = _depthDataOutput {
+                return existingOutput as? AVCaptureDepthDataOutput
+            }
+            let output = AVCaptureDepthDataOutput()
+            output.setDelegate(self, callbackQueue: depthDataQueue)
+            _depthDataOutput = output
+            return output
+        }
+        set {
+            _depthDataOutput = newValue
+        }
     }
     
     func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
@@ -404,6 +429,13 @@ final class LuminaCamera: NSObject {
                     return
                 }
                 
+                if #available(iOS 11.0, *), let depthDataOutput = self.depthDataOutput {
+                    guard self.session.canAddOutput(depthDataOutput) else {
+                        completion(CameraSetupResult.invalidDepthDataOutput)
+                        return
+                    }
+                }
+                
                 self.videoInput = videoInput
                 self.session.addInput(videoInput)
                 if self.streamFrames {
@@ -455,6 +487,12 @@ final class LuminaCamera: NSObject {
                     }
                 } else {
                     self.capturesDepthData = false
+                }
+                
+                if #available(iOS 11.0, *) {
+                    if self.streamDepthData, let depthDataOutput = self.depthDataOutput {
+                        self.session.addOutput(depthDataOutput)
+                    }
                 }
                 
                 self.session.commitConfiguration()
@@ -819,29 +857,22 @@ extension LuminaCamera: AVCaptureMetadataOutputObjectsDelegate {
 @available(iOS 11.0, *)
 extension LuminaCamera: AVCaptureDepthDataOutputDelegate {
     func depthDataOutput(_ output: AVCaptureDepthDataOutput, didOutput depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection) {
-        photoCollectionQueue.sync {
-            if self.currentPhotoCollection != nil {
-                self.currentPhotoCollection = LuminaPhotoCapture()
-            }
-            guard var collection = self.currentPhotoCollection else {
-                return
-            }
-            collection.camera = self
-            collection.depthData = depthData
+        DispatchQueue.main.async {
+            self.delegate?.depthDataCaptured(camera: self, depthData: depthData)
         }
     }
     
     func depthDataOutput(_ output: AVCaptureDepthDataOutput, didDrop depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection, reason: AVCaptureOutput.DataDroppedReason) {
-        photoCollectionQueue.async {
-            if self.currentPhotoCollection != nil {
-                self.currentPhotoCollection = LuminaPhotoCapture()
-            }
-            guard var collection = self.currentPhotoCollection else {
-                return
-            }
-            collection.camera = self
-            collection.depthData = nil
-        }
+//        photoCollectionQueue.async {
+//            if self.currentPhotoCollection != nil {
+//                self.currentPhotoCollection = LuminaPhotoCapture()
+//            }
+//            guard var collection = self.currentPhotoCollection else {
+//                return
+//            }
+//            collection.camera = self
+//            collection.depthData = nil
+//        }
     }
 }
 

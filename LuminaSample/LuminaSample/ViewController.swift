@@ -18,6 +18,7 @@ class ViewController: UITableViewController {
     @IBOutlet weak var trackMetadataSwitch: UISwitch!
     @IBOutlet weak var capturesLivePhotosSwitch: UISwitch!
     @IBOutlet weak var capturesDepthDataSwitch: UISwitch!
+    @IBOutlet weak var streamsDepthDataSwitch: UISwitch!
     @IBOutlet weak var showTextPromptViewSwitch: UISwitch!
     @IBOutlet weak var frameRateLabel: UILabel!
     @IBOutlet weak var frameRateSlider: UISlider!
@@ -49,6 +50,7 @@ extension ViewController { //MARK: IBActions
         camera.trackMetadata = self.trackMetadataSwitch.isOn
         camera.capturesLivePhotos = self.capturesLivePhotosSwitch.isOn
         camera.capturesDepthData = self.capturesDepthDataSwitch.isOn
+        camera.streamDepthData = self.streamsDepthDataSwitch.isOn
         camera.resolution = selectedResolution
         camera.maxZoomScale = (self.maxZoomScaleLabel.text! as NSString).floatValue
         camera.frameRate = Int(self.frameRateLabel.text!) ?? 30
@@ -117,6 +119,14 @@ extension ViewController: LuminaDelegate {
     
     func streamed(videoFrame: UIImage, from controller: LuminaViewController) {
         print("video frame received")
+    }
+    
+    func streamed(depthData: Any, from controller: LuminaViewController) {
+        if #available(iOS 11.0, *) {
+            if let _ = depthData as? AVDepthData {
+                print("got depth data")
+            }
+        }
     }
     
     func dismissed(controller: LuminaViewController) {

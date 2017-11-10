@@ -18,7 +18,7 @@ public protocol LuminaDelegate: class {
     /// - Parameters:
     ///   - stillImage: the image captured by Lumina
     ///   - livePhotoAt: the URL where the live photo file can be located and used, if enabled and available
-    ///   - depthData: the depth data associated with the captured still image, if enabled and available
+    ///   - depthData: the depth data associated with the captured still image, if enabled and available (iOS 11.0 only)
     ///   - controller: the instance of Lumina that captured the still image
     func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController)
     
@@ -48,6 +48,15 @@ public protocol LuminaDelegate: class {
     ///   - controller: the instance of Lumina that is streaming the frames
     func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController)
     
+    /// Triggered whenever streamDepthData is set to true on Lumina, and streams depth data detected in the form of AVDepthData
+    ///
+    /// - Warning: This data is returned from type `Any`, and must be optionally downcast to `AVDepthData` by the user of Lumina. This is to maintain backwards compatibility with iOS 10.0
+    /// - Note: This is only available on iOS 11.0
+    /// - Parameters:
+    ///   - depthData: buffer containing AVDepthData relevant to the streamed video frame
+    ///   - controller: the instance of Lumina that is streaming the depth data
+    func streamed(depthData: Any, from controller: LuminaViewController)
+    
     /// Triggered whenever trackMetadata is set to true on Lumina, and streams metadata detected in the form of QR codes, bar codes, or faces
     ///
     /// - Note: For list of all machine readable object types, aside from QR codes or faces, click [here](https://developer.apple.com/documentation/avfoundation/avmetadatamachinereadablecodeobject/machine_readable_object_types).
@@ -74,6 +83,7 @@ public extension LuminaDelegate {
     func captured(videoAt: URL, from controller: LuminaViewController) {}
     func streamed(videoFrame: UIImage, from controller: LuminaViewController) {}
     func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController) {}
+    func streamed(depthData: Any, from controller: LuminaViewController) {}
     func detected(metadata: [Any], from controller: LuminaViewController) {}
     func dismissed(controller: LuminaViewController) {}
 }
@@ -415,6 +425,18 @@ public final class LuminaViewController: UIViewController {
             }
         }
     }
+    
+    /// Set this to return AVDepthData with streamed video frames
+    ///
+    /// - Note: Only works on iOS 11.0 or higher
+    /// - Note: Only works with .photo, .medium1280x720, and .vga640x480 resolutions
+    open var streamDepthData: Bool = false {
+        didSet {
+            if let camera = camera {
+                camera.streamDepthData = streamDepthData
+            }
+        }
+    }
 
     // TODO: need to iterate through activeFormats to find highest resolution of still images for given cameraResolution, and set to that.
 //    open var capturesHighResolutionImages: Bool = false {
@@ -700,6 +722,10 @@ extension LuminaViewController: LuminaCameraDelegate {
         DispatchQueue.main.async {
             self.textPrompt = ""
         }
+    }
+    
+    func depthDataCaptured(camera: LuminaCamera, depthData: Any) {
+        delegate?.streamed(depthData: depthData, from: self)
     }
 }
 
