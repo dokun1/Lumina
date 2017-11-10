@@ -662,6 +662,11 @@ private extension LuminaCamera {
             if let dataOutput = oldOutput as? AVCaptureVideoDataOutput {
                 self.session.removeOutput(dataOutput)
             }
+            if #available(iOS 11.0, *) {
+                if let depthOutput = oldOutput as? AVCaptureDepthDataOutput {
+                    self.session.removeOutput(depthOutput)
+                }
+            }
         }
     }
     
