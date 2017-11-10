@@ -241,9 +241,11 @@ final class LuminaCamera: NSObject {
         if #available(iOS 10.2, *) {
             deviceTypes.append(.builtInDualCamera)
         }
+        #if swift(>=4.0.2) // Xcode 9.1 shipped with Swift 4.0.2
         if #available(iOS 11.1, *), self.captureDepthData == true {
             deviceTypes.append(.builtInTrueDepthCamera)
         }
+        #endif
         return AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
     }
     fileprivate var videoInput: AVCaptureDeviceInput?
