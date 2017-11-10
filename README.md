@@ -136,7 +136,7 @@ Presenting `Lumina` goes like so:
 present(camera, animated: true, completion:nil)
 ```
 
-Remember to add a description for `Privacy - Camera Usage Description` in your `Info.plist` file, so that system permissions are handled properly.
+**Remember to add a description for `Privacy - Camera Usage Description` and `Privacy - Microphone Usage Description` in your `Info.plist` file, so that system permissions are handled properly.**
 
 ### Functionality
 
@@ -153,7 +153,7 @@ camera.captureLivePhotos = true // for this to work, .resolution must be set to 
 camera.captureDepthData = true // for this to work, .resolution must be set to .photo, .medium1280x720, or .vga640x480
 camera.streamDepthData = true // for this to work, .resolution must be set to .photo, .medium1280x720, or .vga640x480
 camera.frameRate = 60 // can be any number, defaults to 30 if selection cannot be loaded
-camera.maxZoomRate = 5.0 // not setting this defaults to the highest zoom rate for any given camera device
+camera.maxZoomScale = 5.0 // not setting this defaults to the highest zoom scale for any given camera device
 ```
 
 ### Object Recognition
