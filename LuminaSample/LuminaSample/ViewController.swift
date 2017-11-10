@@ -28,6 +28,7 @@ class ViewController: UITableViewController {
     @IBOutlet weak var maxZoomScaleSlider: UISlider!
     
     var selectedResolution: CameraResolution = .photo
+    var depthView: UIImageView?
 }
 
 extension ViewController { //MARK: IBActions
@@ -77,6 +78,8 @@ extension ViewController { //MARK: IBActions
                 if #available(iOS 11.0, *) {
                     controller.depthData = map["depthData"] as? AVDepthData
                 }
+                let positionBool = map["isPhotoSelfie"] as! Bool
+                controller.position = positionBool ? .front : .back
             } else { return }
         } else if segue.identifier == "selectResolutionSegue" {
             let controller = segue.destination as! ResolutionViewController
@@ -88,7 +91,7 @@ extension ViewController { //MARK: IBActions
 extension ViewController: LuminaDelegate {
     func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController) {
         controller.dismiss(animated: true) {
-            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage" : stillImage, "livePhotoURL" : livePhotoAt as Any, "depthData" : depthData])
+            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage" : stillImage, "livePhotoURL" : livePhotoAt as Any, "depthData" : depthData, "isPhotoSelfie" : controller.position == .front ? true : false])
         }
     }
     
@@ -123,8 +126,20 @@ extension ViewController: LuminaDelegate {
     
     func streamed(depthData: Any, from controller: LuminaViewController) {
         if #available(iOS 11.0, *) {
-            if let _ = depthData as? AVDepthData {
-                print("got depth data")
+            if let data = depthData as? AVDepthData {
+                guard let image = data.depthDataMap.normalizedImage(with: controller.position) else {
+                    print("could not convert depth data")
+                    return
+                }
+                if let imageView = self.depthView {
+                    imageView.removeFromSuperview()
+                }
+                let newView = UIImageView(frame: CGRect(x: controller.view.frame.minX, y: controller.view.frame.maxY - 300, width: 200, height: 200))
+                newView.image = image
+                newView.contentMode = .scaleAspectFit
+                newView.backgroundColor = UIColor.clear
+                controller.view.addSubview(newView)
+                controller.view.bringSubview(toFront: newView)
             }
         }
     }
@@ -132,6 +147,8 @@ extension ViewController: LuminaDelegate {
     func dismissed(controller: LuminaViewController) {
         controller.dismiss(animated: true, completion: nil)
     }
+    
+    
 }
 
 extension ViewController: ResolutionDelegate {
@@ -139,6 +156,33 @@ extension ViewController: ResolutionDelegate {
         selectedResolution = resolution
         if let navigationController = self.navigationController {
             navigationController.popToViewController(self, animated: true)
+        }
+    }
+}
+
+extension CVPixelBuffer {
+    func normalizedImage(with position: CameraPosition) -> UIImage? {
+        let ciImage = CIImage(cvPixelBuffer: self)
+        let context = CIContext(options: nil)
+        if let cgImage = context.createCGImage(ciImage, from: CGRect(x: 0, y: 0, width: CVPixelBufferGetWidth(self), height: CVPixelBufferGetHeight(self))) {
+            return UIImage(cgImage: cgImage , scale: 1.0, orientation: getImageOrientation(with: position))
+        } else {
+            return nil
+        }
+    }
+    
+    private func getImageOrientation(with position: CameraPosition) -> UIImageOrientation {
+        switch UIApplication.shared.statusBarOrientation {
+        case .landscapeLeft:
+            return position == .back ? .down : .upMirrored
+        case .landscapeRight:
+            return position == .back ? .up : .downMirrored
+        case .portraitUpsideDown:
+            return position == .back ? .left : .rightMirrored
+        case .portrait:
+            return position == .back ? .right : .leftMirrored
+        case .unknown:
+            return position == .back ? .right : .leftMirrored
         }
     }
 }
