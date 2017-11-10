@@ -136,7 +136,7 @@ Presenting `Lumina` goes like so:
 present(camera, animated: true, completion:nil)
 ```
 
-Remember to add a description for `Privacy - Camera Usage Description` and `Privacy - Microphone Usage Description` in your `Info.plist` file, so that system permissions are handled properly.
+**Remember to add a description for `Privacy - Camera Usage Description` and `Privacy - Microphone Usage Description` in your `Info.plist` file, so that system permissions are handled properly.**
 
 ### Functionality
 
