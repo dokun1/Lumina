@@ -21,18 +21,18 @@ public struct LuminaPrediction {
 @available(iOS 11.0, *)
 final class LuminaObjectRecognizer: NSObject {
     private var model: MLModel
-    
+
     init(model: MLModel) {
         self.model = model
     }
-    
+
     func recognize(from image: UIImage, completion: @escaping (_ predictions: [LuminaPrediction]?) -> Void) {
         guard let visionModel = try? VNCoreMLModel(for: self.model) else {
             completion(nil)
             return
         }
         let request = VNCoreMLRequest(model: visionModel) { request, error in
-            if error != nil || request.results == nil{
+            if error != nil || request.results == nil {
                 completion(nil)
             } else if let results = request.results {
                 completion(self.mapResults(results))
@@ -49,11 +49,13 @@ final class LuminaObjectRecognizer: NSObject {
             completion(nil)
         }
     }
-    
+
     private func mapResults(_ objects: [Any]) -> [LuminaPrediction] {
         var results = [LuminaPrediction]()
-        for object in objects as! [VNClassificationObservation] {
-            results.append(LuminaPrediction(name: object.identifier, confidence: object.confidence))
+        for object in objects {
+            if let object = object as? VNClassificationObservation {
+                results.append(LuminaPrediction(name: object.identifier, confidence: object.confidence))
+            }
         }
         return results.sorted(by: {
             $0.confidence > $1.confidence

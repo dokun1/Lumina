@@ -24,7 +24,6 @@ final class LuminaButton: UIButton {
     private var shutterButtonDimension = 70
     private var style: SystemButtonType?
     private var border: UIView?
-    
     private var _image: UIImage?
     var image: UIImage? {
         get {
@@ -46,7 +45,7 @@ final class LuminaButton: UIButton {
             _text = newValue
         }
     }
-    
+
     required init() {
         super.init(frame: CGRect.zero)
         self.backgroundColor = UIColor.clear
@@ -55,7 +54,7 @@ final class LuminaButton: UIButton {
             titleLabel.font = UIFont.systemFont(ofSize: 20)
         }
     }
-    
+
     init(with systemStyle: SystemButtonType) {
         super.init(frame: CGRect.zero)
         self.style = systemStyle
@@ -68,27 +67,23 @@ final class LuminaButton: UIButton {
         case .torch:
             self.image = UIImage(named: "cameraTorch", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
             self.frame = CGRect(origin: CGPoint(x: 10, y: 10), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
-            break
         case .cameraSwitch:
             self.image = UIImage(named: "cameraSwitch", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
             self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.maxX - 50, y: 10), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
-            break
         case .cancel:
             self.text = "Cancel"
             self.frame = CGRect(origin: CGPoint(x: 10, y: UIScreen.main.bounds.maxY - 50), size: CGSize(width: self.cancelButtonWidth, height: self.cancelButtonHeight))
-            break
         case .shutter:
             self.backgroundColor = UIColor.normalState
             self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.midX - 35, y: UIScreen.main.bounds.maxY - 80), size: CGSize(width: self.shutterButtonDimension, height: self.shutterButtonDimension))
             self.layer.cornerRadius = CGFloat(self.shutterButtonDimension / 2)
             self.layer.borderWidth = 3
             self.layer.borderColor = UIColor.borderNormalState
-            break
         default:
             break
         }
     }
-    
+
     func startRecordingVideo() {
         if style == .shutter {
             DispatchQueue.main.async {
@@ -100,7 +95,7 @@ final class LuminaButton: UIButton {
             }
         }
     }
-    
+
     func stopRecordingVideo() {
         if style == .shutter {
             DispatchQueue.main.async {
@@ -112,23 +107,23 @@ final class LuminaButton: UIButton {
             }
         }
     }
-    
+
     func takePhoto() {
         if style == .shutter {
             DispatchQueue.main.async {
                 UIView.animate(withDuration: 0.1, animations: {
                     self.backgroundColor = UIColor.takePhotoState
                     self.layer.borderColor = UIColor.borderTakePhotoState
-                }) { complete in
+                }, completion: { _ in
                     UIView.animate(withDuration: 0.1, animations: {
                         self.backgroundColor = UIColor.normalState
                         self.layer.borderColor = UIColor.borderNormalState
                     })
-                }
+                })
             }
         }
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -138,26 +133,24 @@ fileprivate extension UIColor {
     class var normalState: UIColor {
         return UIColor(white: 1.0, alpha: 0.65)
     }
-    
+
     class var recordingState: UIColor {
         return UIColor.red.withAlphaComponent(0.65)
     }
-    
+
     class var takePhotoState: UIColor {
         return UIColor.lightGray.withAlphaComponent(0.65)
     }
-    
+
     class var borderNormalState: CGColor {
         return UIColor.gray.cgColor
     }
-    
+
     class var borderRecordingState: CGColor {
         return UIColor.red.cgColor
     }
-    
+
     class var borderTakePhotoState: CGColor {
         return UIColor.darkGray.cgColor
     }
-    
-    
 }
