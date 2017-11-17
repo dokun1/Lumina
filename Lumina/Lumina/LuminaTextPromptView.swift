@@ -12,7 +12,7 @@ final class LuminaTextPromptView: UIView {
 
     private var textLabel = UILabel()
     static private let animationDuration = 0.3
-    
+
     init() {
         super.init(frame: CGRect.zero)
         self.textLabel = UILabel()
