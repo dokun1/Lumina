@@ -1,5 +1,46 @@
 # Change Log
 
+## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
+
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.11.1...HEAD)
+
+**Merged pull requests:**
+
+- Swiftlint [\#50](https://github.com/dokun1/Lumina/pull/50) ([dokun1](https://github.com/dokun1))
+
+## [0.11.1](https://github.com/dokun1/Lumina/tree/0.11.1) (2017-11-10)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.11.0...0.11.1)
+
+**Implemented enhancements:**
+
+- DepthData for iPhone X selfie camera [\#41](https://github.com/dokun1/Lumina/issues/41)
+- Stream AVCaptureDepthDataOutput [\#33](https://github.com/dokun1/Lumina/issues/33)
+
+**Closed issues:**
+
+- Crash when camera usage description is not set. [\#45](https://github.com/dokun1/Lumina/issues/45)
+- Type 'AVCaptureDevice.DeviceType' has no member 'builtInTrueDepthCamera' in Xcode 9.0 [\#44](https://github.com/dokun1/Lumina/issues/44)
+- Enable Depth Data return with still image capture [\#29](https://github.com/dokun1/Lumina/issues/29)
+
+**Merged pull requests:**
+
+- Showing streaming photo of depth on controller [\#48](https://github.com/dokun1/Lumina/pull/48) ([dokun1](https://github.com/dokun1))
+- Fix for trueDepthCamera issue [\#47](https://github.com/dokun1/Lumina/pull/47) ([dokun1](https://github.com/dokun1))
+- Add 'Microphone Usage' and change maxZoomRate to maxZoomScale in Readme. [\#46](https://github.com/dokun1/Lumina/pull/46) ([dconde7](https://github.com/dconde7))
+- Adds streaming of AVDepthData [\#43](https://github.com/dokun1/Lumina/pull/43) ([dokun1](https://github.com/dokun1))
+
+## [0.11.0](https://github.com/dokun1/Lumina/tree/0.11.0) (2017-11-06)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.10.1...0.11.0)
+
+**Closed issues:**
+
+- Enable Live Photo capture [\#28](https://github.com/dokun1/Lumina/issues/28)
+
+**Merged pull requests:**
+
+- Photo options [\#32](https://github.com/dokun1/Lumina/pull/32) ([dokun1](https://github.com/dokun1))
+- Added gif to readme [\#30](https://github.com/dokun1/Lumina/pull/30) ([dokun1](https://github.com/dokun1))
+
 ## [0.10.1](https://github.com/dokun1/Lumina/tree/0.10.1) (2017-10-25)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.10.0...0.10.1)
 
