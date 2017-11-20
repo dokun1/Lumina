@@ -433,8 +433,10 @@ final class LuminaCamera: NSObject {
         guard self.session.canAddOutput(self.metadataOutput) else {
             return .invalidVideoMetadataOutput
         }
-        guard self.recordsVideo == true, self.session.canAddOutput(self.videoFileOutput) else {
-            return .invalidVideoFileOutput
+        if self.recordsVideo == true {
+            guard self.session.canAddOutput(self.videoFileOutput) else {
+                return .invalidVideoFileOutput
+            }
         }
         if #available(iOS 11.0, *), let depthDataOutput = self.depthDataOutput {
             guard self.session.canAddOutput(depthDataOutput) else {

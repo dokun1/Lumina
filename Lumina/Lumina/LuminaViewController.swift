@@ -149,24 +149,18 @@ public enum CameraResolution: String {
             return CMVideoDimensions(width: 640, height: 480)
         case .low352x288:
             return CMVideoDimensions(width: 352, height: 288)
-        case .medium1280x720:
+        case .medium1280x720, .iframe1280x720, .medium:
             return CMVideoDimensions(width: 1280, height: 720)
-        case .high1920x1080:
+        case .high1920x1080, .highest:
             return CMVideoDimensions(width: 1920, height: 1080)
         case .ultra3840x2160:
             return CMVideoDimensions(width: 3840, height: 2160)
-        case .iframe1280x720:
-            return CMVideoDimensions(width: 1280, height: 720)
         case .iframe960x540:
             return CMVideoDimensions(width: 960, height: 540)
         case .photo:
             return CMVideoDimensions(width: INT32_MAX, height: INT32_MAX)
         case .lowest:
             return CMVideoDimensions(width: 352, height: 288)
-        case .medium:
-            return CMVideoDimensions(width: 1280, height: 720)
-        case .highest:
-            return CMVideoDimensions(width: 1920, height: 1080)
         case .inputPriority:
             return CMVideoDimensions(width: INT32_MAX, height: INT32_MAX)
         }
