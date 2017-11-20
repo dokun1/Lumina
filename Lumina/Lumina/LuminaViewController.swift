@@ -12,7 +12,7 @@ import CoreML
 
 /// Delegate for returning information to the application utilizing Lumina
 public protocol LuminaDelegate: class {
-    
+
     /// Triggered whenever a still image is captured by the user of Lumina
     ///
     /// - Parameters:
@@ -21,15 +21,14 @@ public protocol LuminaDelegate: class {
     ///   - depthData: the depth data associated with the captured still image, if enabled and available (iOS 11.0 only)
     ///   - controller: the instance of Lumina that captured the still image
     func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController)
-    
+
     /// Triggered whenever a video is captured by the user of Lumina
     ///
     /// - Parameters:
     ///   - videoAt: the URL where the video file can be located and used
-    ///   TODO: change name to indicate temporary url?
     ///   - controller: the instance of Lumina that captured the still image
     func captured(videoAt: URL, from controller: LuminaViewController)
-    
+
     /// Triggered whenever streamFrames is set to true on Lumina, and streams video frames as UIImage instances
     ///
     /// - Note: Will not be triggered unless streamFrames is true. False is default value
@@ -37,7 +36,7 @@ public protocol LuminaDelegate: class {
     ///   - videoFrame: the frame captured by Lumina
     ///   - controller: the instance of Lumina that is streaming the frames
     func streamed(videoFrame: UIImage, from controller: LuminaViewController)
-    
+
     /// Triggered whenever a CoreML model is given to Lumina, and Lumina streams a video frame alongside a prediction
     ///
     /// - Note: Will not be triggered unless streamingModel resolves to not nil. Leaving the streamingModel parameter unset will not trigger this method
@@ -47,7 +46,7 @@ public protocol LuminaDelegate: class {
     ///   - predictions: the predictions made by the model used with Lumina
     ///   - controller: the instance of Lumina that is streaming the frames
     func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController)
-    
+
     /// Triggered whenever streamDepthData is set to true on Lumina, and streams depth data detected in the form of AVDepthData
     ///
     /// - Warning: This data is returned from type `Any`, and must be optionally downcast to `AVDepthData` by the user of Lumina. This is to maintain backwards compatibility with iOS 10.0
@@ -56,7 +55,7 @@ public protocol LuminaDelegate: class {
     ///   - depthData: buffer containing AVDepthData relevant to the streamed video frame
     ///   - controller: the instance of Lumina that is streaming the depth data
     func streamed(depthData: Any, from controller: LuminaViewController)
-    
+
     /// Triggered whenever trackMetadata is set to true on Lumina, and streams metadata detected in the form of QR codes, bar codes, or faces
     ///
     /// - Note: For list of all machine readable object types, aside from QR codes or faces, click [here](https://developer.apple.com/documentation/avfoundation/avmetadatamachinereadablecodeobject/machine_readable_object_types).
@@ -67,7 +66,7 @@ public protocol LuminaDelegate: class {
     ///   - metadata: the array of metadata that is captured.
     ///   - controller: the instance of Lumina that is streaming the metadata
     func detected(metadata: [Any], from controller: LuminaViewController)
-    
+
     /// Triggered whenever the cancel button is tapped on Lumina, with the intent of dismissing the UIViewController
     ///
     /// - Note: This is most usually used whenever
@@ -110,11 +109,11 @@ public enum CameraResolution: String {
     case medium = "Medium"
     case highest = "Highest"
     case inputPriority = "Input Priority"
-    
+
     public static func all() -> [CameraResolution] {
         return [CameraResolution.low352x288, CameraResolution.vga640x480, CameraResolution.medium1280x720, CameraResolution.high1920x1080, CameraResolution.ultra3840x2160, CameraResolution.iframe1280x720, CameraResolution.iframe960x540, CameraResolution.photo, CameraResolution.lowest, CameraResolution.medium, CameraResolution.highest, CameraResolution.inputPriority]
     }
-    
+
     func foundationPreset() -> AVCaptureSession.Preset {
         switch self {
         case .vga640x480:
@@ -143,31 +142,25 @@ public enum CameraResolution: String {
             return AVCaptureSession.Preset.inputPriority
         }
     }
-    
+
     func getDimensions() -> CMVideoDimensions {
         switch self {
         case .vga640x480:
             return CMVideoDimensions(width: 640, height: 480)
         case .low352x288:
             return CMVideoDimensions(width: 352, height: 288)
-        case .medium1280x720:
+        case .medium1280x720, .iframe1280x720, .medium:
             return CMVideoDimensions(width: 1280, height: 720)
-        case .high1920x1080:
+        case .high1920x1080, .highest:
             return CMVideoDimensions(width: 1920, height: 1080)
         case .ultra3840x2160:
             return CMVideoDimensions(width: 3840, height: 2160)
-        case .iframe1280x720:
-            return CMVideoDimensions(width: 1280, height: 720)
         case .iframe960x540:
             return CMVideoDimensions(width: 960, height: 540)
         case .photo:
             return CMVideoDimensions(width: INT32_MAX, height: INT32_MAX)
         case .lowest:
             return CMVideoDimensions(width: 352, height: 288)
-        case .medium:
-            return CMVideoDimensions(width: 1280, height: 720)
-        case .highest:
-            return CMVideoDimensions(width: 1920, height: 1080)
         case .inputPriority:
             return CMVideoDimensions(width: INT32_MAX, height: INT32_MAX)
         }
@@ -177,7 +170,7 @@ public enum CameraResolution: String {
 /// The main class that developers should interact with and instantiate when using Lumina
 public final class LuminaViewController: UIViewController {
     var camera: LuminaCamera?
-    
+
     private var _previewLayer: AVCaptureVideoPreviewLayer?
     var previewLayer: AVCaptureVideoPreviewLayer {
         if let currentLayer = _previewLayer {
@@ -190,7 +183,7 @@ public final class LuminaViewController: UIViewController {
         _previewLayer = layer
         return layer
     }
-    
+
     private var _zoomRecognizer: UIPinchGestureRecognizer?
     var zoomRecognizer: UIPinchGestureRecognizer {
         if let currentRecognizer = _zoomRecognizer {
@@ -201,7 +194,7 @@ public final class LuminaViewController: UIViewController {
         _zoomRecognizer = recognizer
         return recognizer
     }
-    
+
     private var _focusRecognizer: UITapGestureRecognizer?
     var focusRecognizer: UITapGestureRecognizer {
         if let currentRecognizer = _focusRecognizer {
@@ -212,7 +205,7 @@ public final class LuminaViewController: UIViewController {
         _focusRecognizer = recognizer
         return recognizer
     }
-    
+
     private var _feedbackGenerator: LuminaHapticFeedbackGenerator?
     var feedbackGenerator: LuminaHapticFeedbackGenerator {
         if let currentGenerator = _feedbackGenerator {
@@ -222,7 +215,7 @@ public final class LuminaViewController: UIViewController {
         _feedbackGenerator = generator
         return generator
     }
-    
+
     private var _cancelButton: LuminaButton?
     var cancelButton: LuminaButton {
         if let currentButton = _cancelButton {
@@ -233,7 +226,7 @@ public final class LuminaViewController: UIViewController {
         _cancelButton = button
         return button
     }
-    
+
     private var _shutterButton: LuminaButton?
     var shutterButton: LuminaButton {
         if let currentButton = _shutterButton {
@@ -245,7 +238,7 @@ public final class LuminaViewController: UIViewController {
         _shutterButton = button
         return button
     }
-    
+
     private var _switchButton: LuminaButton?
     var switchButton: LuminaButton {
         if let currentButton = _switchButton {
@@ -256,7 +249,7 @@ public final class LuminaViewController: UIViewController {
         _switchButton = button
         return button
     }
-    
+
     private var _torchButton: LuminaButton?
     var torchButton: LuminaButton {
         if let currentButton = _torchButton {
@@ -267,7 +260,7 @@ public final class LuminaViewController: UIViewController {
         _torchButton = button
         return button
     }
-    
+
     private var _textPromptView: LuminaTextPromptView?
     var textPromptView: LuminaTextPromptView {
         if let existingView = _textPromptView {
@@ -277,12 +270,12 @@ public final class LuminaViewController: UIViewController {
         _textPromptView = promptView
         return promptView
     }
-    
+
     fileprivate var isUpdating = false
-    
+
     /// The delegate for streaming output from Lumina
     weak open var delegate: LuminaDelegate?
-    
+
     /// The position of the camera
     ///
     /// - Note: Responds live to being set at any time, and will update automatically
@@ -294,7 +287,7 @@ public final class LuminaViewController: UIViewController {
             camera.position = position
         }
     }
-    
+
     /// Set this to choose whether or not Lumina will be able to record video by holding down the capture button
     ///
     /// - Note: Responds live to being set at any time, and will update automatically
@@ -307,7 +300,7 @@ public final class LuminaViewController: UIViewController {
             }
         }
     }
-    
+
     /// Set this to choose whether or not Lumina will stream video frames through the delegate
     ///
     /// - Note: Responds live to being set at any time, and will update automatically
@@ -320,7 +313,7 @@ public final class LuminaViewController: UIViewController {
             }
         }
     }
-    
+
     /// Set this to choose whether or not Lumina will stream machine readable metadata through the delegate
     ///
     /// - Note: Responds live to being set at any time, and will update automatically
@@ -333,7 +326,7 @@ public final class LuminaViewController: UIViewController {
             }
         }
     }
-    
+
     /// Lumina comes ready with a view for a text prompt to give instructions to the user, and this is where you can set the text of that prompt
     ///
     /// - Note: Responds live to being set at any time, and will update automatically
@@ -344,7 +337,7 @@ public final class LuminaViewController: UIViewController {
             self.textPromptView.updateText(to: textPrompt)
         }
     }
-    
+
     /// Set this to choose a resolution for the camera at any time - defaults to highest resolution possible for camera
     ///
     /// - Note: Responds live to being set at any time, and will update automatically
@@ -355,7 +348,7 @@ public final class LuminaViewController: UIViewController {
             }
         }
     }
-    
+
     /// Set this to choose a frame rate for the camera at any time - defaults to 30 if query is not available
     ///
     /// - Note: Responds live to being set at any time, and will update automatically
@@ -366,9 +359,9 @@ public final class LuminaViewController: UIViewController {
             }
         }
     }
-    
+
     private var _streamingModel: AnyObject?
-    
+
     /// A model that will be used when streaming images for object recognition
     ///
     /// - Note: Only works on iOS 11 and up
@@ -389,7 +382,7 @@ public final class LuminaViewController: UIViewController {
             }
         }
     }
-    
+
     /// The maximum amount of zoom that Lumina can use
     ///
     /// - Note: Default value will rely on whatever the active device can handle, if this is not explicitly set
@@ -400,7 +393,7 @@ public final class LuminaViewController: UIViewController {
             }
         }
     }
-    
+
     /// Set this to decide whether live photos will be captured whenever a still image is captured.
     ///
     /// - Note: Overrides cameraResolution to .photo
@@ -413,7 +406,7 @@ public final class LuminaViewController: UIViewController {
             }
         }
     }
-    
+
     /// Set this to return AVDepthData with a still captured image
     ///
     /// - Note: Only works on iOS 11.0 or higher
@@ -425,7 +418,7 @@ public final class LuminaViewController: UIViewController {
             }
         }
     }
-    
+
     /// Set this to return AVDepthData with streamed video frames
     ///
     /// - Note: Only works on iOS 11.0 or higher
@@ -438,7 +431,6 @@ public final class LuminaViewController: UIViewController {
         }
     }
 
-    // TODO: need to iterate through activeFormats to find highest resolution of still images for given cameraResolution, and set to that.
 //    open var capturesHighResolutionImages: Bool = false {
 //        didSet {
 //            if let camera = camera {
@@ -446,7 +438,7 @@ public final class LuminaViewController: UIViewController {
 //            }
 //        }
 //    }
-    
+
     fileprivate var currentZoomScale: Float = 1.0 {
         didSet {
             if let camera = self.camera {
@@ -454,9 +446,9 @@ public final class LuminaViewController: UIViewController {
             }
         }
     }
-    
+
     fileprivate var beginZoomScale: Float = 1.0
-    
+
     /// run this in order to create Lumina
     public init() {
         super.init(nibName: nil, bundle: nil)
@@ -464,7 +456,7 @@ public final class LuminaViewController: UIViewController {
         camera.delegate = self
         self.camera = camera
     }
-    
+
     /// run this in order to create Lumina with a storyboard
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -472,13 +464,13 @@ public final class LuminaViewController: UIViewController {
         camera.delegate = self
         self.camera = camera
     }
-    
+
     /// override with caution
     public override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         print("Camera framework is overloading on memory")
     }
-    
+
     /// override with caution
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -492,20 +484,20 @@ public final class LuminaViewController: UIViewController {
             })
         }
     }
-    
+
     /// override with caution
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         feedbackGenerator.prepare()
     }
-    
+
     public override var shouldAutorotate: Bool {
         guard let camera = self.camera else {
             return true
         }
         return !camera.recordingVideo
     }
-    
+
     /// override with caution
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
@@ -513,7 +505,7 @@ public final class LuminaViewController: UIViewController {
             camera.pause()
         }
     }
-    
+
     /// override with caution
     public override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
@@ -523,12 +515,12 @@ public final class LuminaViewController: UIViewController {
         updateUI(orientation: UIApplication.shared.statusBarOrientation)
         updateButtonFrames()
     }
-    
+
     /// override with caution
     override public var prefersStatusBarHidden: Bool {
         return true
     }
-    
+
     /// returns a string of the version of Lumina currently in use, follows semantic versioning.
     open class func getVersion() -> String? {
         let bundle = Bundle(for: LuminaViewController.self)
@@ -551,13 +543,13 @@ fileprivate extension LuminaViewController {
         }
         currentZoomScale = min(maxZoomScale, max(1.0, beginZoomScale * Float(recognizer.scale)))
     }
-    
+
     @objc func handleTapGestureRecognizer(recognizer: UITapGestureRecognizer) {
         if self.position == .back {
             focusCamera(at: recognizer.location(in: self.view))
         }
     }
-    
+
     func createUI() {
         self.view.layer.addSublayer(self.previewLayer)
         self.view.addSubview(self.cancelButton)
@@ -569,7 +561,7 @@ fileprivate extension LuminaViewController {
         self.view.addGestureRecognizer(self.focusRecognizer)
         enableUI(valid: false)
     }
-    
+
     func enableUI(valid: Bool) {
         DispatchQueue.main.async {
             self.shutterButton.isEnabled = valid
@@ -577,7 +569,7 @@ fileprivate extension LuminaViewController {
             self.torchButton.isEnabled = valid
         }
     }
-    
+
     func updateUI(orientation: UIInterfaceOrientation) {
         guard let connection = self.previewLayer.connection, connection.isVideoOrientationSupported else {
             return
@@ -588,7 +580,7 @@ fileprivate extension LuminaViewController {
             camera.updateOutputVideoOrientation(connection.videoOrientation)
         }
     }
-    
+
     func updateButtonFrames() {
         self.cancelButton.center = CGPoint(x: self.view.frame.minX + 55, y: self.view.frame.maxY - 45)
         if self.view.frame.width > self.view.frame.height {
@@ -601,7 +593,7 @@ fileprivate extension LuminaViewController {
         self.textPromptView.center = CGPoint(x: self.view.frame.midX, y: self.view.frame.minY + 45)
         self.textPromptView.layoutSubviews()
     }
-    
+
     private func handleCameraSetupResult(_ result: CameraSetupResult) {
         DispatchQueue.main.async {
             switch result {
@@ -611,7 +603,6 @@ fileprivate extension LuminaViewController {
                 }
                 self.enableUI(valid: true)
                 camera.start()
-                break
             case .audioSuccess:
                 break
             case .requiresUpdate:
@@ -621,47 +612,44 @@ fileprivate extension LuminaViewController {
                 camera.updateVideo({ result in
                     self.handleCameraSetupResult(result)
                 })
-                break
             case .videoPermissionDenied:
                 self.textPrompt = "Camera permissions for Lumina have been previously denied - please access your privacy settings to change this."
-                break
             case .videoPermissionRestricted:
                 self.textPrompt = "Camera permissions for Lumina have been restricted - please access your privacy settings to change this."
-                break
             case .videoRequiresAuthorization:
                 guard let camera = self.camera else {
                     break
                 }
                 camera.requestVideoPermissions()
-                break
             case .audioPermissionRestricted:
                 self.textPrompt = "Audio permissions for Lumina have been restricted - please access your privacy settings to change this."
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     self.textPrompt = ""
                 }
-                break
             case .audioRequiresAuthorization:
                 guard let camera = self.camera else {
                     break
                 }
                 camera.requestAudioPermissions()
-                break
             case .audioPermissionDenied:
                 self.textPrompt = "Audio permissions for Lumina have been previously denied - please access your privacy settings to change this."
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     self.textPrompt = ""
                 }
-                break
-            case .invalidVideoDataOutput, .invalidVideoInput, .invalidPhotoOutput, .invalidVideoMetadataOutput, .invalidVideoFileOutput, .invalidAudioInput, .invalidDepthDataOutput:
+            case .invalidVideoDataOutput,
+                 .invalidVideoInput,
+                 .invalidPhotoOutput,
+                 .invalidVideoMetadataOutput,
+                 .invalidVideoFileOutput,
+                 .invalidAudioInput,
+                 .invalidDepthDataOutput:
                 self.textPrompt = "\(result.rawValue) - please try again"
-                break
             case .unknownError:
                 self.textPrompt = "Unknown error occurred while loading Lumina - please try again"
-                break
             }
         }
     }
-    
+
     private func necessaryVideoOrientation(for statusBarOrientation: UIInterfaceOrientation) -> AVCaptureVideoOrientation {
         switch statusBarOrientation {
         case .portrait:
@@ -684,46 +672,46 @@ extension LuminaViewController: LuminaCameraDelegate {
     func videoRecordingCaptured(camera: LuminaCamera, videoURL: URL) {
         delegate?.captured(videoAt: videoURL, from: self)
     }
-    
+
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?) {
         delegate?.streamed(videoFrame: frame, with: predictedObjects, from: self)
     }
-    
+
     func finishedFocus(camera: LuminaCamera) {
         DispatchQueue.main.async {
             self.isUpdating = false
         }
     }
-    
+
     func stillImageCaptured(camera: LuminaCamera, image: UIImage, livePhotoURL: URL?, depthData: Any?) {
         camera.currentPhotoCollection = nil
         delegate?.captured(stillImage: image, livePhotoAt: livePhotoURL, depthData: depthData, from: self)
     }
-    
+
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage) {
         delegate?.streamed(videoFrame: frame, from: self)
     }
-    
+
     func detected(camera: LuminaCamera, metadata: [Any]) {
         delegate?.detected(metadata: metadata, from: self)
     }
-    
+
     func cameraSetupCompleted(camera: LuminaCamera, result: CameraSetupResult) {
         handleCameraSetupResult(result)
     }
-    
+
     func cameraBeganTakingLivePhoto(camera: LuminaCamera) {
         DispatchQueue.main.async {
             self.textPrompt = "Capturing live photo..."
         }
     }
-    
+
     func cameraFinishedTakingLivePhoto(camera: LuminaCamera) {
         DispatchQueue.main.async {
             self.textPrompt = ""
         }
     }
-    
+
     func depthDataCaptured(camera: LuminaCamera, depthData: Any) {
         delegate?.streamed(depthData: depthData, from: self)
     }
@@ -735,7 +723,7 @@ fileprivate extension LuminaViewController {
     @objc func cancelButtonTapped() {
         delegate?.dismissed(controller: self)
     }
-    
+
     @objc func shutterButtonTapped() {
         shutterButton.takePhoto()
         previewLayer.opacity = 0
@@ -747,7 +735,7 @@ fileprivate extension LuminaViewController {
         }
         camera.captureStillImage()
     }
-    
+
     @objc func shutterButtonLongPressed(_ sender: UILongPressGestureRecognizer) {
         guard let camera = self.camera else {
             return
@@ -759,7 +747,6 @@ fileprivate extension LuminaViewController {
                 camera.startVideoRecording()
                 feedbackGenerator.startRecordingVideoFeedback()
             }
-            break
         case .ended:
             if recordsVideo && camera.recordingVideo {
                 shutterButton.stopRecordingVideo()
@@ -768,23 +755,20 @@ fileprivate extension LuminaViewController {
             } else {
                 feedbackGenerator.errorFeedback()
             }
-            break
         default:
             break
         }
     }
-    
+
     @objc func switchButtonTapped() {
         switch self.position {
         case .back:
             self.position = .front
-            break
         default:
             self.position = .back
-            break
         }
     }
-    
+
     @objc func torchButtonTapped() {
         guard let camera = self.camera else {
             return
@@ -825,22 +809,22 @@ extension LuminaViewController {
             camera.resetCameraToContinuousExposureAndFocus()
         }
     }
-    
-    private func showFocusView(at: CGPoint) {
+
+    private func showFocusView(at point: CGPoint) {
         let focusView: UIImageView = UIImageView(image: UIImage(named: "cameraFocus", in: Bundle(for: LuminaViewController.self), compatibleWith: nil))
         focusView.contentMode = .scaleAspectFit
         focusView.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
         focusView.transform = CGAffineTransform(scaleX: 1.7, y: 1.7)
-        focusView.center = at
+        focusView.center = point
         focusView.alpha = 0.0
         self.view.addSubview(focusView)
         UIView.animate(withDuration: 0.3, animations: {
             focusView.alpha = 1.0
             focusView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-        }, completion: { complete in
+        }, completion: { _ in
             UIView.animate(withDuration: 1.0, animations: {
                 focusView.alpha = 0.0
-            }, completion: { final in
+            }, completion: { _ in
                 focusView.removeFromSuperview()
                 self.isUpdating = false
             })

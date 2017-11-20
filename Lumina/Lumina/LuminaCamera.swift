@@ -25,7 +25,6 @@ protocol LuminaCameraDelegate: class {
 
 enum CameraSetupResult: String {
     typealias RawValue = String
-    
     case videoPermissionDenied = "Video Permissions Denied"
     case videoPermissionRestricted = "Video Permissions Restricted"
     case videoRequiresAuthorization = "Video Permissions Require Authorization"
@@ -43,24 +42,23 @@ enum CameraSetupResult: String {
     case requiresUpdate = "Requires AV Update"
     case videoSuccess = "Video Setup Success"
     case audioSuccess = "Audio Setup Success"
-    
 }
 
 struct LuminaPhotoCapture {
     var camera: LuminaCamera?
-    
+
     var stillImage: UIImage? {
         didSet {
             collectionUpdated()
         }
     }
-    
+
     var livePhotoURL: URL? {
         didSet {
             collectionUpdated()
         }
     }
-    
+
     private var _depthData: Any?
     @available(iOS 11.0, *)
     var depthData: AVDepthData? {
@@ -74,15 +72,13 @@ struct LuminaPhotoCapture {
             }
         }
     }
-    
+
     fileprivate func collectionUpdated() {
         var sendingLivePhotoURL: URL?
         var sendingDepthData: Any?
-        
         guard let sendingCamera = camera, let image = stillImage else {
             return
         }
-        
         if sendingCamera.captureLivePhotos == true {
             if let url = livePhotoURL {
                 sendingLivePhotoURL = url
@@ -90,7 +86,7 @@ struct LuminaPhotoCapture {
                 return
             }
         }
-        
+
         if sendingCamera.captureDepthData == true, #available(iOS 11.0, *) {
             if let data = depthData {
                 sendingDepthData = data
@@ -106,7 +102,7 @@ struct LuminaPhotoCapture {
 
 final class LuminaCamera: NSObject {
     weak var delegate: LuminaCameraDelegate?
-    
+
     var torchState = false {
         didSet {
             guard let input = self.videoInput else {
@@ -132,69 +128,69 @@ final class LuminaCamera: NSObject {
             }
         }
     }
-    
+
     var recordsVideo = false {
         didSet {
             restartVideo()
         }
     }
-    
+
     var streamFrames = false {
         didSet {
             restartVideo()
         }
     }
-    
+
     var trackMetadata = false {
         didSet {
             restartVideo()
         }
     }
-    
+
     var captureLivePhotos = false {
         didSet {
             restartVideo()
         }
     }
-    
+
     var captureDepthData = false {
         didSet {
             restartVideo()
         }
     }
-    
+
     var streamDepthData = false {
         didSet {
             restartVideo()
         }
     }
-    
+
     var captureHighResolutionImages = false {
         didSet {
             restartVideo()
         }
     }
-    
+
     private(set) var recordingVideo: Bool = false
-    
+
     var position: CameraPosition = .back {
         didSet {
             restartVideo()
         }
     }
-    
+
     var resolution: CameraResolution = .highest {
         didSet {
             restartVideo()
         }
     }
-    
+
     var frameRate: Int = 30 {
         didSet {
             restartVideo()
         }
     }
-    
+
     private func restartVideo() {
         if self.session.isRunning {
             self.session.stopRunning()
@@ -207,19 +203,19 @@ final class LuminaCamera: NSObject {
             })
         }
     }
-    
+
     var maxZoomScale: Float = MAXFLOAT
-    
+
     var currentZoomScale: Float = 1.0 {
         didSet {
             updateZoom()
         }
     }
-    
+
     var currentPhotoCollection: LuminaPhotoCapture?
-    
+
     fileprivate var recognizer: AnyObject?
-    
+
     private var _streamingModel: AnyObject?
     @available(iOS 11.0, *)
     var streamingModel: MLModel? {
@@ -233,7 +229,7 @@ final class LuminaCamera: NSObject {
             }
         }
     }
-    
+
     fileprivate var session = AVCaptureSession()
     fileprivate var discoverySession: AVCaptureDevice.DiscoverySession? {
         var deviceTypes = [AVCaptureDevice.DeviceType]()
@@ -257,7 +253,7 @@ final class LuminaCamera: NSObject {
     fileprivate var sessionQueue = DispatchQueue(label: "com.lumina.sessionQueue")
     fileprivate var photoCollectionQueue = DispatchQueue(label: "com.lumina.photoCollectionQueue")
     fileprivate var depthDataQueue = DispatchQueue(label: "com.lumina.depthDataQueue")
-    
+
     fileprivate var videoDataOutput: AVCaptureVideoDataOutput {
         let output = AVCaptureVideoDataOutput()
         output.alwaysDiscardsLateVideoFrames = true
@@ -265,7 +261,7 @@ final class LuminaCamera: NSObject {
         return output
     }
     fileprivate var photoOutput = AVCapturePhotoOutput()
-    
+
     private var _metadataOutput: AVCaptureMetadataOutput?
     fileprivate var metadataOutput: AVCaptureMetadataOutput {
         if let existingOutput = _metadataOutput {
@@ -276,7 +272,7 @@ final class LuminaCamera: NSObject {
         _metadataOutput = output
         return output
     }
-    
+
     private var _videoFileOutput: AVCaptureMovieFileOutput?
     fileprivate var videoFileOutput: AVCaptureMovieFileOutput {
         if let existingOutput = _videoFileOutput {
@@ -286,7 +282,7 @@ final class LuminaCamera: NSObject {
         _videoFileOutput = output
         return output
     }
-    
+
     private var _depthDataOutput: AnyObject?
     @available(iOS 11.0, *)
     fileprivate var depthDataOutput: AVCaptureDepthDataOutput? {
@@ -303,13 +299,13 @@ final class LuminaCamera: NSObject {
             _depthDataOutput = newValue
         }
     }
-    
+
     func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
         let previewLayer = AVCaptureVideoPreviewLayer(session: self.session)
-        previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill        
+        previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         return previewLayer
     }
-    
+
     func captureStillImage() {
         var settings = AVCapturePhotoSettings()
         if #available(iOS 11.0, *) {
@@ -317,7 +313,6 @@ final class LuminaCamera: NSObject {
                 settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
             }
         }
-        
         settings.isAutoStillImageStabilizationEnabled = true
         settings.flashMode = self.torchState ? .on : .off
         if self.captureLivePhotos {
@@ -334,7 +329,7 @@ final class LuminaCamera: NSObject {
         }
         self.photoOutput.capturePhoto(with: settings, delegate: self)
     }
-    
+
     func startVideoRecording() {
         recordingVideo = true
         sessionQueue.async {
@@ -350,14 +345,14 @@ final class LuminaCamera: NSObject {
             self.videoFileOutput.startRecording(to: URL(fileURLWithPath: fileName), recordingDelegate: self)
         }
     }
-    
+
     func stopVideoRecording() {
         recordingVideo = false
         sessionQueue.async {
             self.videoFileOutput.stopRecording()
         }
     }
-    
+
     func updateOutputVideoOrientation(_ orientation: AVCaptureVideoOrientation) {
         self.videoBufferQueue.async {
             for output in self.session.outputs {
@@ -370,7 +365,7 @@ final class LuminaCamera: NSObject {
             }
         }
     }
-    
+
     func updateAudio(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
         self.sessionQueue.async {
             self.purgeAudioDevices()
@@ -400,107 +395,13 @@ final class LuminaCamera: NSObject {
             }
         }
     }
-    
+
     func updateVideo(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
         self.sessionQueue.async {
             self.purgeVideoDevices()
             switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
             case .authorized:
-                self.torchState = false
-                self.session.sessionPreset = .high // set to high here so that device input can be added to session. resolution can be checked for update later
-                guard let videoInput = self.getNewVideoInputDevice() else {
-                    completion(CameraSetupResult.invalidVideoInput)
-                    return
-                }
-                
-                guard self.session.canAddInput(videoInput) else {
-                    completion(CameraSetupResult.invalidVideoInput)
-                    return
-                }
-                
-                guard self.session.canAddOutput(self.videoDataOutput) else {
-                    completion(CameraSetupResult.invalidVideoDataOutput)
-                    return
-                }
-                guard self.session.canAddOutput(self.photoOutput) else {
-                    completion(CameraSetupResult.invalidPhotoOutput)
-                    return
-                }
-                guard self.session.canAddOutput(self.metadataOutput) else {
-                    completion(CameraSetupResult.invalidVideoMetadataOutput)
-                    return
-                }
-                
-                if #available(iOS 11.0, *), let depthDataOutput = self.depthDataOutput {
-                    guard self.session.canAddOutput(depthDataOutput) else {
-                        completion(CameraSetupResult.invalidDepthDataOutput)
-                        return
-                    }
-                }
-                
-                self.videoInput = videoInput
-                self.session.addInput(videoInput)
-                if self.streamFrames {
-                    self.session.addOutput(self.videoDataOutput)
-                }
-                
-                self.session.addOutput(self.photoOutput)
-                self.session.commitConfiguration()
-
-                if self.recordsVideo {
-                    // adding this invalidates the video data output
-                    guard self.session.canAddOutput(self.videoFileOutput) else {
-                        completion(CameraSetupResult.invalidVideoFileOutput)
-                        return
-                    }
-                    self.session.addOutput(self.videoFileOutput)
-                    if let connection = self.videoFileOutput.connection(with: .video) {
-                        if connection.isVideoStabilizationSupported {
-                            connection.preferredVideoStabilizationMode = .auto
-                        }
-                    }
-                }
-                if self.trackMetadata {
-                    self.session.addOutput(self.metadataOutput)
-                    self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
-                }
-                
-                if self.session.canSetSessionPreset(self.resolution.foundationPreset()) {
-                    self.session.sessionPreset = self.resolution.foundationPreset()
-                }
- 
-                if self.captureHighResolutionImages && self.photoOutput.isHighResolutionCaptureEnabled {
-                    self.photoOutput.isHighResolutionCaptureEnabled = true
-                } else {
-                    self.captureHighResolutionImages = false
-                }
-                
-                if self.captureLivePhotos && self.photoOutput.isLivePhotoCaptureSupported {
-                    self.photoOutput.isLivePhotoCaptureEnabled = true
-                } else {
-                    self.captureLivePhotos = false
-                }
-                
-                if #available(iOS 11.0, *) {
-                    if self.captureDepthData && self.photoOutput.isDepthDataDeliverySupported {
-                        self.photoOutput.isDepthDataDeliveryEnabled = true
-                    } else {
-                        self.captureDepthData = false
-                    }
-                } else {
-                    self.captureDepthData = false
-                }
-                
-                if #available(iOS 11.0, *) {
-                    if self.streamDepthData, let depthDataOutput = self.depthDataOutput {
-                        self.session.addOutput(depthDataOutput)
-                    }
-                }
-                
-                self.session.commitConfiguration()
-                self.configureFrameRate()
-                completion(CameraSetupResult.videoSuccess)
-                break
+                completion(self.videoSetupApproved())
             case .denied:
                 completion(CameraSetupResult.videoPermissionDenied)
                 return
@@ -513,17 +414,117 @@ final class LuminaCamera: NSObject {
             }
         }
     }
-    
+
+    private func videoSetupApproved() -> CameraSetupResult {
+        self.torchState = false
+        self.session.sessionPreset = .high // set to high here so that device input can be added to session. resolution can be checked for update later
+        guard let videoInput = self.getNewVideoInputDevice() else {
+            return .invalidVideoInput
+        }
+        guard self.session.canAddInput(videoInput) else {
+            return .invalidVideoInput
+        }
+        guard self.session.canAddOutput(self.videoDataOutput) else {
+            return .invalidVideoDataOutput
+        }
+        guard self.session.canAddOutput(self.photoOutput) else {
+            return .invalidPhotoOutput
+        }
+        guard self.session.canAddOutput(self.metadataOutput) else {
+            return .invalidVideoMetadataOutput
+        }
+        if self.recordsVideo == true {
+            guard self.session.canAddOutput(self.videoFileOutput) else {
+                return .invalidVideoFileOutput
+            }
+        }
+        if #available(iOS 11.0, *), let depthDataOutput = self.depthDataOutput {
+            guard self.session.canAddOutput(depthDataOutput) else {
+                return .invalidDepthDataOutput
+            }
+        }
+        self.videoInput = videoInput
+        self.session.addInput(videoInput)
+        if self.streamFrames {
+            self.session.addOutput(self.videoDataOutput)
+        }
+        self.session.addOutput(self.photoOutput)
+        self.session.commitConfiguration()
+        if self.session.canSetSessionPreset(self.resolution.foundationPreset()) {
+            self.session.sessionPreset = self.resolution.foundationPreset()
+        }
+        configureVideoRecordingOutput(for: self.session)
+        configureMetadataOutput(for: self.session)
+        configureHiResPhotoOutput(for: self.session)
+        configureLivePhotoOutput(for: self.session)
+        configureDepthDataOutput(for: self.session)
+        configureFrameRate()
+        return .videoSuccess
+    }
+
+    private func configureVideoRecordingOutput(for session: AVCaptureSession) {
+        if self.recordsVideo {
+            // adding this invalidates the video data output
+            self.session.addOutput(self.videoFileOutput)
+            if let connection = self.videoFileOutput.connection(with: .video) {
+                if connection.isVideoStabilizationSupported {
+                    connection.preferredVideoStabilizationMode = .auto
+                }
+            }
+        }
+    }
+
+    private func configureHiResPhotoOutput(for session: AVCaptureSession) {
+        if self.captureHighResolutionImages && self.photoOutput.isHighResolutionCaptureEnabled {
+            self.photoOutput.isHighResolutionCaptureEnabled = true
+        } else {
+            self.captureHighResolutionImages = false
+        }
+    }
+
+    private func configureLivePhotoOutput(for session: AVCaptureSession) {
+        if self.captureLivePhotos && self.photoOutput.isLivePhotoCaptureSupported {
+            self.photoOutput.isLivePhotoCaptureEnabled = true
+        } else {
+            self.captureLivePhotos = false
+        }
+    }
+
+    private func configureMetadataOutput(for session: AVCaptureSession) {
+        if self.trackMetadata {
+            session.addOutput(self.metadataOutput)
+            self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
+        }
+    }
+
+    private func configureDepthDataOutput(for session: AVCaptureSession) {
+        if #available(iOS 11.0, *) {
+            if self.captureDepthData && self.photoOutput.isDepthDataDeliverySupported {
+                self.photoOutput.isDepthDataDeliveryEnabled = true
+            } else {
+                self.captureDepthData = false
+            }
+        } else {
+            self.captureDepthData = false
+        }
+        if #available(iOS 11.0, *) {
+            if self.streamDepthData, let depthDataOutput = self.depthDataOutput {
+                session.addOutput(depthDataOutput)
+                session.commitConfiguration()
+            }
+        }
+    }
+
     func start() {
         self.sessionQueue.async {
             self.session.startRunning()
         }
     }
-    
+
     func pause() {
         self.session.stopRunning()
     }
-    
+
     func requestVideoPermissions() {
         self.sessionQueue.suspend()
         AVCaptureDevice.requestAccess(for: .video) { success in
@@ -535,7 +536,7 @@ final class LuminaCamera: NSObject {
             }
         }
     }
-    
+
     func requestAudioPermissions() {
         self.sessionQueue.suspend()
         AVCaptureDevice.requestAccess(for: AVMediaType.audio) { success in
@@ -594,7 +595,7 @@ extension LuminaCamera {
             }
         }
     }
-    
+
     func resetCameraToContinuousExposureAndFocus() {
         do {
             guard let input = self.videoInput else {
@@ -630,7 +631,7 @@ private extension LuminaCamera {
             return nil
         }
     }
-    
+
     func getNewAudioInputDevice() -> AVCaptureDeviceInput? {
         do {
             guard let device = AVCaptureDevice.default(for: AVMediaType.audio) else {
@@ -642,23 +643,19 @@ private extension LuminaCamera {
             return nil
         }
     }
-    
+
     func purgeAudioDevices() {
-        for oldInput in self.session.inputs {
-            if oldInput == self.audioInput {
-                self.session.removeInput(oldInput)
-            }
+        for oldInput in self.session.inputs where oldInput == self.audioInput {
+            self.session.removeInput(oldInput)
         }
     }
-    
+
     func purgeVideoDevices() {
-        for oldInput in self.session.inputs {
-            if oldInput == self.videoInput {
-                self.session.removeInput(oldInput)
-            }
+        for oldInput in self.session.inputs where oldInput == self.videoInput {
+            self.session.removeInput(oldInput)
         }
         for oldOutput in self.session.outputs {
-            if oldOutput == self.videoDataOutput || oldOutput == self.photoOutput || oldOutput == self.metadataOutput || oldOutput == self.videoFileOutput  {
+            if oldOutput == self.videoDataOutput || oldOutput == self.photoOutput || oldOutput == self.metadataOutput || oldOutput == self.videoFileOutput {
                 self.session.removeOutput(oldOutput)
             }
             if let dataOutput = oldOutput as? AVCaptureVideoDataOutput {
@@ -671,7 +668,7 @@ private extension LuminaCamera {
             }
         }
     }
-    
+
     func getDevice(with position: AVCaptureDevice.Position) -> AVCaptureDevice? {
         #if swift(>=4.0.2)
         if #available(iOS 11.1, *), position == .front {
@@ -687,7 +684,7 @@ private extension LuminaCamera {
         }
         return nil
     }
-    
+
     func configureFrameRate() {
         guard let device = self.currentCaptureDevice else {
             return
@@ -702,13 +699,17 @@ private extension LuminaCamera {
                 frameRate.minFrameRate <= Float64(self.frameRate) &&
                 self.resolution.getDimensions().width == dimensions.width &&
                 self.resolution.getDimensions().height == dimensions.height &&
-                CMFormatDescriptionGetMediaSubType(vFormat.formatDescription) == 875704422  { // meant for full range 420f
-                try! device.lockForConfiguration()
-                device.activeFormat = vFormat as AVCaptureDevice.Format
-                device.activeVideoMinFrameDuration = CMTimeMake(1, Int32(self.frameRate))
-                device.activeVideoMaxFrameDuration = CMTimeMake(1, Int32(self.frameRate))
-                device.unlockForConfiguration()
-                break
+                CMFormatDescriptionGetMediaSubType(vFormat.formatDescription) == 875704422 { // meant for full range 420f
+                do {
+                    try device.lockForConfiguration()
+                    device.activeFormat = vFormat as AVCaptureDevice.Format
+                    device.activeVideoMinFrameDuration = CMTimeMake(1, Int32(self.frameRate))
+                    device.activeVideoMaxFrameDuration = CMTimeMake(1, Int32(self.frameRate))
+                    device.unlockForConfiguration()
+                    break
+                } catch {
+                    continue
+                }
             }
         }
     }
@@ -740,7 +741,7 @@ extension LuminaCamera: AVCapturePhotoCaptureDelegate {
             }
         }
     }
-    
+
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
         if #available(iOS 11.0, *) { // make use of AVCapturePhotoOutput
             return
@@ -763,9 +764,9 @@ extension AVCapturePhoto {
         guard let cgImage = self.cgImageRepresentation() else {
             return nil
         }
-        return UIImage(cgImage: cgImage.takeUnretainedValue() , scale: 1.0, orientation: getImageOrientation(forCamera: position))
+        return UIImage(cgImage: cgImage.takeUnretainedValue(), scale: 1.0, orientation: getImageOrientation(forCamera: position))
     }
-    
+
     private func getImageOrientation(forCamera: CameraPosition) -> UIImageOrientation {
         switch UIApplication.shared.statusBarOrientation {
         case .landscapeLeft:
@@ -824,7 +825,7 @@ extension CMSampleBuffer {
         }
         return UIImage(cgImage: cgImageRef, scale: 1.0, orientation: getImageOrientation(forCamera: position))
     }
-    
+
     func normalizedVideoFrame() -> UIImage? {
         guard let imageBuffer = CMSampleBufferGetImageBuffer(self) else {
             return nil
@@ -836,7 +837,7 @@ extension CMSampleBuffer {
         }
         return UIImage(cgImage: sample)
     }
-    
+
     private func getImageOrientation(forCamera: CameraPosition) -> UIImageOrientation {
         switch UIApplication.shared.statusBarOrientation {
         case .landscapeLeft:
@@ -875,7 +876,7 @@ extension LuminaCamera: AVCaptureDepthDataOutputDelegate {
             self.delegate?.depthDataCaptured(camera: self, depthData: depthData)
         }
     }
-    
+
     func depthDataOutput(_ output: AVCaptureDepthDataOutput, didDrop depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection, reason: AVCaptureOutput.DataDroppedReason) {
         // place to handle dropped AVDepthData if we need it
     }
@@ -891,20 +892,19 @@ extension LuminaCamera: AVCaptureFileOutputRecordingDelegate {
             }
         }
     }
-    
+
     func photoOutput(_ output: AVCapturePhotoOutput, willBeginCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
         if self.captureLivePhotos {
             self.delegate?.cameraBeganTakingLivePhoto(camera: self)
         }
     }
-    
-    
+
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishRecordingLivePhotoMovieForEventualFileAt outputFileURL: URL, resolvedSettings: AVCaptureResolvedPhotoSettings) {
         if self.captureLivePhotos {
             self.delegate?.cameraFinishedTakingLivePhoto(camera: self)
         }
     }
-    
+
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingLivePhotoToMovieFileAt outputFileURL: URL, duration: CMTime, photoDisplayTime: CMTime, resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
         photoCollectionQueue.sync {
             if self.currentPhotoCollection == nil {

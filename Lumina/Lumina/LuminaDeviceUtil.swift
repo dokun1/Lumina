@@ -14,12 +14,12 @@ import AudioToolbox.AudioServices
 final class LuminaHapticFeedbackGenerator {
     private let impactGeneratorSharedInstance = UIImpactFeedbackGenerator(style: .medium)
     private let notificationGeneratorSharedInstance = UINotificationFeedbackGenerator()
-    
+
     func prepare() {
         impactGeneratorSharedInstance.prepare()
         notificationGeneratorSharedInstance.prepare()
     }
-    
+
     func startRecordingVideoFeedback() {
         if UIDevice.current.hasHapticFeedback {
             impactGeneratorSharedInstance.impactOccurred()
@@ -28,7 +28,7 @@ final class LuminaHapticFeedbackGenerator {
             AudioServicesPlaySystemSound(peek)
         }
     }
-    
+
     func endRecordingVideoFeedback() {
         if UIDevice.current.hasHapticFeedback {
             notificationGeneratorSharedInstance.notificationOccurred(.success)
@@ -36,9 +36,8 @@ final class LuminaHapticFeedbackGenerator {
             let pop = SystemSoundID(1520)
             AudioServicesPlaySystemSound(pop)
         }
-        
     }
-    
+
     func errorFeedback() {
         if UIDevice.current.hasHapticFeedback {
             notificationGeneratorSharedInstance.notificationOccurred(.error)
@@ -60,7 +59,7 @@ fileprivate extension UIDevice {
         case iPhone8Plus
         case iPhoneX
     }
-    
+
     private var platform: DevicePlatform {
         var sysinfo = utsname()
         uname(&sysinfo)
@@ -84,11 +83,11 @@ fileprivate extension UIDevice {
             return .other
         }
     }
-    
+
     var hasTapticEngine: Bool {
         return platform == .iPhone6S || platform == .iPhone6SPlus || platform == .iPhone7 || platform == .iPhone7Plus || platform == .iPhone8 || platform == .iPhone8Plus || platform == .iPhoneX
     }
-    
+
     var hasHapticFeedback: Bool {
         return platform == .iPhone7 || platform == .iPhone7Plus || platform == .iPhone8 || platform == .iPhone8Plus || platform == .iPhoneX
     }
