@@ -2,7 +2,14 @@
 
 ## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
 
-[Full Changelog](https://github.com/dokun1/Lumina/compare/0.11.1...HEAD)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.11.2...HEAD)
+
+**Merged pull requests:**
+
+- Minor refactoring [\#51](https://github.com/dokun1/Lumina/pull/51) ([dokun1](https://github.com/dokun1))
+
+## [0.11.2](https://github.com/dokun1/Lumina/tree/0.11.2) (2017-11-20)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.11.1...0.11.2)
 
 **Merged pull requests:**
 
