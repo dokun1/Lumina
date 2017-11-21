@@ -2,7 +2,7 @@
 //  LuminaDelegate.swift
 //  Lumina
 //
-//  Created by David Okun IBM on 11/20/17.
+//  Created by David Okun on 11/20/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 
 /// Delegate for returning information to the application utilizing Lumina
 public protocol LuminaDelegate: class {
-    
+
     /// Triggered whenever a still image is captured by the user of Lumina
     ///
     /// - Parameters:
@@ -19,14 +19,14 @@ public protocol LuminaDelegate: class {
     ///   - depthData: the depth data associated with the captured still image, if enabled and available (iOS 11.0 only)
     ///   - controller: the instance of Lumina that captured the still image
     func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController)
-    
+
     /// Triggered whenever a video is captured by the user of Lumina
     ///
     /// - Parameters:
     ///   - videoAt: the URL where the video file can be located and used
     ///   - controller: the instance of Lumina that captured the still image
     func captured(videoAt: URL, from controller: LuminaViewController)
-    
+
     /// Triggered whenever streamFrames is set to true on Lumina, and streams video frames as UIImage instances
     ///
     /// - Note: Will not be triggered unless streamFrames is true. False is default value
@@ -34,7 +34,7 @@ public protocol LuminaDelegate: class {
     ///   - videoFrame: the frame captured by Lumina
     ///   - controller: the instance of Lumina that is streaming the frames
     func streamed(videoFrame: UIImage, from controller: LuminaViewController)
-    
+
     /// Triggered whenever a CoreML model is given to Lumina, and Lumina streams a video frame alongside a prediction
     ///
     /// - Note: Will not be triggered unless streamingModel resolves to not nil. Leaving the streamingModel parameter unset will not trigger this method
@@ -44,7 +44,7 @@ public protocol LuminaDelegate: class {
     ///   - predictions: the predictions made by the model used with Lumina
     ///   - controller: the instance of Lumina that is streaming the frames
     func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController)
-    
+
     /// Triggered whenever streamDepthData is set to true on Lumina, and streams depth data detected in the form of AVDepthData
     ///
     /// - Warning: This data is returned from type `Any`, and must be optionally downcast to `AVDepthData` by the user of Lumina. This is to maintain backwards compatibility with iOS 10.0
@@ -53,7 +53,7 @@ public protocol LuminaDelegate: class {
     ///   - depthData: buffer containing AVDepthData relevant to the streamed video frame
     ///   - controller: the instance of Lumina that is streaming the depth data
     func streamed(depthData: Any, from controller: LuminaViewController)
-    
+
     /// Triggered whenever trackMetadata is set to true on Lumina, and streams metadata detected in the form of QR codes, bar codes, or faces
     ///
     /// - Note: For list of all machine readable object types, aside from QR codes or faces, click [here](https://developer.apple.com/documentation/avfoundation/avmetadatamachinereadablecodeobject/machine_readable_object_types).
@@ -64,7 +64,7 @@ public protocol LuminaDelegate: class {
     ///   - metadata: the array of metadata that is captured.
     ///   - controller: the instance of Lumina that is streaming the metadata
     func detected(metadata: [Any], from controller: LuminaViewController)
-    
+
     /// Triggered whenever the cancel button is tapped on Lumina, with the intent of dismissing the UIViewController
     ///
     /// - Note: This is most usually used whenever

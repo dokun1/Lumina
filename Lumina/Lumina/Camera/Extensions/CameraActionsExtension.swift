@@ -2,7 +2,7 @@
 //  CameraActionsExtension.swift
 //  Lumina
 //
-//  Created by David Okun IBM on 11/20/17.
+//  Created by David Okun on 11/20/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
@@ -15,7 +15,7 @@ extension LuminaCamera {
         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         return previewLayer
     }
-    
+
     func captureStillImage() {
         var settings = AVCapturePhotoSettings()
         if #available(iOS 11.0, *) {
@@ -39,7 +39,7 @@ extension LuminaCamera {
         }
         self.photoOutput.capturePhoto(with: settings, delegate: self)
     }
-    
+
     func startVideoRecording() {
         if self.resolution == .photo {
             return // TODO: make this function throw an error
@@ -58,7 +58,7 @@ extension LuminaCamera {
             self.videoFileOutput.startRecording(to: URL(fileURLWithPath: fileName), recordingDelegate: self)
         }
     }
-    
+
     func stopVideoRecording() {
         recordingVideo = false
         sessionQueue.async {

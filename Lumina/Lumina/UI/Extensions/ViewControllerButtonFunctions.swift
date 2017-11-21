@@ -2,7 +2,7 @@
 //  ViewControllerButtonFunctions.swift
 //  Lumina
 //
-//  Created by David Okun IBM on 11/20/17.
+//  Created by David Okun on 11/20/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
@@ -12,7 +12,7 @@ extension LuminaViewController {
     @objc func cancelButtonTapped() {
         delegate?.dismissed(controller: self)
     }
-    
+
     @objc func shutterButtonTapped() {
         shutterButton.takePhoto()
         previewLayer.opacity = 0
@@ -24,7 +24,7 @@ extension LuminaViewController {
         }
         camera.captureStillImage()
     }
-    
+
     @objc func shutterButtonLongPressed(_ sender: UILongPressGestureRecognizer) {
         guard let camera = self.camera else {
             return
@@ -48,7 +48,7 @@ extension LuminaViewController {
             break
         }
     }
-    
+
     @objc func switchButtonTapped() {
         switch self.position {
         case .back:
@@ -57,7 +57,7 @@ extension LuminaViewController {
             self.position = .back
         }
     }
-    
+
     @objc func torchButtonTapped() {
         guard let camera = self.camera else {
             return

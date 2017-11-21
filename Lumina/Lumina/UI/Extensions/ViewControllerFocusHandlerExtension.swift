@@ -2,7 +2,7 @@
 //  ViewControllerFocusHandlerExtension.swift
 //  Lumina
 //
-//  Created by David Okun IBM on 11/20/17.
+//  Created by David Okun on 11/20/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
@@ -27,7 +27,7 @@ extension LuminaViewController {
             camera.resetCameraToContinuousExposureAndFocus()
         }
     }
-    
+
     private func showFocusView(at point: CGPoint) {
         let focusView: UIImageView = UIImageView(image: UIImage(named: "cameraFocus", in: Bundle(for: LuminaViewController.self), compatibleWith: nil))
         focusView.contentMode = .scaleAspectFit

@@ -17,7 +17,7 @@ extension AVCapturePhoto {
         }
         return UIImage(cgImage: cgImage.takeUnretainedValue(), scale: 1.0, orientation: getImageOrientation(forCamera: position))
     }
-    
+
     private func getImageOrientation(forCamera: CameraPosition) -> UIImageOrientation {
         switch UIApplication.shared.statusBarOrientation {
         case .landscapeLeft:

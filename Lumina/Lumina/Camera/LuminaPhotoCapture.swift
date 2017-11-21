@@ -2,7 +2,7 @@
 //  LuminaPhotoCapture.swift
 //  Lumina
 //
-//  Created by David Okun IBM on 11/20/17.
+//  Created by David Okun on 11/20/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
@@ -11,19 +11,19 @@ import AVFoundation
 
 struct LuminaPhotoCapture {
     var camera: LuminaCamera?
-    
+
     var stillImage: UIImage? {
         didSet {
             collectionUpdated()
         }
     }
-    
+
     var livePhotoURL: URL? {
         didSet {
             collectionUpdated()
         }
     }
-    
+
     private var _depthData: Any?
     @available(iOS 11.0, *)
     var depthData: AVDepthData? {
@@ -37,7 +37,7 @@ struct LuminaPhotoCapture {
             }
         }
     }
-    
+
     fileprivate func collectionUpdated() {
         var sendingLivePhotoURL: URL?
         var sendingDepthData: Any?
@@ -51,7 +51,7 @@ struct LuminaPhotoCapture {
                 return
             }
         }
-        
+
         if sendingCamera.captureDepthData == true, #available(iOS 11.0, *) {
             if let data = depthData {
                 sendingDepthData = data

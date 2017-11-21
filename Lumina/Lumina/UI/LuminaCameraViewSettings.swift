@@ -2,7 +2,7 @@
 //  LuminaCameraViewSettings.swift
 //  Lumina
 //
-//  Created by David Okun IBM on 11/20/17.
+//  Created by David Okun on 11/20/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
@@ -31,11 +31,12 @@ public enum CameraResolution: String {
     case medium = "Medium"
     case highest = "Highest"
     case inputPriority = "Input Priority"
-    
+
     public static func all() -> [CameraResolution] {
         return [CameraResolution.low352x288, CameraResolution.vga640x480, CameraResolution.medium1280x720, CameraResolution.high1920x1080, CameraResolution.ultra3840x2160, CameraResolution.iframe1280x720, CameraResolution.iframe960x540, CameraResolution.photo, CameraResolution.lowest, CameraResolution.medium, CameraResolution.highest, CameraResolution.inputPriority]
     }
-    
+
+    // swiftlint:disable cyclomatic_complexity
     func foundationPreset() -> AVCaptureSession.Preset {
         switch self {
         case .vga640x480:
@@ -64,7 +65,7 @@ public enum CameraResolution: String {
             return AVCaptureSession.Preset.inputPriority
         }
     }
-    
+
     func getDimensions() -> CMVideoDimensions {
         switch self {
         case .vga640x480:

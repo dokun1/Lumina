@@ -44,8 +44,6 @@ enum CameraSetupResult: String {
     case audioSuccess = "Audio Setup Success"
 }
 
-
-
 final class LuminaCamera: NSObject {
     weak var delegate: LuminaCameraDelegate?
 
@@ -164,7 +162,7 @@ final class LuminaCamera: NSObject {
     }
 
     var session = AVCaptureSession()
-    
+
     fileprivate var discoverySession: AVCaptureDevice.DiscoverySession? {
         var deviceTypes = [AVCaptureDevice.DeviceType]()
         deviceTypes.append(.builtInWideAngleCamera)
@@ -178,7 +176,7 @@ final class LuminaCamera: NSObject {
         #endif
         return AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
     }
-    
+
     var videoInput: AVCaptureDeviceInput?
     var audioInput: AVCaptureDeviceInput?
     var currentCaptureDevice: AVCaptureDevice?

@@ -138,9 +138,7 @@ public final class LuminaViewController: UIViewController {
     /// - Warning: This setting takes precedence over video data streaming - if this is turned on, frames cannot be streamed, nor can CoreML be used via Lumina's recognizer mechanism. 
     open var recordsVideo = false {
         didSet {
-            if let camera = self.camera {
-                camera.recordsVideo = recordsVideo
-            }
+            self.camera?.recordsVideo = recordsVideo
         }
     }
 
@@ -151,9 +149,7 @@ public final class LuminaViewController: UIViewController {
     /// - Warning: Will not do anything if delegate is not implemented
     open var streamFrames = false {
         didSet {
-            if let camera = self.camera {
-                camera.streamFrames = streamFrames
-            }
+            self.camera?.streamFrames = streamFrames
         }
     }
 
@@ -164,9 +160,7 @@ public final class LuminaViewController: UIViewController {
     /// - Warning: Will not do anything if delegate is not implemented
     open var trackMetadata = false {
         didSet {
-            if let camera = self.camera {
-                camera.trackMetadata = trackMetadata
-            }
+            self.camera?.trackMetadata = trackMetadata
         }
     }
 
@@ -186,9 +180,7 @@ public final class LuminaViewController: UIViewController {
     /// - Note: Responds live to being set at any time, and will update automatically
     open var resolution: CameraResolution = .highest {
         didSet {
-            if let camera = self.camera {
-                camera.resolution = resolution
-            }
+            self.camera?.resolution = resolution
         }
     }
 
@@ -197,9 +189,7 @@ public final class LuminaViewController: UIViewController {
     /// - Note: Responds live to being set at any time, and will update automatically
     open var frameRate: Int = 30 {
         didSet {
-            if let camera = self.camera {
-                camera.frameRate = frameRate
-            }
+            self.camera?.frameRate = frameRate
         }
     }
 
@@ -219,9 +209,7 @@ public final class LuminaViewController: UIViewController {
             if newValue != nil {
                 _streamingModel = newValue
                 self.streamFrames = true
-                if let camera = self.camera {
-                    camera.streamingModel = newValue
-                }
+                self.camera?.streamingModel = newValue
             }
         }
     }
@@ -231,9 +219,7 @@ public final class LuminaViewController: UIViewController {
     /// - Note: Default value will rely on whatever the active device can handle, if this is not explicitly set
     open var maxZoomScale: Float = MAXFLOAT {
         didSet {
-            if let camera = camera {
-                camera.maxZoomScale = maxZoomScale
-            }
+            self.camera?.maxZoomScale = maxZoomScale
         }
     }
 
@@ -244,9 +230,7 @@ public final class LuminaViewController: UIViewController {
     /// - Warning: If video recording is enabled, live photos will not work.
     open var captureLivePhotos: Bool = false {
         didSet {
-            if let camera = camera {
-                camera.captureLivePhotos = captureLivePhotos
-            }
+            self.camera?.captureLivePhotos = captureLivePhotos
         }
     }
 
@@ -256,9 +240,7 @@ public final class LuminaViewController: UIViewController {
     /// - Note: Only works with .photo, .medium1280x720, and .vga640x480 resolutions
     open var captureDepthData: Bool = false {
         didSet {
-            if let camera = camera {
-                camera.captureDepthData = captureDepthData
-            }
+            self.camera?.captureDepthData = captureDepthData
         }
     }
 
@@ -268,25 +250,19 @@ public final class LuminaViewController: UIViewController {
     /// - Note: Only works with .photo, .medium1280x720, and .vga640x480 resolutions
     open var streamDepthData: Bool = false {
         didSet {
-            if let camera = camera {
-                camera.streamDepthData = streamDepthData
-            }
+            self.camera?.streamDepthData = streamDepthData
         }
     }
 
 //    open var capturesHighResolutionImages: Bool = false {
 //        didSet {
-//            if let camera = camera {
-//                camera.capturesHighResolutionImages = capturesHighResolutionImages
-//            }
+//            self.camera?.capturesHighResolutionImages = capturesHighResolutionImages
 //        }
 //    }
 
     var currentZoomScale: Float = 1.0 {
         didSet {
-            if let camera = self.camera {
-                camera.currentZoomScale = currentZoomScale
-            }
+            self.camera?.currentZoomScale = currentZoomScale
         }
     }
 
@@ -318,14 +294,12 @@ public final class LuminaViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         createUI()
-        if let camera = self.camera {
-            camera.updateVideo({ result in
-                self.handleCameraSetupResult(result)
-            })
-            camera.updateAudio({ result in
-                self.handleCameraSetupResult(result)
-            })
-        }
+        self.camera?.updateVideo({ result in
+            self.handleCameraSetupResult(result)
+        })
+        self.camera?.updateAudio({ result in
+            self.handleCameraSetupResult(result)
+        })
     }
 
     /// override with caution
@@ -344,9 +318,7 @@ public final class LuminaViewController: UIViewController {
     /// override with caution
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
-        if let camera = self.camera {
-            camera.stop()
-        }
+        self.camera?.stop()
     }
 
     /// override with caution

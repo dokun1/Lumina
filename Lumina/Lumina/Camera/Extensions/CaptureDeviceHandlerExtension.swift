@@ -2,7 +2,7 @@
 //  CaptureDeviceHandlerExtension.swift
 //  Lumina
 //
-//  Created by David Okun IBM on 11/20/17.
+//  Created by David Okun on 11/20/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
@@ -104,7 +104,7 @@ extension LuminaCamera {
             }
         }
     }
-    
+
     func updateZoom() {
         guard let input = self.videoInput else {
             return

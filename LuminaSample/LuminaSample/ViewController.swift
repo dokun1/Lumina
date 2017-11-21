@@ -38,6 +38,8 @@ extension ViewController { //MARK: IBActions
         self.resolutionLabel.text = selectedResolution.rawValue
         if let version = LuminaViewController.getVersion() {
             self.title = "Lumina Sample v\(version)"
+        } else {
+            self.title  = "Lumina Sample"
         }
     }
     
@@ -147,16 +149,12 @@ extension ViewController: LuminaDelegate {
     func dismissed(controller: LuminaViewController) {
         controller.dismiss(animated: true, completion: nil)
     }
-    
-    
 }
 
 extension ViewController: ResolutionDelegate {
     func didSelect(resolution: CameraResolution, controller: ResolutionViewController) {
         selectedResolution = resolution
-        if let navigationController = self.navigationController {
-            navigationController.popToViewController(self, animated: true)
-        }
+        self.navigationController?.popToViewController(self, animated: true)
     }
 }
 

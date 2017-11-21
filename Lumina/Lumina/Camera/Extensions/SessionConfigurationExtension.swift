@@ -2,7 +2,7 @@
 //  SessionConfigurationExtension.swift
 //  Lumina
 //
-//  Created by David Okun IBM on 11/20/17.
+//  Created by David Okun on 11/20/17.
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
@@ -21,7 +21,7 @@ extension LuminaCamera {
             }
         }
     }
-    
+
     func requestAudioPermissions() {
         self.sessionQueue.suspend()
         AVCaptureDevice.requestAccess(for: AVMediaType.audio) { success in
@@ -33,7 +33,7 @@ extension LuminaCamera {
             }
         }
     }
-    
+
     func updateOutputVideoOrientation(_ orientation: AVCaptureVideoOrientation) {
         self.videoBufferQueue.async {
             for output in self.session.outputs {
@@ -46,7 +46,7 @@ extension LuminaCamera {
             }
         }
     }
-    
+
     func restartVideo() {
         if self.session.isRunning {
             self.session.stopRunning()
@@ -59,7 +59,7 @@ extension LuminaCamera {
             })
         }
     }
-    
+
     func updateAudio(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
         self.sessionQueue.async {
             self.purgeAudioDevices()
@@ -89,7 +89,7 @@ extension LuminaCamera {
             }
         }
     }
-    
+
     func updateVideo(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
         self.sessionQueue.async {
             self.purgeVideoDevices()
@@ -108,7 +108,7 @@ extension LuminaCamera {
             }
         }
     }
-    
+
     private func videoSetupApproved() -> CameraSetupResult {
         self.torchState = false
         self.session.sessionPreset = .high // set to high here so that device input can be added to session. resolution can be checked for update later
@@ -136,7 +136,7 @@ extension LuminaCamera {
         configureFrameRate()
         return .videoSuccess
     }
-    
+
     private func checkSessionValidity(for input: AVCaptureDeviceInput) -> CameraSetupResult? {
         guard self.session.canAddInput(input) else {
             return .invalidVideoInput
@@ -162,7 +162,7 @@ extension LuminaCamera {
         }
         return nil
     }
-    
+
     private func configureVideoRecordingOutput(for session: AVCaptureSession) {
         if self.recordsVideo {
             // adding this invalidates the video data output
@@ -174,7 +174,7 @@ extension LuminaCamera {
             }
         }
     }
-    
+
     private func configureHiResPhotoOutput(for session: AVCaptureSession) {
         if self.captureHighResolutionImages && self.photoOutput.isHighResolutionCaptureEnabled {
             self.photoOutput.isHighResolutionCaptureEnabled = true
@@ -182,7 +182,7 @@ extension LuminaCamera {
             self.captureHighResolutionImages = false
         }
     }
-    
+
     private func configureLivePhotoOutput(for session: AVCaptureSession) {
         if self.captureLivePhotos && self.photoOutput.isLivePhotoCaptureSupported {
             self.photoOutput.isLivePhotoCaptureEnabled = true
@@ -190,14 +190,14 @@ extension LuminaCamera {
             self.captureLivePhotos = false
         }
     }
-    
+
     private func configureMetadataOutput(for session: AVCaptureSession) {
         if self.trackMetadata {
             session.addOutput(self.metadataOutput)
             self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
         }
     }
-    
+
     private func configureDepthDataOutput(for session: AVCaptureSession) {
         if #available(iOS 11.0, *) {
             if self.captureDepthData && self.photoOutput.isDepthDataDeliverySupported {
