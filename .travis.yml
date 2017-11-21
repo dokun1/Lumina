@@ -1,0 +1,4 @@
+language: objective-c
+osx_image: xcode9.1
+script:
+  - xcodebuild -scheme LuminaSample -workspace Lumina.xcworkspace -sdk iphoneos11.1 build
