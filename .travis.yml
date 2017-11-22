@@ -1,9 +1,6 @@
 language: objective-c
 osx_image: xcode9.1
 install:
-  - npm install -g danger
-  - brew install marathon-swift
-  - marathon install danger/danger-swift
   - bundle install
 script:
   - bundle exec danger
