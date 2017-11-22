@@ -193,7 +193,7 @@ public final class LuminaViewController: UIViewController {
         }
     }
 
-    private var _streamingModel: AnyObject?
+    private var _streamingModels: [AnyObject]?
 
     /// A model that will be used when streaming images for object recognition
     ///
@@ -201,15 +201,28 @@ public final class LuminaViewController: UIViewController {
     ///
     /// - Warning: If this is set, streamFrames is over-ridden to true
     @available(iOS 11.0, *)
-    open var streamingModel: MLModel? {
+    open var streamingModels: [MLModel]? {
         get {
-            return _streamingModel as? MLModel
+            if let existingModels = _streamingModels {
+                var models = [MLModel]()
+                for potentialModel in existingModels {
+                    if let model = potentialModel as? MLModel {
+                        models.append(model)
+                    }
+                }
+                guard models.count > 0  else {
+                    return nil
+                }
+                return models
+            } else {
+                return nil
+            }
         }
         set {
             if newValue != nil {
-                _streamingModel = newValue
+                _streamingModels = newValue
                 self.streamFrames = true
-                self.camera?.streamingModel = newValue
+                self.camera?.streamingModels = newValue
             }
         }
     }

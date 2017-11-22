@@ -147,16 +147,29 @@ final class LuminaCamera: NSObject {
 
     var recognizer: AnyObject?
 
-    private var _streamingModel: AnyObject?
+    private var _streamingModels: [AnyObject]?
     @available(iOS 11.0, *)
-    var streamingModel: MLModel? {
+    var streamingModels: [MLModel]? {
         get {
-            return _streamingModel as? MLModel
+            if let existingModels = _streamingModels {
+                var models = [MLModel]()
+                for potentialModel in existingModels {
+                    if let model = potentialModel as? MLModel {
+                        models.append(model)
+                    }
+                }
+                guard models.count > 0 else {
+                    return nil
+                }
+                return models
+            } else {
+                return nil
+            }
         }
         set {
             if newValue != nil {
-                _streamingModel = newValue
-                recognizer = LuminaObjectRecognizer(model: newValue!)
+                _streamingModels = newValue
+//                recognizer = LuminaObjectRecognizer(model: newValue!)
             }
         }
     }

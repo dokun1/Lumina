@@ -20,35 +20,107 @@ public struct LuminaPrediction {
 
 @available(iOS 11.0, *)
 final class LuminaObjectRecognizer: NSObject {
-    private var model: MLModel
+    private var models: [MLModel]
 
-    init(model: MLModel) {
-        self.model = model
+    init(models: [MLModel]) {
+        self.models = models
     }
-
-    func recognize(from image: UIImage, completion: @escaping (_ predictions: [LuminaPrediction]?) -> Void) {
-        guard let visionModel = try? VNCoreMLModel(for: self.model) else {
-            completion(nil)
-            return
-        }
-        let request = VNCoreMLRequest(model: visionModel) { request, error in
-            if error != nil || request.results == nil {
-                completion(nil)
-            } else if let results = request.results {
-                completion(self.mapResults(results))
+/*
+     router.get("/animals/:animals/friendly/:friendly/plural/:plural") { request, response, next in
+     let animalGroup = DispatchGroup()
+     var animals = [Animal]()
+     for address in ["http://0.0.0.0:3030/api/Cats", "http://0.0.0.0:3001/api/Bears"] {
+     guard let url = URL(string: address) else {
+     return
+     }
+     animalGroup.enter()
+     fetch(url, completion: { fetchedAnimals, error in
+     if let fetchedAnimals = fetchedAnimals {
+     animals.append(contentsOf: fetchedAnimals)
+     }
+     animalGroup.leave()
+     })
+     }
+     
+     animalGroup.notify(queue: DispatchQueue.global(qos: .default)) {
+     animals = filter(animals, request)
+     var results = [[String: AnyObject]]()
+     for animal in animals {
+     results.append(animal.json)
+     }
+     response.send(json: JSON(results))
+     next()
+     }
+     }*/
+    
+    
+    /* func doSomething<T>(a: AnyObject, myType: T.Type) {
+     if let a = a as? T {
+     //…
+     }
+     }
+     
+     // usage
+     doSomething("Hello World", myType: String.self)*/
+    
+    func recognize(from image: UIImage, completion: @escaping ([([LuminaPrediction]?, MLModel.Type)]) -> Void) {
+        var recognitionResults = [([LuminaPrediction]?, MLModel.Type)]()
+        let recognitionGroup = DispatchGroup()
+        for model in models {
+            recognitionGroup.enter()
+            guard let visionModel = try? VNCoreMLModel(for: model) else {
+                recognitionGroup.leave()
+                continue
+            }
+            let request = VNCoreMLRequest(model: visionModel) { request, error in
+                if error != nil || request.results == nil {
+                    recognitionGroup.leave()
+                } else if let results = request.results {
+                    let mappedResults = self.mapResults(results)
+                    recognitionResults.append((mappedResults, model.self))
+                    recognitionGroup.leave()
+                }
+            }
+            guard let coreImage = image.cgImage else {
+                recognitionGroup.leave()
+                continue
+            }
+            let handler = VNImageRequestHandler(cgImage: coreImage)
+            do {
+                try handler.perform([request])
+            } catch {
+                recognitionGroup.leave()
             }
         }
-        guard let coreImage = image.cgImage else {
-            completion(nil)
-            return
-        }
-        let handler = VNImageRequestHandler(cgImage: coreImage)
-        do {
-            try handler.perform([request])
-        } catch {
-            completion(nil)
+        recognitionGroup.notify(queue: DispatchQueue.main) {
+            completion(recognitionResults)
         }
     }
+    
+//    func recognize(from image: UIImage, completion: @escaping (_ predictions: [LuminaPrediction]?) -> Void) {
+//
+//        guard let visionModel = try? VNCoreMLModel(for: self.model) else {
+//            completion(nil)
+//            return
+//        }
+//        let request = VNCoreMLRequest(model: visionModel) { request, error in
+//            if error != nil || request.results == nil {
+//                completion(nil)
+//            } else if let results = request.results {
+//                completion(self.mapResults(results))
+//            }
+//        }
+//        guard let coreImage = image.cgImage else {
+//            completion(nil)
+//            return
+//        }
+//        let handler = VNImageRequestHandler(cgImage: coreImage)
+//        do {
+//            try handler.perform([request])
+//        } catch {
+//            completion(nil)
+//        }
+//    }
 
     private func mapResults(_ objects: [Any]) -> [LuminaPrediction] {
         var results = [LuminaPrediction]()
