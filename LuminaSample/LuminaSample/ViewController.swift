@@ -97,10 +97,15 @@ extension ViewController: LuminaDelegate {
             return
         }
         for prediction in predicted {
+            print(type(of: prediction.1))
             if prediction.1 == type(of: MobileNet.self) {
                 guard let values = prediction.0 else {
-                    continue
+                    return
                 }
+                guard let bestPrediction = values.first else {
+                    return
+                }
+                controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%, Model: \(type(of: prediction.1))"
             }
         }
     }
