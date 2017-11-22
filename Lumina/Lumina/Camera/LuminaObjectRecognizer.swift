@@ -25,43 +25,6 @@ final class LuminaObjectRecognizer: NSObject {
     init(models: [MLModel]) {
         self.models = models
     }
-/*
-     router.get("/animals/:animals/friendly/:friendly/plural/:plural") { request, response, next in
-     let animalGroup = DispatchGroup()
-     var animals = [Animal]()
-     for address in ["http://0.0.0.0:3030/api/Cats", "http://0.0.0.0:3001/api/Bears"] {
-     guard let url = URL(string: address) else {
-     return
-     }
-     animalGroup.enter()
-     fetch(url, completion: { fetchedAnimals, error in
-     if let fetchedAnimals = fetchedAnimals {
-     animals.append(contentsOf: fetchedAnimals)
-     }
-     animalGroup.leave()
-     })
-     }
-     
-     animalGroup.notify(queue: DispatchQueue.global(qos: .default)) {
-     animals = filter(animals, request)
-     var results = [[String: AnyObject]]()
-     for animal in animals {
-     results.append(animal.json)
-     }
-     response.send(json: JSON(results))
-     next()
-     }
-     }*/
-    
-    
-    /* func doSomething<T>(a: AnyObject, myType: T.Type) {
-     if let a = a as? T {
-     //…
-     }
-     }
-     
-     // usage
-     doSomething("Hello World", myType: String.self)*/
     
     func recognize(from image: UIImage, completion: @escaping ([([LuminaPrediction]?, MLModel.Type)]) -> Void) {
         var recognitionResults = [([LuminaPrediction]?, MLModel.Type)]()
@@ -77,7 +40,7 @@ final class LuminaObjectRecognizer: NSObject {
                     recognitionGroup.leave()
                 } else if let results = request.results {
                     let mappedResults = self.mapResults(results)
-                    recognitionResults.append((mappedResults, model.self))
+                    recognitionResults.append((mappedResults, type(of: model)))
                     recognitionGroup.leave()
                 }
             }

@@ -15,17 +15,27 @@ extension LuminaCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
             return
         }
         if #available(iOS 11.0, *) {
-            guard let recognizer = self.recognizer as? LuminaObjectRecognizer else {
+            if let models = self.streamingModels {
+                if self.recognizer == nil {
+                    let newRecognizer = LuminaObjectRecognizer(models: models)
+                    self.recognizer = newRecognizer
+                }
+                guard let recognizer = self.recognizer as? LuminaObjectRecognizer else {
+                    DispatchQueue.main.async {
+                        self.delegate?.videoFrameCaptured(camera: self, frame: image)
+                    }
+                    return
+                }
+                recognizer.recognize(from: image, completion: { results in
+                    DispatchQueue.main.async {
+                        self.delegate?.videoFrameCaptured(camera: self, frame: image, predictedObjects: results)
+                    }
+                })
+            } else {
                 DispatchQueue.main.async {
                     self.delegate?.videoFrameCaptured(camera: self, frame: image)
                 }
-                return
             }
-            recognizer.recognize(from: image, completion: { predictions in
-                DispatchQueue.main.async {
-                    self.delegate?.videoFrameCaptured(camera: self, frame: image, predictedObjects: predictions)
-                }
-            })
         } else {
             DispatchQueue.main.async {
                 self.delegate?.videoFrameCaptured(camera: self, frame: image)

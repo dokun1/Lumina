@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreML
 
 /// Delegate for returning information to the application utilizing Lumina
 public protocol LuminaDelegate: class {
@@ -44,6 +45,9 @@ public protocol LuminaDelegate: class {
     ///   - predictions: the predictions made by the model used with Lumina
     ///   - controller: the instance of Lumina that is streaming the frames
     func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController)
+    
+    @available(iOS 11.0, *)
+    func streamed(videoFrame: UIImage, with predictions: [([LuminaPrediction]?, type(of: MLModel))]?, from controller: LuminaViewController)
 
     /// Triggered whenever streamDepthData is set to true on Lumina, and streams depth data detected in the form of AVDepthData
     ///
