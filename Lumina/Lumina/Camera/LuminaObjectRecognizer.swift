@@ -25,7 +25,7 @@ final class LuminaObjectRecognizer: NSObject {
     init(models: [MLModel]) {
         self.models = models
     }
-    
+
     func recognize(from image: UIImage, completion: @escaping ([([LuminaPrediction]?, MLModel.Type)]) -> Void) {
         var recognitionResults = [([LuminaPrediction]?, MLModel.Type)]()
         let recognitionGroup = DispatchGroup()
@@ -59,31 +59,6 @@ final class LuminaObjectRecognizer: NSObject {
             completion(recognitionResults)
         }
     }
-    
-//    func recognize(from image: UIImage, completion: @escaping (_ predictions: [LuminaPrediction]?) -> Void) {
-//
-//        guard let visionModel = try? VNCoreMLModel(for: self.model) else {
-//            completion(nil)
-//            return
-//        }
-//        let request = VNCoreMLRequest(model: visionModel) { request, error in
-//            if error != nil || request.results == nil {
-//                completion(nil)
-//            } else if let results = request.results {
-//                completion(self.mapResults(results))
-//            }
-//        }
-//        guard let coreImage = image.cgImage else {
-//            completion(nil)
-//            return
-//        }
-//        let handler = VNImageRequestHandler(cgImage: coreImage)
-//        do {
-//            try handler.perform([request])
-//        } catch {
-//            completion(nil)
-//        }
-//    }
 
     private func mapResults(_ objects: [Any]) -> [LuminaPrediction] {
         var results = [LuminaPrediction]()

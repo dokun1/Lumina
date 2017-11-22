@@ -47,7 +47,7 @@ public protocol LuminaDelegate: class {
     func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController)
     
     @available(iOS 11.0, *)
-    func streamed(videoFrame: UIImage, with predictions: [([LuminaPrediction]?, type(of: MLModel))]?, from controller: LuminaViewController)
+    func streamed(videoFrame: UIImage, with predictions: [([LuminaPrediction]?, MLModel.Type)]?, from controller: LuminaViewController)
 
     /// Triggered whenever streamDepthData is set to true on Lumina, and streams depth data detected in the form of AVDepthData
     ///
