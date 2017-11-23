@@ -20,14 +20,14 @@ public struct LuminaPrediction {
 
 @available(iOS 11.0, *)
 final class LuminaObjectRecognizer: NSObject {
-    private var modelPairs: [(MLModel, String)]
+    private var modelPairs: [(MLModel, Any.Type)]
 
-    init(modelPairs: [(MLModel, String)]) {
+    init(modelPairs: [(MLModel, Any.Type)]) {
         self.modelPairs = modelPairs
     }
 
-    func recognize(from image: UIImage, completion: @escaping ([([LuminaPrediction]?, String)]) -> Void) {
-        var recognitionResults = [([LuminaPrediction]?, String)]()
+    func recognize(from image: UIImage, completion: @escaping ([([LuminaPrediction]?, Any.Type)]) -> Void) {
+        var recognitionResults = [([LuminaPrediction]?, Any.Type)]()
         let recognitionGroup = DispatchGroup()
         for modelPair in modelPairs {
             recognitionGroup.enter()

@@ -92,19 +92,19 @@ extension ViewController { //MARK: IBActions
 
 extension ViewController: LuminaDelegate {
     @available (iOS 11.0, *)
-    func streamed(videoFrame: UIImage, with predictions: [([LuminaPrediction]?, String)]?, from controller: LuminaViewController) {
+    func streamed(videoFrame: UIImage, with predictions: [([LuminaPrediction]?, Any.Type)]?, from controller: LuminaViewController) {
         guard let predicted = predictions else {
             return
         }
         for prediction in predicted {
-            if prediction.1 == "MobileNet" {
+            if prediction.1 == SqueezeNet.self {
                 guard let values = prediction.0 else {
                     return
                 }
                 guard let bestPrediction = values.first else {
                     return
                 }
-                controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%, Model: \(prediction.1)"
+                controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%, Model: \(String(describing: prediction.1))"
             }
         }
     }

@@ -15,7 +15,7 @@ protocol LuminaCameraDelegate: class {
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?)
     @available (iOS 11.0, *)
-    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [([LuminaPrediction]?, String)]?)
+    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [([LuminaPrediction]?, Any.Type)]?)
     func depthDataCaptured(camera: LuminaCamera, depthData: Any)
     func videoRecordingCaptured(camera: LuminaCamera, videoURL: URL)
     func finishedFocus(camera: LuminaCamera)
@@ -149,12 +149,12 @@ final class LuminaCamera: NSObject {
 
     var recognizer: AnyObject?
 
-    private var _streamingModels: [(AnyObject, String)]?
+    private var _streamingModels: [(AnyObject, Any.Type)]?
     @available(iOS 11.0, *)
-    var streamingModels: [(MLModel, String)]? {
+    var streamingModels: [(MLModel, Any.Type)]? {
         get {
             if let existingModels = _streamingModels {
-                var models = [(MLModel, String)]()
+                var models = [(MLModel, Any.Type)]()
                 for potentialModel in existingModels {
                     if let model = potentialModel.0 as? MLModel {
                         models.append((model, potentialModel.1))
@@ -170,7 +170,7 @@ final class LuminaCamera: NSObject {
         }
         set {
             if let tuples = newValue {
-                var downcastCollection = [(AnyObject, String)]()
+                var downcastCollection = [(AnyObject, Any.Type)]()
                 for tuple in tuples {
                     downcastCollection.append((tuple.0 as AnyObject, tuple.1))
                 }
