@@ -37,6 +37,7 @@ final class LuminaObjectRecognizer: NSObject {
             }
             let request = VNCoreMLRequest(model: visionModel) { request, error in
                 if error != nil || request.results == nil {
+                    recognitionResults.append((nil, modelPair.1))
                     recognitionGroup.leave()
                 } else if let results = request.results {
                     let mappedResults = self.mapResults(results)
