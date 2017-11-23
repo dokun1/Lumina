@@ -17,14 +17,12 @@ is_plist_change = git.modified_files.sort == ["ProjectName/Info.plist"].sort
 
 if !is_plist_change
   warn "Plist changed, don't forget to localize your plist values"
-end
 
 podfile_updated = !git.modified_files.grep(/Podfile/).empty?
 
 # Leave warning, if Podfile changes
 if podfile_updated
   warn "The `Podfile` was updated"
-end
 
 # This is swiftlint plugin. More info: https://github.com/ashfurrow/danger-swiftlint
 #
