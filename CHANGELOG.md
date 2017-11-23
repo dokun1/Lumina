@@ -2,7 +2,21 @@
 
 ## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
 
-[Full Changelog](https://github.com/dokun1/Lumina/compare/0.11.2...HEAD)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.0...HEAD)
+
+**Implemented enhancements:**
+
+- Add X CoreML Models instead of just one CoreML Model [\#39](https://github.com/dokun1/Lumina/issues/39)
+
+## [0.13.0](https://github.com/dokun1/Lumina/tree/0.13.0) (2017-11-23)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.12.0...0.13.0)
+
+**Merged pull requests:**
+
+- Multiple models [\#52](https://github.com/dokun1/Lumina/pull/52) ([dokun1](https://github.com/dokun1))
+
+## [0.12.0](https://github.com/dokun1/Lumina/tree/0.12.0) (2017-11-21)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.11.2...0.12.0)
 
 **Merged pull requests:**
 
