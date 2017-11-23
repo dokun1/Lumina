@@ -92,23 +92,23 @@ extension ViewController { //MARK: IBActions
 
 extension ViewController: LuminaDelegate {
     func streamed(videoFrame: UIImage, with predictions: [([LuminaPrediction]?, Any.Type)]?, from controller: LuminaViewController) {
-        guard let predicted = predictions else {
-            return
-        }
-        for prediction in predicted {
-            if #available(iOS 11.0, *) {
-                if prediction.1 == MobileNet.self {
-                    guard let values = prediction.0 else {
-                        return
-                    }
-                    guard let bestPrediction = values.first else {
-                        return
-                    }
-                    controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%, Model: \(String(describing: prediction.1))"
-                }
-            } else {
-                print("CoreML not available in iOS 10.0")
+        if #available(iOS 11.0, *) {
+            guard let predicted = predictions else {
+                return
             }
+            var resultString = String()
+            for prediction in predicted {
+                guard let values = prediction.0 else {
+                    continue
+                }
+                guard let bestPrediction = values.first else {
+                    continue
+                }
+                resultString.append("\(String(describing: prediction.1)): \(bestPrediction.name)" + "\r\n")
+            }
+            controller.textPrompt = resultString
+        } else {
+            print("CoreML not available in iOS 10.0")
         }
     }
     
