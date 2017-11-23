@@ -160,12 +160,12 @@ camera.maxZoomScale = 5.0 // not setting this defaults to the highest zoom scale
 
 **NB:** This only works for iOS 11.0 and up.
 
-You must have a `CoreML` compatible model to try this. Ensure that you drag the model file into your project file, and add it to your current application target.
+You must have a `CoreML` compatible model(s) to try this. Ensure that you drag the model file(s) into your project file, and add it to your current application target.
 
-The sample in this repository comes with the `MobileNet` image recognition model, but again, any `CoreML` compatible model will work with this framework. Assign your model to the framework like so:
+The sample in this repository comes with the `MobileNet` and `SqueezeNet` image recognition models, but again, any `CoreML` compatible model will work with this framework. Assign your model(s) to the framework like so:
 
 ```swift
-camera.streamingModel = MobileNet().model
+camera.streamingModelTypes = [MobileNet(), SqueezeNet()]
 ```
 
 You are now set up to perform live video object recognition.
@@ -234,20 +234,30 @@ func detected(metadata: [Any], from controller: LuminaViewController) {
 ```
 
 To handle a `CoreML` model and its predictions being streamed with each video frame, implement:
-
 ```swift
-func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController) {
+func streamed(videoFrame: UIImage, with predictions: [([LuminaPrediction]?, Any.Type)]?, from controller: LuminaViewController) {
     guard let predicted = predictions else {
         return
     }
-    guard let bestPrediction = predicted.first else {
-        return
+    for prediction in predicted {
+        if #available(iOS 11.0, *) {
+            if prediction.1 == MobileNet.self {
+                guard let values = prediction.0 else {
+                    return
+                }
+                guard let bestPrediction = values.first else {
+                    return
+                }
+                controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%, Model: \(String(describing: prediction.1))"
+            }
+        } else {
+            print("CoreML not available in iOS 10.0")
+        }
     }
-    controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%"
-    }
+}
 ```
 
-The example above also makes use of the built-in text prompt mechanism for Lumina.
+Note that this returns a class type representation associated with the detected results. The example above also makes use of the built-in text prompt mechanism for Lumina.
 
 ## Maintainers
 
