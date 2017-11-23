@@ -10,6 +10,7 @@
 		534C1E9E1F7C3C59001127BC /* ResolutionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534C1E9D1F7C3C59001127BC /* ResolutionViewController.swift */; };
 		5365BFD41F79829800B8F338 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD31F79829800B8F338 /* ImageViewController.swift */; };
 		5365BFDA1F79AAA800B8F338 /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */; };
+		5373B3F11FC61BBF00C197BD /* SqueezeNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5373B3F01FC61BBF00C197BD /* SqueezeNet.mlmodel */; };
 		53B828F71EAAA09000E3A624 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828F61EAAA09000E3A624 /* AppDelegate.swift */; };
 		53B828F91EAAA09000E3A624 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828F81EAAA09000E3A624 /* ViewController.swift */; };
 		53B828FC1EAAA09000E3A624 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FA1EAAA09000E3A624 /* Main.storyboard */; };
@@ -37,6 +38,7 @@
 		534C1E9D1F7C3C59001127BC /* ResolutionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResolutionViewController.swift; sourceTree = "<group>"; };
 		5365BFD31F79829800B8F338 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = MobileNet.mlmodel; path = LuminaSample/MobileNet.mlmodel; sourceTree = "<group>"; };
+		5373B3F01FC61BBF00C197BD /* SqueezeNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = SqueezeNet.mlmodel; path = LuminaSample/SqueezeNet.mlmodel; sourceTree = "<group>"; };
 		53B828F31EAAA09000E3A624 /* LuminaSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LuminaSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53B828F61EAAA09000E3A624 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		53B828F81EAAA09000E3A624 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 			children = (
 				53F55EDF1FABE1FA00299980 /* Lumina.framework */,
 				5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */,
+				5373B3F01FC61BBF00C197BD /* SqueezeNet.mlmodel */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -176,6 +179,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				534C1E9E1F7C3C59001127BC /* ResolutionViewController.swift in Sources */,
+				5373B3F11FC61BBF00C197BD /* SqueezeNet.mlmodel in Sources */,
 				5365BFDA1F79AAA800B8F338 /* MobileNet.mlmodel in Sources */,
 				53B828F91EAAA09000E3A624 /* ViewController.swift in Sources */,
 				5365BFD41F79829800B8F338 /* ImageViewController.swift in Sources */,

@@ -20,33 +20,44 @@ public struct LuminaPrediction {
 
 @available(iOS 11.0, *)
 final class LuminaObjectRecognizer: NSObject {
-    private var model: MLModel
+    private var modelPairs: [(MLModel, Any.Type)]
 
-    init(model: MLModel) {
-        self.model = model
+    init(modelPairs: [(MLModel, Any.Type)]) {
+        self.modelPairs = modelPairs
     }
 
-    func recognize(from image: UIImage, completion: @escaping (_ predictions: [LuminaPrediction]?) -> Void) {
-        guard let visionModel = try? VNCoreMLModel(for: self.model) else {
-            completion(nil)
-            return
-        }
-        let request = VNCoreMLRequest(model: visionModel) { request, error in
-            if error != nil || request.results == nil {
-                completion(nil)
-            } else if let results = request.results {
-                completion(self.mapResults(results))
+    func recognize(from image: UIImage, completion: @escaping ([([LuminaPrediction]?, Any.Type)]) -> Void) {
+        var recognitionResults = [([LuminaPrediction]?, Any.Type)]()
+        let recognitionGroup = DispatchGroup()
+        for modelPair in modelPairs {
+            recognitionGroup.enter()
+            guard let visionModel = try? VNCoreMLModel(for: modelPair.0) else {
+                recognitionGroup.leave()
+                continue
+            }
+            let request = VNCoreMLRequest(model: visionModel) { request, error in
+                if error != nil || request.results == nil {
+                    recognitionResults.append((nil, modelPair.1))
+                    recognitionGroup.leave()
+                } else if let results = request.results {
+                    let mappedResults = self.mapResults(results)
+                    recognitionResults.append((mappedResults, modelPair.1))
+                    recognitionGroup.leave()
+                }
+            }
+            guard let coreImage = image.cgImage else {
+                recognitionGroup.leave()
+                continue
+            }
+            let handler = VNImageRequestHandler(cgImage: coreImage)
+            do {
+                try handler.perform([request])
+            } catch {
+                recognitionGroup.leave()
             }
         }
-        guard let coreImage = image.cgImage else {
-            completion(nil)
-            return
-        }
-        let handler = VNImageRequestHandler(cgImage: coreImage)
-        do {
-            try handler.perform([request])
-        } catch {
-            completion(nil)
+        recognitionGroup.notify(queue: DispatchQueue.main) {
+            completion(recognitionResults)
         }
     }
 

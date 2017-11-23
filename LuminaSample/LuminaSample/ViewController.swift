@@ -57,8 +57,8 @@ extension ViewController { //MARK: IBActions
         camera.resolution = selectedResolution
         camera.maxZoomScale = (self.maxZoomScaleLabel.text! as NSString).floatValue
         camera.frameRate = Int(self.frameRateLabel.text!) ?? 30
-        if #available(iOS 11.0, *) {
-            camera.streamingModel = self.useCoreMLModelSwitch.isOn ? MobileNet().model : nil
+        if #available(iOS 11.0, *), self.useCoreMLModelSwitch.isOn {
+            camera.streamingModelTypes = [MobileNet(), SqueezeNet()]
         }
         present(camera, animated: true, completion: nil)
     }
@@ -91,6 +91,27 @@ extension ViewController { //MARK: IBActions
 }
 
 extension ViewController: LuminaDelegate {
+    func streamed(videoFrame: UIImage, with predictions: [([LuminaPrediction]?, Any.Type)]?, from controller: LuminaViewController) {
+        if #available(iOS 11.0, *) {
+            guard let predicted = predictions else {
+                return
+            }
+            var resultString = String()
+            for prediction in predicted {
+                guard let values = prediction.0 else {
+                    continue
+                }
+                guard let bestPrediction = values.first else {
+                    continue
+                }
+                resultString.append("\(String(describing: prediction.1)): \(bestPrediction.name)" + "\r\n")
+            }
+            controller.textPrompt = resultString
+        } else {
+            print("CoreML not available in iOS 10.0")
+        }
+    }
+    
     func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController) {
         controller.dismiss(animated: true) {
             self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage" : stillImage, "livePhotoURL" : livePhotoAt as Any, "depthData" : depthData, "isPhotoSelfie" : controller.position == .front ? true : false])
@@ -106,16 +127,6 @@ extension ViewController: LuminaDelegate {
                 playerViewController.player?.play()
             }
         }
-    }
-    
-    func streamed(videoFrame: UIImage, with predictions: [LuminaPrediction]?, from controller: LuminaViewController) {
-        guard let predicted = predictions else {
-            return
-        }
-        guard let bestPrediction = predicted.first else {
-            return
-        }
-        controller.textPrompt = "Object: \(bestPrediction.name), Confidence: \(bestPrediction.confidence * 100)%"
     }
     
     func detected(metadata: [Any], from controller: LuminaViewController) {

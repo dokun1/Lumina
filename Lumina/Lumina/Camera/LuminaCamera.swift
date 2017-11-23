@@ -14,6 +14,8 @@ protocol LuminaCameraDelegate: class {
     func stillImageCaptured(camera: LuminaCamera, image: UIImage, livePhotoURL: URL?, depthData: Any?)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?)
+    @available (iOS 11.0, *)
+    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [([LuminaPrediction]?, Any.Type)]?)
     func depthDataCaptured(camera: LuminaCamera, depthData: Any)
     func videoRecordingCaptured(camera: LuminaCamera, videoURL: URL)
     func finishedFocus(camera: LuminaCamera)
@@ -147,16 +149,32 @@ final class LuminaCamera: NSObject {
 
     var recognizer: AnyObject?
 
-    private var _streamingModel: AnyObject?
+    private var _streamingModels: [(AnyObject, Any.Type)]?
     @available(iOS 11.0, *)
-    var streamingModel: MLModel? {
+    var streamingModels: [(MLModel, Any.Type)]? {
         get {
-            return _streamingModel as? MLModel
+            if let existingModels = _streamingModels {
+                var models = [(MLModel, Any.Type)]()
+                for potentialModel in existingModels {
+                    if let model = potentialModel.0 as? MLModel {
+                        models.append((model, potentialModel.1))
+                    }
+                }
+                guard models.count > 0 else {
+                    return nil
+                }
+                return models
+            } else {
+                return nil
+            }
         }
         set {
-            if newValue != nil {
-                _streamingModel = newValue
-                recognizer = LuminaObjectRecognizer(model: newValue!)
+            if let tuples = newValue {
+                var downcastCollection = [(AnyObject, Any.Type)]()
+                for tuple in tuples {
+                    downcastCollection.append((tuple.0 as AnyObject, tuple.1))
+                }
+                _streamingModels = downcastCollection
             }
         }
     }
