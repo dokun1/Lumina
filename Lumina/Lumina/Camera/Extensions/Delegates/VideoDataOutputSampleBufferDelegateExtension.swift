@@ -15,9 +15,9 @@ extension LuminaCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
             return
         }
         if #available(iOS 11.0, *) {
-            if let models = self.streamingModels {
+            if let modelPairs = self.streamingModels {
                 if self.recognizer == nil {
-                    let newRecognizer = LuminaObjectRecognizer(models: models)
+                    let newRecognizer = LuminaObjectRecognizer(modelPairs: modelPairs)
                     self.recognizer = newRecognizer
                 }
                 guard let recognizer = self.recognizer as? LuminaObjectRecognizer else {

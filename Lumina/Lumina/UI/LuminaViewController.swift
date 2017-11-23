@@ -193,21 +193,21 @@ public final class LuminaViewController: UIViewController {
         }
     }
 
-    private var _streamingModels: [AnyObject]?
+    private var _streamingModels: [(AnyObject, String)]?
 
-    /// A model that will be used when streaming images for object recognition
+    /// A collection of models that will be used when streaming images for object recognition
     ///
     /// - Note: Only works on iOS 11 and up
     ///
     /// - Warning: If this is set, streamFrames is over-ridden to true
     @available(iOS 11.0, *)
-    open var streamingModels: [MLModel]? {
+    var streamingModels: [(MLModel, String)]? {
         get {
             if let existingModels = _streamingModels {
-                var models = [MLModel]()
+                var models = [(MLModel, String)]()
                 for potentialModel in existingModels {
-                    if let model = potentialModel as? MLModel {
-                        models.append(model)
+                    if let model = potentialModel.0 as? MLModel {
+                        models.append((model, potentialModel.1))
                     }
                 }
                 guard models.count > 0  else {
@@ -219,10 +219,42 @@ public final class LuminaViewController: UIViewController {
             }
         }
         set {
-            if newValue != nil {
-                _streamingModels = newValue
+            if let tuples = newValue {
+                var downcastCollection = [(AnyObject, String)]()
+                for tuple in tuples {
+                    downcastCollection.append((tuple.0 as AnyObject, tuple.1))
+                }
+                _streamingModels = downcastCollection
                 self.streamFrames = true
-                self.camera?.streamingModels = newValue
+                self.camera?.streamingModels = tuples
+            }
+        }
+    }
+
+    open var streamingModelTypes: [AnyObject]? {
+        didSet {
+            if #available(iOS 11.0, *) {
+                var modelsToSet = [(MLModel, String)]()
+                var newModelsToSet = [(MLModel, Any.Type)]()
+                if let types = streamingModelTypes {
+                    for type in types {
+                        let reflection = Mirror(reflecting: type)
+                        for (name, value) in reflection.children where name == "model" {
+                            guard let className = String(describing: type.self).components(separatedBy: ".").last else {
+                                continue
+                            }
+                            guard let model = value as? MLModel else {
+                                continue
+                            }
+                            modelsToSet.append((model, className))
+                            print(reflection.subjectType)
+                            newModelsToSet.append((model, reflection.subjectType))
+                        }
+                    }
+                    self.streamingModels = modelsToSet
+                }
+            } else {
+                print("Muse be using iOS 11.0 or higher for CoreML")
             }
         }
     }

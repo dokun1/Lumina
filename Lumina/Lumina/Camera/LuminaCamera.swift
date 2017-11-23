@@ -15,7 +15,7 @@ protocol LuminaCameraDelegate: class {
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaPrediction]?)
     @available (iOS 11.0, *)
-    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [([LuminaPrediction]?, MLModel.Type)]?)
+    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [([LuminaPrediction]?, String)]?)
     func depthDataCaptured(camera: LuminaCamera, depthData: Any)
     func videoRecordingCaptured(camera: LuminaCamera, videoURL: URL)
     func finishedFocus(camera: LuminaCamera)
@@ -149,15 +149,15 @@ final class LuminaCamera: NSObject {
 
     var recognizer: AnyObject?
 
-    private var _streamingModels: [AnyObject]?
+    private var _streamingModels: [(AnyObject, String)]?
     @available(iOS 11.0, *)
-    var streamingModels: [MLModel]? {
+    var streamingModels: [(MLModel, String)]? {
         get {
             if let existingModels = _streamingModels {
-                var models = [MLModel]()
+                var models = [(MLModel, String)]()
                 for potentialModel in existingModels {
-                    if let model = potentialModel as? MLModel {
-                        models.append(model)
+                    if let model = potentialModel.0 as? MLModel {
+                        models.append((model, potentialModel.1))
                     }
                 }
                 guard models.count > 0 else {
@@ -169,9 +169,12 @@ final class LuminaCamera: NSObject {
             }
         }
         set {
-            if newValue != nil {
-                _streamingModels = newValue
-//                recognizer = LuminaObjectRecognizer(model: newValue!)
+            if let tuples = newValue {
+                var downcastCollection = [(AnyObject, String)]()
+                for tuple in tuples {
+                    downcastCollection.append((tuple.0 as AnyObject, tuple.1))
+                }
+                _streamingModels = downcastCollection
             }
         }
     }

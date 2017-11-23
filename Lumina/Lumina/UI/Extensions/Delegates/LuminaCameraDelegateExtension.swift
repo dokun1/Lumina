@@ -11,7 +11,7 @@ import CoreML
 
 extension LuminaViewController: LuminaCameraDelegate {
     @available (iOS 11.0, *)
-    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [([LuminaPrediction]?, MLModel.Type)]?) {
+    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [([LuminaPrediction]?, String)]?) {
         delegate?.streamed(videoFrame: frame, with: predictedObjects, from: self)
     }
 

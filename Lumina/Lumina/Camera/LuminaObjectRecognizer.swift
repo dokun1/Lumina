@@ -20,18 +20,18 @@ public struct LuminaPrediction {
 
 @available(iOS 11.0, *)
 final class LuminaObjectRecognizer: NSObject {
-    private var models: [MLModel]
+    private var modelPairs: [(MLModel, String)]
 
-    init(models: [MLModel]) {
-        self.models = models
+    init(modelPairs: [(MLModel, String)]) {
+        self.modelPairs = modelPairs
     }
 
-    func recognize(from image: UIImage, completion: @escaping ([([LuminaPrediction]?, MLModel.Type)]) -> Void) {
-        var recognitionResults = [([LuminaPrediction]?, MLModel.Type)]()
+    func recognize(from image: UIImage, completion: @escaping ([([LuminaPrediction]?, String)]) -> Void) {
+        var recognitionResults = [([LuminaPrediction]?, String)]()
         let recognitionGroup = DispatchGroup()
-        for model in models {
+        for modelPair in modelPairs {
             recognitionGroup.enter()
-            guard let visionModel = try? VNCoreMLModel(for: model) else {
+            guard let visionModel = try? VNCoreMLModel(for: modelPair.0) else {
                 recognitionGroup.leave()
                 continue
             }
@@ -40,7 +40,7 @@ final class LuminaObjectRecognizer: NSObject {
                     recognitionGroup.leave()
                 } else if let results = request.results {
                     let mappedResults = self.mapResults(results)
-                    recognitionResults.append((mappedResults, type(of: model)))
+                    recognitionResults.append((mappedResults, modelPair.1))
                     recognitionGroup.leave()
                 }
             }
