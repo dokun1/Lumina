@@ -4,4 +4,3 @@ install:
   - bundle install
 script:
   - bundle exec danger
-  - xcodebuild -scheme LuminaSample -workspace Lumina.xcworkspace -sdk iphoneos11.1 build
