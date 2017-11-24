@@ -2,11 +2,22 @@
 
 ## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
 
-[Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.0...HEAD)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.1...HEAD)
+
+**Implemented enhancements:**
+
+- Implement Danger [\#49](https://github.com/dokun1/Lumina/issues/49)
+
+## [0.13.1](https://github.com/dokun1/Lumina/tree/0.13.1) (2017-11-24)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.0...0.13.1)
 
 **Implemented enhancements:**
 
 - Add X CoreML Models instead of just one CoreML Model [\#39](https://github.com/dokun1/Lumina/issues/39)
+
+**Merged pull requests:**
+
+- Ci setup [\#53](https://github.com/dokun1/Lumina/pull/53) ([dokun1](https://github.com/dokun1))
 
 ## [0.13.0](https://github.com/dokun1/Lumina/tree/0.13.0) (2017-11-23)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.12.0...0.13.0)
