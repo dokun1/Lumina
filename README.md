@@ -3,6 +3,9 @@
 </p>
 
 <p align="center">
+    <a href="https://api.travis-ci.org/dokun1/Lumina.svg?branch=master">
+        <img src="https://api.travis-ci.org/dokun1/Lumina.svg?branch=master" alt="Travis CI Status">
+    </a>
 	<a href="https://cocoapods.org/pods/Lumina">
 		<img src="https://img.shields.io/cocoapods/v/Lumina.svg" alt="Pods Version">
 	</a>
