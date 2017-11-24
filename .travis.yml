@@ -3,7 +3,7 @@ osx_image: xcode9.1
 install:
   - bundle install
   - brew update
-  - brew install swiftlint
+  - brew upgrade swiftlint
 script:
   - bundle exec danger
   - xcodebuild -scheme Lumina -workspace Lumina.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 7 Plus,OS=10.3.1'
