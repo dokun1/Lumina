@@ -5,7 +5,6 @@ install:
   - brew update
   - brew upgrade swiftlint
 script:
-  - scripts/generate_ci_yaml.rb
   - bundle exec danger
   - xcodebuild -scheme Lumina -workspace Lumina.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 7 Plus,OS=10.3.1'
   - xcodebuild -scheme Lumina -workspace Lumina.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 7 Plus,OS=11.1'
