@@ -17,6 +17,7 @@ is_plist_change = git.modified_files.sort == ["ProjectName/Info.plist"].sort
 
 if !is_plist_change
   warn "Plist changed, don't forget to localize your plist values"
+end
 
 podfile_updated = !git.modified_files.grep(/Podfile/).empty?
 
@@ -29,5 +30,3 @@ if podfile_updated
 # This lints all Swift files and leave comments in PR if 
 # there is any issue with linting
 swiftlint.lint_files inline_mode: true
-
-end
