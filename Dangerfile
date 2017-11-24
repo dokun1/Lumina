@@ -12,10 +12,6 @@ if git.modified_files.empty? && git.added_files.empty? && git.deleted_files.empt
   fail "This PR has no changes at all, this is likely an issue during development."
 end
 
-# Info.plist file shouldn't change often. Leave warning if it changes.
-is_plist_change = git.modified_files.sort == ["ProjectName/Info.plist"].sort
-warn("Plist changed - don't forget to localize your plist values") if !is_plist_change
-
 # if the PR is listed as a work in progress
 warn("PR is classed as Work in Progress") if github.pr_title.include? "[WIP]"
 

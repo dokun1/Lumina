@@ -39,6 +39,8 @@ final class LuminaTextPromptView: UIView {
             } else {
                 self.textLabel.text = text
                 self.makeAppear()
+                
+                
             }
         }
     }
