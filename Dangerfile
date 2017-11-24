@@ -14,20 +14,18 @@ end
 
 # Info.plist file shouldn't change often. Leave warning if it changes.
 is_plist_change = git.modified_files.sort == ["ProjectName/Info.plist"].sort
+warn("Plist changed - don't forget to localize your plist values") if !is_plist_change
 
-if !is_plist_change
-  warn "Plist changed, don't forget to localize your plist values"
-end
+# if the PR is listed as a work in progress
+warn("PR is classed as Work in Progress") if github.pr_title.include? "[WIP]"
 
 podfile_updated = !git.modified_files.grep(/Podfile/).empty?
-
 # Leave warning, if Podfile changes
-if podfile_updated
-  warn "The `Podfile` was updated"
-end
+warn("The `Podfile` was updated") if podfile_updated
 
 # This is swiftlint plugin. More info: https://github.com/ashfurrow/danger-swiftlint
 #
 # This lints all Swift files and leave comments in PR if 
 # there is any issue with linting
-swiftlint.lint_files inline_mode: true
+swiftlint.config_file = '.swiftlint_CI.yml'
+swiftlint.lint_files
