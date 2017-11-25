@@ -87,7 +87,7 @@ public final class LuminaViewController: UIViewController {
         if let currentButton = _switchButton {
             return currentButton
         }
-        let button = LuminaButton(with: SystemButtonType.cameraSwitch)
+        let button = LuminaButton(with: SystemButtonType.settings)
         button.addTarget(self, action: #selector(switchButtonTapped), for: .touchUpInside)
         _switchButton = button
         return button

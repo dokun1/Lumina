@@ -14,6 +14,7 @@ enum SystemButtonType {
     case photoCapture
     case cancel
     case shutter
+    case settings
 }
 
 final class LuminaButton: UIButton {
@@ -79,6 +80,9 @@ final class LuminaButton: UIButton {
             self.layer.cornerRadius = CGFloat(self.shutterButtonDimension / 2)
             self.layer.borderWidth = 3
             self.layer.borderColor = UIColor.borderNormalState
+        case .settings:
+            self.image = UIImage(named: "cameraSettings", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
+            self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.maxX - 50, y: 10), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
         default:
             break
         }
