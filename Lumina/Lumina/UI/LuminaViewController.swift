@@ -127,6 +127,8 @@ public final class LuminaViewController: UIViewController {
             guard let camera = self.camera else {
                 return
             }
+            
+            
             camera.position = position
         }
     }
