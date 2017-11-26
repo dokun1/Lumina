@@ -1,12 +1,16 @@
 # Change Log
 
-## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
-
-[Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.1...HEAD)
+## [0.13.2](https://github.com/dokun1/Lumina/tree/0.13.2) (2017-11-26)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.1...0.13.2)
 
 **Implemented enhancements:**
 
 - Implement Danger [\#49](https://github.com/dokun1/Lumina/issues/49)
+
+**Merged pull requests:**
+
+- Refactored model allocation [\#55](https://github.com/dokun1/Lumina/pull/55) ([dokun1](https://github.com/dokun1))
+- Updated to use inline mode for swiftlint [\#54](https://github.com/dokun1/Lumina/pull/54) ([dokun1](https://github.com/dokun1))
 
 ## [0.13.1](https://github.com/dokun1/Lumina/tree/0.13.1) (2017-11-24)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.0...0.13.1)
