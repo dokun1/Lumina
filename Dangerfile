@@ -24,4 +24,4 @@ warn("The `Podfile` was updated") if podfile_updated
 # This lints all Swift files and leave comments in PR if 
 # there is any issue with linting
 swiftlint.config_file = '.swiftlint.yml'
-swiftlint.lint_files
+swiftlint.lint_files inline_mode: true
