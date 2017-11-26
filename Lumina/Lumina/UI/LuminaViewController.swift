@@ -193,39 +193,6 @@ public final class LuminaViewController: UIViewController {
         }
     }
 
-    private var _streamingModels: [(AnyObject, Any.Type)]?
-
-    @available(iOS 11.0, *)
-    var streamingModels: [(MLModel, Any.Type)]? {
-        get {
-            if let existingModels = _streamingModels {
-                var models = [(MLModel, Any.Type)]()
-                for potentialModel in existingModels {
-                    if let model = potentialModel.0 as? MLModel {
-                        models.append((model, potentialModel.1))
-                    }
-                }
-                guard models.count > 0  else {
-                    return nil
-                }
-                return models
-            } else {
-                return nil
-            }
-        }
-        set {
-            if let tuples = newValue {
-                var downcastCollection = [(AnyObject, Any.Type)]()
-                for tuple in tuples {
-                    downcastCollection.append((tuple.0 as AnyObject, tuple.1))
-                }
-                _streamingModels = downcastCollection
-                self.streamFrames = true
-                self.camera?.streamingModels = tuples
-            }
-        }
-    }
-
     /// A collection of model types that will be used when streaming images for object recognition
     ///
     /// - Note: Only works on iOS 11 and up
@@ -247,7 +214,10 @@ public final class LuminaViewController: UIViewController {
                         modelsToSet.append((model, reflection.subjectType))
                     }
                 }
-                self.streamingModels = modelsToSet
+                if modelsToSet.count > 0 {
+                    self.streamFrames = true
+                    self.camera?.streamingModels = modelsToSet
+                }
             } else {
                 print("Must be using iOS 11.0 or higher for CoreML")
             }
