@@ -10,10 +10,12 @@ import UIKit
 import AVKit
 import Lumina
 
-class ImageViewController: UIViewController {
+class ImageViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet public weak var imageView: UIImageView!
     @IBOutlet public weak var livePhotoButton: UIBarButtonItem!
     @IBOutlet public weak var depthDataButton: UIBarButtonItem!
+    @IBOutlet public weak var scrollView: UIScrollView!
+    
     
     var image: UIImage?
     var livePhotoURL: URL?
@@ -34,6 +36,13 @@ class ImageViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        //Scrollview setup.
+        scrollView.delegate = self
+        
+        scrollView.minimumZoomScale = 1.0
+        scrollView.maximumZoomScale = 10.0//maximum zoom scale you want
+        scrollView.zoomScale = 1.0
+        
         self.imageView.image = self.image
         if livePhotoURL != nil {
             self.livePhotoButton.isEnabled = true
@@ -45,6 +54,13 @@ class ImageViewController: UIViewController {
         }
         
     }
+    
+    //MARK: - Scrollview functionality.
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return imageView
+    }
+    
+    //END OF SCROLLVIEW FUNCTIONALITY
     
     @IBAction func livePhotoButtonTapped() {
         if let url = livePhotoURL {
