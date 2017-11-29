@@ -11,6 +11,9 @@ import AVKit
 import Lumina
 
 class ImageViewController: UIViewController, UIScrollViewDelegate {
+    
+    let doubleTap = UITapGestureRecognizer()
+    
     @IBOutlet public weak var imageView: UIImageView!
     @IBOutlet public weak var livePhotoButton: UIBarButtonItem!
     @IBOutlet public weak var depthDataButton: UIBarButtonItem!
@@ -43,6 +46,11 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
         scrollView.maximumZoomScale = 10.0//maximum zoom scale you want
         scrollView.zoomScale = 1.0
         
+        //Tap gesture recognizer setup.
+        doubleTap.numberOfTapsRequired = 2
+        doubleTap.addTarget(self, action: #selector(ImageViewController.ZoomInOnPhoto))
+        scrollView.addGestureRecognizer(doubleTap)
+        
         self.imageView.image = self.image
         if livePhotoURL != nil {
             self.livePhotoButton.isEnabled = true
@@ -59,8 +67,27 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
-    
     //END OF SCROLLVIEW FUNCTIONALITY
+    
+    //MARK: - Tap to zoom functionality.
+    func ZoomInOnPhoto(recognizer: UITapGestureRecognizer){
+        if scrollView.zoomScale == 1 {
+            scrollView.zoom(to: zoomRectForScale(scale: 2, center: recognizer.location(in: recognizer.view)), animated: true)
+        } else {
+            scrollView.setZoomScale(1, animated: true)
+        }
+    }
+    
+    func zoomRectForScale(scale: CGFloat, center: CGPoint) -> CGRect {
+        var zoomRect = CGRect.zero
+        zoomRect.size.height = imageView.frame.size.height / scale
+        zoomRect.size.width  = imageView.frame.size.width  / scale
+        let newCenter = imageView.convert(center, from: scrollView)
+        zoomRect.origin.x = newCenter.x - (zoomRect.size.width / 2.0)
+        zoomRect.origin.y = newCenter.y - (zoomRect.size.height / 2.0)
+        return zoomRect
+    }
+    //END OF TAP TO ZOOM FUNCTIONALITY
     
     @IBAction func livePhotoButtonTapped() {
         if let url = livePhotoURL {
