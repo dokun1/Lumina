@@ -67,6 +67,14 @@ Lumina can:
 
 [David Okun](https://twitter.com/dokun24) has experience working with image processing, and he thought it would be a nice thing to have a camera module that allows you to stream images, capture photos and videos, and have a module that lets you plug in a CoreML model, and it streams the object predictions back to you alongside the video frames.
 
+## Contribute
+
+See [the contribute file](CONTRIBUTING.md)!
+
+PRs accepted.
+
+Small note: If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
+
 ## Install
 
 ### CocoaPods
@@ -265,14 +273,6 @@ Note that this returns a class type representation associated with the detected 
 ## Maintainers
 
 David Okun [![Twitter Follow](https://img.shields.io/twitter/follow/dokun24.svg?style=social&label=Follow)](https://twitter.com/dokun24) [![GitHub followers](https://img.shields.io/github/followers/dokun1.svg?style=social&label=Follow)](https://github.com/dokun1)
-
-## Contribute
-
-See [the contribute file](CONTRIBUTING.md)!
-
-PRs accepted.
-
-Small note: If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
 
 ## License
 
