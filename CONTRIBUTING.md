@@ -1,4 +1,6 @@
-If you are here, thank you for your interest in contributing to Lumina!
+# Contributing to Lumina
+
+First off - thank you!!!
 
 ## The goal
 
