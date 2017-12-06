@@ -16,8 +16,9 @@
 		53B828FC1EAAA09000E3A624 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FA1EAAA09000E3A624 /* Main.storyboard */; };
 		53B828FE1EAAA09000E3A624 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FD1EAAA09000E3A624 /* Assets.xcassets */; };
 		53B829011EAAA09000E3A624 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FF1EAAA09000E3A624 /* LaunchScreen.storyboard */; };
-		53F55EE11FABE24500299980 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53F55EDF1FABE1FA00299980 /* Lumina.framework */; };
-		53F55EE21FABE24500299980 /* Lumina.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 53F55EDF1FABE1FA00299980 /* Lumina.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		76695CCE1FD81727002BAE13 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76695CCD1FD81726002BAE13 /* Lumina.framework */; };
+		76695CCF1FD8173E002BAE13 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76695CCD1FD81726002BAE13 /* Lumina.framework */; };
+		76695CD01FD8173E002BAE13 /* Lumina.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 76695CCD1FD81726002BAE13 /* Lumina.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,7 +28,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				53F55EE21FABE24500299980 /* Lumina.framework in Embed Frameworks */,
+				76695CD01FD8173E002BAE13 /* Lumina.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -46,7 +47,7 @@
 		53B828FD1EAAA09000E3A624 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		53B829001EAAA09000E3A624 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		53B829021EAAA09000E3A624 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		53F55EDF1FABE1FA00299980 /* Lumina.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lumina.framework; path = "../../../Library/Developer/Xcode/DerivedData/Lumina-ayddllynafnebvdypcqglyhzrbnw/Build/Products/Debug-iphoneos/Lumina.framework"; sourceTree = "<group>"; };
+		76695CCD1FD81726002BAE13 /* Lumina.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lumina.framework; path = "../../../../../../Library/Developer/Xcode/DerivedData/Lumina-chawzgeiwxzccdahhfkoxrnqbfkr/Build/Products/Debug-iphoneos/Lumina.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +55,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				53F55EE11FABE24500299980 /* Lumina.framework in Frameworks */,
+				76695CCF1FD8173E002BAE13 /* Lumina.framework in Frameworks */,
+				76695CCE1FD81727002BAE13 /* Lumina.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,7 +98,7 @@
 		53B829081EAAA16D00E3A624 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				53F55EDF1FABE1FA00299980 /* Lumina.framework */,
+				76695CCD1FD81726002BAE13 /* Lumina.framework */,
 				5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */,
 				5373B3F01FC61BBF00C197BD /* SqueezeNet.mlmodel */,
 			);
@@ -136,7 +138,7 @@
 				TargetAttributes = {
 					53B828F21EAAA09000E3A624 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = RQ632LL2X3;
+						DevelopmentTeam = 7J8EZLC25K;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
@@ -318,7 +320,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = RQ632LL2X3;
+				DEVELOPMENT_TEAM = 7J8EZLC25K;
 				INFOPLIST_FILE = LuminaSample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -332,7 +334,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = RQ632LL2X3;
+				DEVELOPMENT_TEAM = 7J8EZLC25K;
 				INFOPLIST_FILE = LuminaSample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
