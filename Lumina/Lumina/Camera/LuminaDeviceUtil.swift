@@ -12,35 +12,15 @@ import UIKit
 import AudioToolbox.AudioServices
 
 final class LuminaHapticFeedbackGenerator {
-    private let impactGeneratorSharedInstance = UIImpactFeedbackGenerator(style: .medium)
     private let notificationGeneratorSharedInstance = UINotificationFeedbackGenerator()
 
     func prepare() {
-        impactGeneratorSharedInstance.prepare()
         notificationGeneratorSharedInstance.prepare()
-    }
-
-    func startRecordingVideoFeedback() {
-        if UIDevice.current.hasHapticFeedback {
-            impactGeneratorSharedInstance.impactOccurred()
-        } else if UIDevice.current.hasTapticEngine {
-            let peek = SystemSoundID(1519)
-            AudioServicesPlaySystemSound(peek)
-        }
-    }
-
-    func endRecordingVideoFeedback() {
-        if UIDevice.current.hasHapticFeedback {
-            notificationGeneratorSharedInstance.notificationOccurred(.success)
-        } else if UIDevice.current.hasTapticEngine {
-            let pop = SystemSoundID(1520)
-            AudioServicesPlaySystemSound(pop)
-        }
     }
 
     func errorFeedback() {
         if UIDevice.current.hasHapticFeedback {
-            notificationGeneratorSharedInstance.notificationOccurred(.error)
+            notificationGeneratorSharedInstance.notificationOccurred(.warning)
         } else if UIDevice.current.hasTapticEngine {
             let tryAgain = SystemSoundID(1102)
             AudioServicesPlaySystemSound(tryAgain)

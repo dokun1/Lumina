@@ -34,13 +34,11 @@ extension LuminaViewController {
             if recordsVideo && !camera.recordingVideo {
                 shutterButton.startRecordingVideo()
                 camera.startVideoRecording()
-                feedbackGenerator.startRecordingVideoFeedback()
             }
         case .ended:
             if recordsVideo && camera.recordingVideo {
                 shutterButton.stopRecordingVideo()
                 camera.stopVideoRecording()
-                feedbackGenerator.endRecordingVideoFeedback()
             } else {
                 feedbackGenerator.errorFeedback()
             }
