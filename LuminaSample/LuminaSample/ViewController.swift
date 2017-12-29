@@ -27,7 +27,7 @@ class ViewController: UITableViewController {
     @IBOutlet weak var maxZoomScaleLabel: UILabel!
     @IBOutlet weak var maxZoomScaleSlider: UISlider!
     
-    var selectedResolution: CameraResolution = .photo
+    var selectedResolution: CameraResolution = .high1920x1080
     var depthView: UIImageView?
 }
 
