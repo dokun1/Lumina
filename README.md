@@ -33,6 +33,8 @@
 
 Lumina is the fastest way to use CoreML with a camera - because it *is* a camera. 
 
+Hello this is a test!
+
 Cameras are used frequently in iOS applications, and the addition of `CoreML` and `Vision` to iOS 11 has precipitated a rash of applications that perform live object recognition from images - whether from a still image or via a camera feed.
 
 Writing `AVFoundation` code can be fun, if not sometimes interesting. `Lumina` gives you an opportunity to skip having to write `AVFoundation` code, and gives you the tools you need to do anything you need with a camera you've already built.
