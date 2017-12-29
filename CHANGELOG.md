@@ -1,5 +1,27 @@
 # Change Log
 
+## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
+
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.3...HEAD)
+
+**Fixed bugs:**
+
+- Frame Rate property not working [\#40](https://github.com/dokun1/Lumina/issues/40)
+
+## [0.13.3](https://github.com/dokun1/Lumina/tree/0.13.3) (2017-12-29)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.2...0.13.3)
+
+**Fixed bugs:**
+
+- Pinch to Zoom for still photos on sample app [\#35](https://github.com/dokun1/Lumina/issues/35)
+- could not install Lumina [\#31](https://github.com/dokun1/Lumina/issues/31)
+
+**Merged pull requests:**
+
+- fixes \#40 [\#61](https://github.com/dokun1/Lumina/pull/61) ([dokun1](https://github.com/dokun1))
+- Danger token now public [\#60](https://github.com/dokun1/Lumina/pull/60) ([dokun1](https://github.com/dokun1))
+- Fix for issue 35 [\#59](https://github.com/dokun1/Lumina/pull/59) ([Zfalgout](https://github.com/Zfalgout))
+
 ## [0.13.2](https://github.com/dokun1/Lumina/tree/0.13.2) (2017-11-26)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.1...0.13.2)
 
