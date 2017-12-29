@@ -1,7 +1,7 @@
 language: objective-c
 osx_image: xcode9.1
 env:
-  - DANGER_GITHUB_API_TOKEN=5c1df5ff15e35e2a579dc0115eeb419b1bf32888
+  - DANGER_GITHUB_API_TOKEN="27f9aaf101b7e26b3c6505bdde78ac9a9747c19f"
 install:
   - bundle install
   - brew update
