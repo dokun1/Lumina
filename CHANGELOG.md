@@ -7,6 +7,11 @@
 **Fixed bugs:**
 
 - Frame Rate property not working [\#40](https://github.com/dokun1/Lumina/issues/40)
+- Haptic feedback for video recording not working [\#27](https://github.com/dokun1/Lumina/issues/27)
+
+**Merged pull requests:**
+
+- Fix for issue 27 [\#63](https://github.com/dokun1/Lumina/pull/63) ([dokun1](https://github.com/dokun1))
 
 ## [0.13.3](https://github.com/dokun1/Lumina/tree/0.13.3) (2017-12-29)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.2...0.13.3)
