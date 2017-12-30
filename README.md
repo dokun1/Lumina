@@ -156,7 +156,7 @@ present(camera, animated: true, completion:nil)
 
 ### Logging
 
-Lumina allows you to set a level of logging for actions happening within the module. The logger in use is [HeliumLogger](https://github.com/IBM-Swift/HeliumLogger), made by the [Swift@IBM](https://github.com/IBM-Swift) team. The deeper your level of logging, the more you'll see in your console. 
+Lumina allows you to set a level of logging for actions happening within the module. The logger in use is [HeliumLogger](https://github.com/IBM-Swift/HeliumLogger), made by the [Swift@IBM](https://github.com/IBM-Swift) team. The deeper your level of logging, the more you'll see in your console.
 
 To set a level of logging, set the static var on `LuminaViewController` like so:
 
@@ -174,8 +174,6 @@ Levels read like so, from least to most logging:
 - DEBUG
 - EXIT
 - ENTRY
-
-
 
 ### Functionality
 
