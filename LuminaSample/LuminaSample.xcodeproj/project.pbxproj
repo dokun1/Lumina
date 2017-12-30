@@ -11,7 +11,6 @@
 		5365BFD41F79829800B8F338 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD31F79829800B8F338 /* ImageViewController.swift */; };
 		5365BFDA1F79AAA800B8F338 /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */; };
 		5373B3F11FC61BBF00C197BD /* SqueezeNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5373B3F01FC61BBF00C197BD /* SqueezeNet.mlmodel */; };
-		53B2CE271FF5D434008287E6 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53B2CE261FF5D434008287E6 /* Lumina.framework */; };
 		53B2CE281FF5D43D008287E6 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53B2CE261FF5D434008287E6 /* Lumina.framework */; };
 		53B2CE291FF5D43D008287E6 /* Lumina.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 53B2CE261FF5D434008287E6 /* Lumina.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		53B828F71EAAA09000E3A624 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828F61EAAA09000E3A624 /* AppDelegate.swift */; };
@@ -56,7 +55,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				53B2CE281FF5D43D008287E6 /* Lumina.framework in Frameworks */,
-				53B2CE271FF5D434008287E6 /* Lumina.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,7 +131,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0820;
-				LastUpgradeCheck = 0910;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "David Okun";
 				TargetAttributes = {
 					53B828F21EAAA09000E3A624 = {

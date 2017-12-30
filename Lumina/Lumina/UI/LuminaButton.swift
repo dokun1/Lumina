@@ -9,6 +9,13 @@
 import UIKit
 
 enum SystemButtonType {
+    enum FlashState {
+        //swiftlint:disable identifier_name
+        case on
+        case off
+        case auto
+    }
+
     case torch
     case cameraSwitch
     case photoCapture
@@ -38,7 +45,7 @@ final class LuminaButton: UIButton {
     private var _text: String?
     var text: String? {
         get {
-                return _text
+            return _text
         }
         set {
             self.setTitle(newValue, for: UIControlState.normal)
@@ -52,6 +59,7 @@ final class LuminaButton: UIButton {
         if let titleLabel = self.titleLabel {
             titleLabel.textColor = UIColor.white
             titleLabel.font = UIFont.systemFont(ofSize: 20)
+            titleLabel.textAlignment = .center
         }
     }
 
@@ -65,14 +73,20 @@ final class LuminaButton: UIButton {
         }
         switch systemStyle {
         case .torch:
-            self.image = UIImage(named: "cameraTorch", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
+            self.image = UIImage(named: "cameraTorchOff", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
             self.frame = CGRect(origin: CGPoint(x: 10, y: 10), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
+            addButtonShadowEffects()
         case .cameraSwitch:
             self.image = UIImage(named: "cameraSwitch", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
             self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.maxX - 50, y: 10), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
+            addButtonShadowEffects()
         case .cancel:
-            self.text = "Cancel"
+            self.text = "X"
             self.frame = CGRect(origin: CGPoint(x: 10, y: UIScreen.main.bounds.maxY - 50), size: CGSize(width: self.cancelButtonWidth, height: self.cancelButtonHeight))
+            self.titleLabel?.font = UIFont.systemFont(ofSize: 40, weight: .light)
+            self.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 0)
+            self.titleLabel?.layer.shadowOpacity = 1
+            self.titleLabel?.layer.shadowRadius = 6
         case .shutter:
             self.backgroundColor = UIColor.normalState
             self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.midX - 35, y: UIScreen.main.bounds.maxY - 80), size: CGSize(width: self.shutterButtonDimension, height: self.shutterButtonDimension))
@@ -82,6 +96,12 @@ final class LuminaButton: UIButton {
         default:
             break
         }
+    }
+
+    private func addButtonShadowEffects() {
+        self.layer.shadowOffset = CGSize(width: 0, height: 0)
+        self.layer.shadowOpacity = 1
+        self.layer.shadowRadius = 6
     }
 
     func startRecordingVideo() {
@@ -126,6 +146,25 @@ final class LuminaButton: UIButton {
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+}
+
+extension LuminaButton { // TODO: Figure out a way to extend this class based on a protocol only
+    func updateTorchIcon(to state: SystemButtonType.FlashState) {
+        guard let style = self.style, style == .torch else {
+            return
+        }
+        switch state {
+        case .on:
+            self.image = UIImage(named: "cameraTorchOn", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
+            print("torch icon updated to on")
+        case .off:
+            self.image = UIImage(named: "cameraTorchOff", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
+            print("torch icon updated to off")
+        case .auto:
+            self.image = UIImage(named: "cameraTorchAuto", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
+            print("torch icon updated to auto")
+        }
     }
 }
 

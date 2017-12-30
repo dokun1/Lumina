@@ -110,7 +110,7 @@ extension LuminaCamera {
     }
 
     private func videoSetupApproved() -> CameraSetupResult {
-        self.torchState = false
+        self.torchState = .off
         self.session.sessionPreset = .high // set to high here so that device input can be added to session. resolution can be checked for update later
         guard let videoInput = self.getNewVideoInputDevice() else {
             return .invalidVideoInput
