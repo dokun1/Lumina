@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.15.0](https://github.com/dokun1/Lumina/tree/0.15.0) (2017-12-30)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.14.0...0.15.0)
+
+**Merged pull requests:**
+
+- Add logging [\#65](https://github.com/dokun1/Lumina/pull/65) ([dokun1](https://github.com/dokun1))
+
 ## [0.14.0](https://github.com/dokun1/Lumina/tree/0.14.0) (2017-12-30)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.4...0.14.0)
 
