@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.15.1](https://github.com/dokun1/Lumina/tree/0.15.1) (2017-12-30)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.15.0...0.15.1)
+
+**Merged pull requests:**
+
+- Orientation issue updating ui [\#66](https://github.com/dokun1/Lumina/pull/66) ([dokun1](https://github.com/dokun1))
+
 ## [0.15.0](https://github.com/dokun1/Lumina/tree/0.15.0) (2017-12-30)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.14.0...0.15.0)
 
