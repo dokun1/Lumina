@@ -154,6 +154,29 @@ present(camera, animated: true, completion:nil)
 
 **Remember to add a description for `Privacy - Camera Usage Description` and `Privacy - Microphone Usage Description` in your `Info.plist` file, so that system permissions are handled properly.**
 
+### Logging
+
+Lumina allows you to set a level of logging for actions happening within the module. The logger in use is [HeliumLogger](https://github.com/IBM-Swift/HeliumLogger), made by the [Swift@IBM]() team. The deeper your level of logging, the more you'll see in your console. 
+
+To set a level of logging, set the static var on `LuminaViewController` like so:
+
+```swift
+LuminaViewController.loggingLevel = .verbose
+```
+
+Levels read like so, from least to most logging:
+
+- NONE
+- ERROR
+- WARNING
+- INFO
+- VERBOSE
+- DEBUG
+- EXIT
+- ENTRY
+
+
+
 ### Functionality
 
 There are a number of properties you can set before presenting `Lumina`. You can set them before presentation, or during use, like so:

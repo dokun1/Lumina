@@ -281,17 +281,11 @@ public final class LuminaViewController: UIViewController {
     }
 
     /// Set this to apply a level of logging to Lumina, to track activity within the framework
-    open var loggingLevel: LoggerMessageType = .none {
+    open static var loggingLevel: LoggerMessageType = .none {
         didSet {
             HeliumLogger.use(loggingLevel)
         }
     }
-
-//    open var capturesHighResolutionImages: Bool = false {
-//        didSet {
-//            self.camera?.capturesHighResolutionImages = capturesHighResolutionImages
-//        }
-//    }
 
     var currentZoomScale: Float = 1.0 {
         didSet {

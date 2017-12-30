@@ -5,4 +5,9 @@ file_length:
   error: 1000
 included: # paths to include during linting. `--path` is ignored if present.
   - ./Lumina/
+excluded:
+  - ./Lumina/Lumina/Util/Logging/
+type_body_length:
+  - 300 # warning
+  - 400 # error
 reporter: "xcode"

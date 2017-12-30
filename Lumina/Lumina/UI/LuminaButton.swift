@@ -149,7 +149,7 @@ final class LuminaButton: UIButton {
     }
 }
 
-extension LuminaButton { // TODO: Figure out a way to extend this class based on a protocol only
+extension LuminaButton {
     func updateTorchIcon(to state: SystemButtonType.FlashState) {
         guard let style = self.style, style == .torch else {
             return

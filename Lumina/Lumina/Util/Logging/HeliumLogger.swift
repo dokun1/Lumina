@@ -17,7 +17,7 @@
 import Foundation
 
 /// The set of colors used when logging with colorized lines
-public enum TerminalColor: String {
+internal enum TerminalColor: String {
     /// Log text in white.
     case white = "\u{001B}[0;37m" // white
     /// Log text in red, used for error messages.
@@ -32,7 +32,7 @@ public enum TerminalColor: String {
 
 /// The set of substitution "variables" that can be used when formatting one's
 /// logged messages.
-public enum HeliumLoggerFormatValues: String {
+internal enum HeliumLoggerFormatValues: String {
     /// The message being logged.
     case message = "(%msg)"
     /// The name of the function invoking the logger API.
@@ -52,20 +52,20 @@ public enum HeliumLoggerFormatValues: String {
 }
 
 /// A light weight implementation of the `LoggerAPI` protocol.
-public class HeliumLogger {
+internal class HeliumLogger {
 
     /// Whether, if true, or not the logger output should be colorized.
-    public var colored: Bool = false
+    internal var colored: Bool = false
 
     /// If true, use the detailed format when a user logging format wasn't specified.
-    public var details: Bool = true
+    internal var details: Bool = true
 
     /// If true, use the full file path, not just the filename.
-    public var fullFilePath: Bool = false
+    internal var fullFilePath: Bool = false
 
     /// If not nil, specifies the user specified logging format.
     /// For example: "[(%date)] [(%type)] [(%file):(%line) (%func)] (%msg)"
-    public var format: String? {
+    internal var format: String? {
         didSet {
             if let format = self.format {
                 customFormatter = HeliumLogger.parseFormat(format)
@@ -77,21 +77,21 @@ public class HeliumLogger {
 
     /// If not nil, specifies the format used when adding the date and the time to the
     /// logged messages
-    public var dateFormat: String? {
+    internal var dateFormat: String? {
         didSet {
             dateFormatter = HeliumLogger.getDateFormatter(format: dateFormat, timeZone: timeZone)
         }
     }
 
     /// If not nil, specifies the timezone used in the date time format
-    public var timeZone: TimeZone? {
+    internal var timeZone: TimeZone? {
         didSet {
             dateFormatter = HeliumLogger.getDateFormatter(format: dateFormat, timeZone: timeZone)
         }
     }
 
     /// default date format - ISO 8601
-    public static let defaultDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+    internal static let defaultDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
 
     fileprivate var dateFormatter: DateFormatter = HeliumLogger.getDateFormatter()
 
@@ -190,7 +190,7 @@ public class HeliumLogger {
     /// protocol.
     /// - Parameter type: The most detailed message type (`LoggerMessageType`) to see in the
     ///                  output of the logger. Defaults to `verbose`.
-    public class func use(_ type: LoggerMessageType = .verbose) {
+    internal class func use(_ type: LoggerMessageType = .verbose) {
         Log.logger = HeliumLogger(type)
         setbuf(stdout, nil)
     }
@@ -201,8 +201,12 @@ public class HeliumLogger {
     ///
     /// - Parameter type: The most detailed message type (`LoggerMessageType`) to see in the
     ///                  output of the logger.
-    public init (_ type: LoggerMessageType = .verbose) {
+    internal init (_ type: LoggerMessageType = .verbose) {
         self.type = type
+    }
+
+    internal func disable() {
+
     }
 
     func doPrint(_ message: String) {
@@ -222,9 +226,7 @@ extension HeliumLogger : Logger {
     ///                     logger API.
     /// - Parameter fileName: The file of the source code of the function invoking the
     ///                      logger API.
-    public func log(_ type: LoggerMessageType, msg: String,
-                    functionName: String, lineNum: Int, fileName: String ) {
-
+    internal func log(_ type: LoggerMessageType, msg: String, functionName: String, lineNum: Int, fileName: String) {
         guard isLogging(type) else {
             return
         }
@@ -232,7 +234,7 @@ extension HeliumLogger : Logger {
         let message = formatEntry(type: type, msg: msg, functionName: functionName, lineNum: lineNum, fileName: fileName)
         doPrint(message)
     }
-
+    
     func formatEntry(type: LoggerMessageType, msg: String,
                      functionName: String, lineNum: Int, fileName: String) -> String {
 
@@ -314,7 +316,7 @@ extension HeliumLogger : Logger {
     ///
     /// - Returns: A Bool indicating whether, if true, or not a message of the specified type
     ///           (`LoggerMessageType`) would be output.
-    public func isLogging(_ type: LoggerMessageType) -> Bool {
+    internal func isLogging(_ type: LoggerMessageType) -> Bool {
         return type.rawValue >= self.type.rawValue
     }
 }

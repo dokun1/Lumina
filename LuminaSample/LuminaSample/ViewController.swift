@@ -47,9 +47,9 @@ extension ViewController { //MARK: IBActions
     }
     
     @IBAction func cameraButtonTapped() {
+        LuminaViewController.loggingLevel = selectedLoggingLevel
         let camera = LuminaViewController()
         camera.delegate = self
-        camera.loggingLevel = selectedLoggingLevel
         camera.position = self.frontCameraSwitch.isOn ? .front : .back
         camera.recordsVideo = self.recordsVideoSwitch.isOn
         camera.streamFrames = self.trackImagesSwitch.isOn
