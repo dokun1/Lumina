@@ -1,13 +1,22 @@
 # Change Log
 
-## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
+## [0.14.0](https://github.com/dokun1/Lumina/tree/0.14.0) (2017-12-30)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.4...0.14.0)
 
-[Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.3...HEAD)
+**Fixed bugs:**
+
+- Haptic feedback for video recording not working [\#27](https://github.com/dokun1/Lumina/issues/27)
+
+**Merged pull requests:**
+
+- UI Updated, new torch states added [\#64](https://github.com/dokun1/Lumina/pull/64) ([dokun1](https://github.com/dokun1))
+
+## [0.13.4](https://github.com/dokun1/Lumina/tree/0.13.4) (2017-12-29)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.13.3...0.13.4)
 
 **Fixed bugs:**
 
 - Frame Rate property not working [\#40](https://github.com/dokun1/Lumina/issues/40)
-- Haptic feedback for video recording not working [\#27](https://github.com/dokun1/Lumina/issues/27)
 
 **Merged pull requests:**
 
