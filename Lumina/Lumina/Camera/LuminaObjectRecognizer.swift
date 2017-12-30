@@ -23,6 +23,7 @@ final class LuminaObjectRecognizer: NSObject {
     private var modelPairs: [(MLModel, Any.Type)]
 
     init(modelPairs: [(MLModel, Any.Type)]) {
+        Log.verbose("initializing object recognizer for \(modelPairs.count) CoreML models")
         self.modelPairs = modelPairs
     }
 
@@ -57,6 +58,7 @@ final class LuminaObjectRecognizer: NSObject {
             }
         }
         recognitionGroup.notify(queue: DispatchQueue.main) {
+            Log.verbose("object recognizer finished scanning image - returning results from models")
             completion(recognitionResults)
         }
     }

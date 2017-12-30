@@ -124,6 +124,7 @@ public final class LuminaViewController: UIViewController {
     /// - Note: Responds live to being set at any time, and will update automatically
     open var position: CameraPosition = .back {
         didSet {
+            Log.verbose("Switching camera position to \(position.rawValue)")
             guard let camera = self.camera else {
                 return
             }
@@ -138,7 +139,11 @@ public final class LuminaViewController: UIViewController {
     /// - Warning: This setting takes precedence over video data streaming - if this is turned on, frames cannot be streamed, nor can CoreML be used via Lumina's recognizer mechanism. 
     open var recordsVideo = false {
         didSet {
+            Log.verbose("Setting video recording mode to \(recordsVideo)")
             self.camera?.recordsVideo = recordsVideo
+            if recordsVideo {
+                Log.warning("frames cannot be streamed, nor can CoreML be used via Lumina's recognizer mechanism")
+            }
         }
     }
 
@@ -149,6 +154,7 @@ public final class LuminaViewController: UIViewController {
     /// - Warning: Will not do anything if delegate is not implemented
     open var streamFrames = false {
         didSet {
+            Log.verbose("Setting frame streaming mode to \(streamFrames)")
             self.camera?.streamFrames = streamFrames
         }
     }
@@ -160,6 +166,7 @@ public final class LuminaViewController: UIViewController {
     /// - Warning: Will not do anything if delegate is not implemented
     open var trackMetadata = false {
         didSet {
+            Log.verbose("Setting metadata tracking mode to \(trackMetadata)")
             self.camera?.trackMetadata = trackMetadata
         }
     }
@@ -171,6 +178,7 @@ public final class LuminaViewController: UIViewController {
     /// - Warning: If left empty, or unset, no view will be present, but view will be created if changed
     open var textPrompt = "" {
         didSet {
+            Log.verbose("Updating text prompt view to: \(textPrompt)")
             self.textPromptView.updateText(to: textPrompt)
         }
     }
@@ -180,6 +188,7 @@ public final class LuminaViewController: UIViewController {
     /// - Note: Responds live to being set at any time, and will update automatically
     open var resolution: CameraResolution = .highest {
         didSet {
+            Log.verbose("Updating camera resolution to \(resolution.rawValue)")
             self.camera?.resolution = resolution
         }
     }
@@ -189,6 +198,7 @@ public final class LuminaViewController: UIViewController {
     /// - Note: Responds live to being set at any time, and will update automatically
     open var frameRate: Int = 30 {
         didSet {
+            Log.verbose("Attempting to update camera frame rate to \(frameRate) FPS")
             self.camera?.frameRate = frameRate
         }
     }
@@ -211,15 +221,17 @@ public final class LuminaViewController: UIViewController {
                         guard let model = value as? MLModel else {
                             continue
                         }
+                        Log.verbose("CoreML Model Detected - Loading \(reflection.subjectType)")
                         modelsToSet.append((model, reflection.subjectType))
                     }
                 }
                 if modelsToSet.count > 0 {
+                    Log.verbose("Valid models loaded - frame streaming mode defaulted to on")
                     self.streamFrames = true
                     self.camera?.streamingModels = modelsToSet
                 }
             } else {
-                print("Must be using iOS 11.0 or higher for CoreML")
+                Log.error("Must be using iOS 11.0 or higher for CoreML")
             }
         }
     }
@@ -229,6 +241,7 @@ public final class LuminaViewController: UIViewController {
     /// - Note: Default value will rely on whatever the active device can handle, if this is not explicitly set
     open var maxZoomScale: Float = MAXFLOAT {
         didSet {
+            Log.verbose("Max zoom scale set to \(maxZoomScale)x")
             self.camera?.maxZoomScale = maxZoomScale
         }
     }
@@ -240,6 +253,7 @@ public final class LuminaViewController: UIViewController {
     /// - Warning: If video recording is enabled, live photos will not work.
     open var captureLivePhotos: Bool = false {
         didSet {
+            Log.verbose("Attempting to set live photo capture mode to \(captureLivePhotos)")
             self.camera?.captureLivePhotos = captureLivePhotos
         }
     }
@@ -250,6 +264,7 @@ public final class LuminaViewController: UIViewController {
     /// - Note: Only works with .photo, .medium1280x720, and .vga640x480 resolutions
     open var captureDepthData: Bool = false {
         didSet {
+            Log.verbose("Attempting to set depth data capture mode to \(captureDepthData)")
             self.camera?.captureDepthData = captureDepthData
         }
     }
@@ -260,15 +275,17 @@ public final class LuminaViewController: UIViewController {
     /// - Note: Only works with .photo, .medium1280x720, and .vga640x480 resolutions
     open var streamDepthData: Bool = false {
         didSet {
+            Log.verbose("Attempting to set depth data streaming mode to \(streamDepthData)")
             self.camera?.streamDepthData = streamDepthData
         }
     }
 
-//    open var capturesHighResolutionImages: Bool = false {
-//        didSet {
-//            self.camera?.capturesHighResolutionImages = capturesHighResolutionImages
-//        }
-//    }
+    /// Set this to apply a level of logging to Lumina, to track activity within the framework
+    open static var loggingLevel: LoggerMessageType = .none {
+        didSet {
+            HeliumLogger.use(loggingLevel)
+        }
+    }
 
     var currentZoomScale: Float = 1.0 {
         didSet {
@@ -284,6 +301,9 @@ public final class LuminaViewController: UIViewController {
         let camera = LuminaCamera()
         camera.delegate = self
         self.camera = camera
+        if let version = LuminaViewController.getVersion() {
+            Log.info("Loading Lumina v\(version)")
+        }
     }
 
     /// run this in order to create Lumina with a storyboard
@@ -292,12 +312,15 @@ public final class LuminaViewController: UIViewController {
         let camera = LuminaCamera()
         camera.delegate = self
         self.camera = camera
+        if let version = LuminaViewController.getVersion() {
+            Log.info("Loading Lumina v\(version)")
+        }
     }
 
     /// override with caution
     public override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        print("Camera framework is overloading on memory")
+        Log.error("Camera framework is overloading on memory")
     }
 
     /// override with caution

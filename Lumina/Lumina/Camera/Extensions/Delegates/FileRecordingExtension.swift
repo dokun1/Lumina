@@ -20,12 +20,14 @@ extension LuminaCamera: AVCaptureFileOutputRecordingDelegate {
 
     func photoOutput(_ output: AVCapturePhotoOutput, willBeginCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
         if self.captureLivePhotos {
+            Log.verbose("beginning live photo capture")
             self.delegate?.cameraBeganTakingLivePhoto(camera: self)
         }
     }
 
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishRecordingLivePhotoMovieForEventualFileAt outputFileURL: URL, resolvedSettings: AVCaptureResolvedPhotoSettings) {
         if self.captureLivePhotos {
+            Log.verbose("finishing live photo capture")
             self.delegate?.cameraFinishedTakingLivePhoto(camera: self)
         }
     }

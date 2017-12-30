@@ -149,7 +149,7 @@ final class LuminaButton: UIButton {
     }
 }
 
-extension LuminaButton { // TODO: Figure out a way to extend this class based on a protocol only
+extension LuminaButton {
     func updateTorchIcon(to state: SystemButtonType.FlashState) {
         guard let style = self.style, style == .torch else {
             return
@@ -157,13 +157,13 @@ extension LuminaButton { // TODO: Figure out a way to extend this class based on
         switch state {
         case .on:
             self.image = UIImage(named: "cameraTorchOn", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
-            print("torch icon updated to on")
+            Log.debug("torch icon updated to on")
         case .off:
             self.image = UIImage(named: "cameraTorchOff", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
-            print("torch icon updated to off")
+            Log.debug("torch icon updated to off")
         case .auto:
             self.image = UIImage(named: "cameraTorchAuto", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
-            print("torch icon updated to auto")
+            Log.debug("torch icon updated to auto")
         }
     }
 }

@@ -12,6 +12,7 @@ import AVFoundation
 extension LuminaCamera: AVCapturePhotoCaptureDelegate {
     @available (iOS 11.0, *)
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        Log.verbose("finished processing photo")
         guard let image = photo.normalizedImage(forCameraPosition: self.position) else {
             return
         }
@@ -37,6 +38,7 @@ extension LuminaCamera: AVCapturePhotoCaptureDelegate {
     // swiftlint:disable function_parameter_count
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
         if #available(iOS 11.0, *) { // make use of AVCapturePhotoOutput
+            Log.warning("using iOS 11.0 or better - discarding output in favor of AVCapturePhoto methods")
             return
         } else {
             guard let buffer = photoSampleBuffer else {

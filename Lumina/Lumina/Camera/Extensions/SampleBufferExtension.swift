@@ -11,6 +11,7 @@ import AVFoundation
 
 extension CMSampleBuffer {
     func normalizedStillImage(forCameraPosition position: CameraPosition) -> UIImage? {
+        Log.verbose("normalizing still image from CMSampleBuffer")
         guard let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: self, previewPhotoSampleBuffer: nil) else {
             return nil
         }
@@ -24,6 +25,7 @@ extension CMSampleBuffer {
     }
 
     func normalizedVideoFrame() -> UIImage? {
+        Log.verbose("normalizing video frame from CMSampleBbuffer")
         guard let imageBuffer = CMSampleBufferGetImageBuffer(self) else {
             return nil
         }

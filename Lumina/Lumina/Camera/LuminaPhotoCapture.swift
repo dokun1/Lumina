@@ -39,6 +39,7 @@ struct LuminaPhotoCapture {
     }
 
     fileprivate func collectionUpdated() {
+        Log.verbose("photo capture struct updating")
         var sendingLivePhotoURL: URL?
         var sendingDepthData: Any?
         guard let sendingCamera = camera, let image = stillImage else {
@@ -46,6 +47,7 @@ struct LuminaPhotoCapture {
         }
         if sendingCamera.captureLivePhotos == true {
             if let url = livePhotoURL {
+                Log.verbose("new live photo added to current capture struct at \(url.absoluteString)")
                 sendingLivePhotoURL = url
             } else {
                 return
@@ -54,12 +56,14 @@ struct LuminaPhotoCapture {
 
         if sendingCamera.captureDepthData == true, #available(iOS 11.0, *) {
             if let data = depthData {
+                Log.verbose("new depth data map added to current capture struct")
                 sendingDepthData = data
             } else {
                 return
             }
         }
         DispatchQueue.main.async {
+            Log.info("still image has been captured")
             sendingCamera.delegate?.stillImageCaptured(camera: sendingCamera, image: image, livePhotoURL: sendingLivePhotoURL, depthData: sendingDepthData)
         }
     }

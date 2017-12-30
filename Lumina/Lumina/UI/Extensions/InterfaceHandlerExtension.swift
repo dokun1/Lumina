@@ -15,6 +15,7 @@ extension LuminaViewController {
             return
         }
         currentZoomScale = min(maxZoomScale, max(1.0, beginZoomScale * Float(recognizer.scale)))
+        Log.verbose("setting zoom scale to \(currentZoomScale)")
     }
 
     @objc func handleTapGestureRecognizer(recognizer: UITapGestureRecognizer) {
@@ -24,6 +25,7 @@ extension LuminaViewController {
     }
 
     func createUI() {
+        Log.verbose("Creating UI")
         self.view.layer.addSublayer(self.previewLayer)
         self.view.addSubview(self.cancelButton)
         self.view.addSubview(self.shutterButton)
@@ -44,6 +46,7 @@ extension LuminaViewController {
     }
 
     func updateUI(orientation: UIInterfaceOrientation) {
+        Log.verbose("updating UI for orientation: \(orientation.rawValue)")
         guard let connection = self.previewLayer.connection, connection.isVideoOrientationSupported else {
             return
         }
@@ -67,6 +70,7 @@ extension LuminaViewController {
 
     // swiftlint:disable cyclomatic_complexity
     func handleCameraSetupResult(_ result: CameraSetupResult) {
+        Log.verbose("camera set up result: \(result.rawValue)")
         DispatchQueue.main.async {
             switch result {
             case .videoSuccess:
