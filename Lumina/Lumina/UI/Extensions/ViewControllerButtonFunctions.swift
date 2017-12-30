@@ -51,15 +51,34 @@ extension LuminaViewController {
         switch self.position {
         case .back:
             self.position = .front
+            torchButtonTapped()
         default:
             self.position = .back
         }
     }
 
     @objc func torchButtonTapped() {
-        guard let camera = self.camera else {
+        print("torch button tapped")
+        guard let camera = self.camera, self.position == .back else {
+            print("camera not found, or on front camera - defaulting to off")
+            self.camera?.torchState = .off
+            self.torchButton.updateTorchIcon(to: SystemButtonType.FlashState.off)
             return
         }
-        camera.torchState = !camera.torchState
+        switch camera.torchState {
+        case .off:
+            print("torch mode should be set to on")
+            camera.torchState = .on(intensity: 1.0)
+            self.torchButton.updateTorchIcon(to: SystemButtonType.FlashState.on)
+        //swiftlint:disable empty_enum_arguments
+        case .on(_):
+            print("torch mode should be set to auto")
+            camera.torchState = .auto
+            self.torchButton.updateTorchIcon(to: SystemButtonType.FlashState.auto)
+        case .auto:
+            print("torch mode should be set to off")
+            camera.torchState = .off
+            self.torchButton.updateTorchIcon(to: SystemButtonType.FlashState.off)
+        }
     }
 }

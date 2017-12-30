@@ -49,27 +49,43 @@ enum CameraSetupResult: String {
 final class LuminaCamera: NSObject {
     weak var delegate: LuminaCameraDelegate?
 
-    var torchState = false {
+    enum TorchState {
+        //swiftlint:disable identifier_name
+        case on(intensity: Float)
+        case off
+        case auto
+    }
+
+    var torchState: TorchState = .off {
         didSet {
             guard let input = self.videoInput else {
-                torchState = false
+                torchState = .off
                 return
             }
             do {
                 try input.device.lockForConfiguration()
-                if torchState == false {
-                    if input.device.isTorchModeSupported(.off) {
-                        input.device.torchMode = .off
+                switch torchState {
+                case .on(let intensity):
+                    if input.device.isTorchModeSupported(.on) {
+                        try input.device.setTorchModeOn(level: intensity)
+                        print("torch mode set to on with intensity: \(intensity)")
                         input.device.unlockForConfiguration()
                     }
-                } else {
-                    if input.device.isTorchModeSupported(.on) {
-                        input.device.torchMode = .on
+                case .off:
+                    if input.device.isTorchModeSupported(.off) {
+                        input.device.torchMode = .off
+                        print("torch mode set to off")
+                        input.device.unlockForConfiguration()
+                    }
+                case .auto:
+                    if input.device.isTorchModeSupported(.auto) {
+                        input.device.torchMode = .auto
+                        print("torch mode set to auto")
                         input.device.unlockForConfiguration()
                     }
                 }
             } catch {
-                torchState = false
+                torchState = .off
                 input.device.unlockForConfiguration()
             }
         }

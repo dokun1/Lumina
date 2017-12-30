@@ -24,7 +24,16 @@ extension LuminaCamera {
             }
         }
         settings.isAutoStillImageStabilizationEnabled = true
-        settings.flashMode = self.torchState ? .on : .off
+        switch self.torchState {
+        //swiftlint:disable empty_enum_arguments
+        case .on(_):
+            settings.flashMode = .on
+        case .off:
+            settings.flashMode = .off
+        case .auto:
+            settings.flashMode = .auto
+        }
+//        settings.flashMode = self.torchState ? .on : .off
         if self.captureLivePhotos {
             let fileName = NSTemporaryDirectory().appending("livePhoto" + Date().iso8601 + ".mov")
             settings.livePhotoMovieFileURL = URL(fileURLWithPath: fileName)
