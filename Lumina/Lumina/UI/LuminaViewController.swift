@@ -327,6 +327,7 @@ public final class LuminaViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         createUI()
+        //updateUI(orientation: UIApplication.shared.statusBarOrientation)
         self.camera?.updateVideo({ result in
             self.handleCameraSetupResult(result)
         })
