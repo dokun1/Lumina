@@ -18,6 +18,6 @@ extension LuminaCamera: AVCaptureDepthDataOutputDelegate {
     }
 
     func depthDataOutput(_ output: AVCaptureDepthDataOutput, didDrop depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection, reason: AVCaptureOutput.DataDroppedReason) {
-        // place to handle dropped AVDepthData if we need it
+        Log.error("dropped depth data output")
     }
 }

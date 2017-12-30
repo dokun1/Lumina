@@ -10,7 +10,7 @@ import Foundation
 import AVFoundation
 
 /// The position of the camera that is active on Lumina
-public enum CameraPosition {
+public enum CameraPosition: String {
     /// the front facing camera of the iOS device
     case front
     /// the back (and usually main) facing camera of the iOS device

@@ -17,9 +17,11 @@ extension LuminaCamera {
     }
 
     func captureStillImage() {
+        Log.info("Attempting photo capture")
         var settings = AVCapturePhotoSettings()
         if #available(iOS 11.0, *) {
             if self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
+                Log.verbose("Will capture photo with HEVC codec")
                 settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
             }
         }
@@ -33,16 +35,17 @@ extension LuminaCamera {
         case .auto:
             settings.flashMode = .auto
         }
-//        settings.flashMode = self.torchState ? .on : .off
         if self.captureLivePhotos {
             let fileName = NSTemporaryDirectory().appending("livePhoto" + Date().iso8601 + ".mov")
             settings.livePhotoMovieFileURL = URL(fileURLWithPath: fileName)
+            Log.verbose("live photo filename will be \(fileName)")
         }
         if self.captureHighResolutionImages {
             settings.isHighResolutionPhotoEnabled = true
         }
         if #available(iOS 11.0, *) {
             if self.captureDepthData && self.photoOutput.isDepthDataDeliverySupported {
+                Log.verbose("depth data delivery is enabled")
                 settings.isDepthDataDeliveryEnabled = true
             }
         }
@@ -50,8 +53,10 @@ extension LuminaCamera {
     }
 
     func startVideoRecording() {
+        Log.verbose("attempting to start video recording")
         if self.resolution == .photo {
-            return // TODO: make this function throw an error
+            Log.error("Cannot start video recording - resolution is in .photo mode")
+            return
         }
         recordingVideo = true
         sessionQueue.async {
@@ -64,11 +69,13 @@ extension LuminaCamera {
                 self.session.commitConfiguration()
             }
             let fileName = NSTemporaryDirectory().appending(Date().iso8601 + ".mov")
+            Log.verbose("will begin video recording with filename \(fileName)")
             self.videoFileOutput.startRecording(to: URL(fileURLWithPath: fileName), recordingDelegate: self)
         }
     }
 
     func stopVideoRecording() {
+        Log.verbose("ending video recording")
         recordingVideo = false
         sessionQueue.async {
             self.videoFileOutput.stopRecording()

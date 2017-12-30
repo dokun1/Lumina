@@ -24,10 +24,12 @@ class ViewController: UITableViewController {
     @IBOutlet weak var frameRateSlider: UISlider!
     @IBOutlet weak var useCoreMLModelSwitch: UISwitch!
     @IBOutlet weak var resolutionLabel: UILabel!
+    @IBOutlet weak var loggingLevelLabel: UILabel!
     @IBOutlet weak var maxZoomScaleLabel: UILabel!
     @IBOutlet weak var maxZoomScaleSlider: UISlider!
     
     var selectedResolution: CameraResolution = .high1920x1080
+    var selectedLoggingLevel: LoggerMessageType = .none
     var depthView: UIImageView?
 }
 
@@ -36,6 +38,7 @@ extension ViewController { //MARK: IBActions
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.resolutionLabel.text = selectedResolution.rawValue
+        self.loggingLevelLabel.text = selectedLoggingLevel.description
         if let version = LuminaViewController.getVersion() {
             self.title = "Lumina Sample v\(version)"
         } else {
@@ -46,6 +49,7 @@ extension ViewController { //MARK: IBActions
     @IBAction func cameraButtonTapped() {
         let camera = LuminaViewController()
         camera.delegate = self
+        camera.loggingLevel = selectedLoggingLevel
         camera.position = self.frontCameraSwitch.isOn ? .front : .back
         camera.recordsVideo = self.recordsVideoSwitch.isOn
         camera.streamFrames = self.trackImagesSwitch.isOn
@@ -85,6 +89,9 @@ extension ViewController { //MARK: IBActions
             } else { return }
         } else if segue.identifier == "selectResolutionSegue" {
             let controller = segue.destination as! ResolutionViewController
+            controller.delegate = self
+        } else if segue.identifier == "selectLoggingLevelSegue" {
+            let controller = segue.destination as! LoggingViewController
             controller.delegate = self
         }
     }
@@ -159,6 +166,13 @@ extension ViewController: LuminaDelegate {
     
     func dismissed(controller: LuminaViewController) {
         controller.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension ViewController: LoggingLevelDelegate {
+    func didSelect(loggingLevel: LoggerMessageType, controller: LoggingViewController) {
+        selectedLoggingLevel = loggingLevel
+        self.navigationController?.popToViewController(self, animated: true)
     }
 }
 
