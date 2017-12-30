@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.0.0](https://github.com/dokun1/Lumina/tree/1.0.0) (2017-12-30)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/0.15.1...1.0.0)
+
 ## [0.15.1](https://github.com/dokun1/Lumina/tree/0.15.1) (2017-12-30)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.15.0...0.15.1)
 
