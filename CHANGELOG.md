@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.0.1](https://github.com/dokun1/Lumina/tree/1.0.1) (2018-01-02)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.0.0...1.0.1)
+
+**Merged pull requests:**
+
+- Fixed issue where old method showed up in delegate as required method [\#67](https://github.com/dokun1/Lumina/pull/67) ([dokun1](https://github.com/dokun1))
+
 ## [1.0.0](https://github.com/dokun1/Lumina/tree/1.0.0) (2017-12-30)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/0.15.1...1.0.0)
 
