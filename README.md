@@ -34,7 +34,7 @@
 Would you like to use a fully-functional camera in an iOS application in seconds? Would you like to do CoreML image recognition in just a few more seconds on the same camera? Lumina is here to help.
 
 <p align="center">
-	<a href="https://www.youtube.com/watch?v=8eEAvcy708s">
+	<a href="https://www.youtube.com/watch?v=8eEAvcy708s" target="_blank">
 		<img src="https://img.youtube.com/vi/8eEAvcy708s/0.jpg">
 	</a>
 </p>
