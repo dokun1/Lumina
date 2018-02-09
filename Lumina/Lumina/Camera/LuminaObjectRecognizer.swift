@@ -18,44 +18,59 @@ public struct LuminaPrediction {
     public var confidence: Float
 }
 
+public struct LuminaRecognitionResult {
+    public var predictions: [LuminaPrediction]?
+    
+    public var type: Any.Type
+}
+
 @available(iOS 11.0, *)
 final class LuminaObjectRecognizer: NSObject {
+    private var resultProcessingQueue = DispatchQueue(label: "com.lumina.objectRecognizer.resultProcessingQueue")
     private var modelPairs: [(MLModel, Any.Type)]
 
     init(modelPairs: [(MLModel, Any.Type)]) {
         Log.verbose("initializing object recognizer for \(modelPairs.count) CoreML models")
         self.modelPairs = modelPairs
     }
-
-    func recognize(from image: UIImage, completion: @escaping ([([LuminaPrediction]?, Any.Type)]) -> Void) {
-        var recognitionResults = [([LuminaPrediction]?, Any.Type)]()
+    
+    func recognize(from image: UIImage, completion: @escaping ([LuminaRecognitionResult]?) -> Void) {
+        print("creating new recognition")
+        guard let coreImage = image.cgImage else {
+            completion(nil)
+            return
+        }
         let recognitionGroup = DispatchGroup()
+        var recognitionResults = [LuminaRecognitionResult]()
+        var requests = [VNCoreMLRequest]()
         for modelPair in modelPairs {
-            recognitionGroup.enter()
+            print("processing model")
             guard let visionModel = try? VNCoreMLModel(for: modelPair.0) else {
-                recognitionGroup.leave()
                 continue
             }
+            recognitionGroup.enter()
             let request = VNCoreMLRequest(model: visionModel) { request, error in
-                if error != nil || request.results == nil {
-                    recognitionResults.append((nil, modelPair.1))
+//                self.resultProcessingQueue.sync {
+                    print("processing results from \(String(describing: modelPair.1))")
+                    if error != nil || request.results == nil {
+                        let blankResult = LuminaRecognitionResult(predictions: nil, type: modelPair.1)
+                        recognitionResults.append(blankResult)
+                    } else if let result = request.results {
+                        let mappedResult = LuminaRecognitionResult(predictions: self.mapResults(result), type: modelPair.1)
+                        recognitionResults.append(mappedResult)
+                    }
                     recognitionGroup.leave()
-                } else if let results = request.results {
-                    let mappedResults = self.mapResults(results)
-                    recognitionResults.append((mappedResults, modelPair.1))
-                    recognitionGroup.leave()
-                }
+//                }
             }
-            guard let coreImage = image.cgImage else {
-                recognitionGroup.leave()
-                continue
-            }
-            let handler = VNImageRequestHandler(cgImage: coreImage)
-            do {
-                try handler.perform([request])
-            } catch {
-                recognitionGroup.leave()
-            }
+            print("appending to request list")
+            requests.append(request)
+        }
+        let handler = VNImageRequestHandler(cgImage: coreImage)
+        do {
+            try handler.perform(requests)
+        } catch {
+            Log.error("Could not perform requests with CoreML")
+            completion(nil)
         }
         recognitionGroup.notify(queue: DispatchQueue.main) {
             Log.verbose("object recognizer finished scanning image - returning results from models")

@@ -29,7 +29,7 @@ extension LuminaViewController: LuminaCameraDelegate {
         delegate?.streamed(videoFrame: frame, from: self)
     }
 
-    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [([LuminaPrediction]?, Any.Type)]?) {
+    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaRecognitionResult]?) {
         delegate?.streamed(videoFrame: frame, with: predictedObjects, from: self)
     }
 

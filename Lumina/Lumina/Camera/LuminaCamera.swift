@@ -14,7 +14,7 @@ protocol LuminaCameraDelegate: class {
     func stillImageCaptured(camera: LuminaCamera, image: UIImage, livePhotoURL: URL?, depthData: Any?)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
     @available (iOS 11.0, *)
-    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [([LuminaPrediction]?, Any.Type)]?)
+    func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaRecognitionResult]?)
     func depthDataCaptured(camera: LuminaCamera, depthData: Any)
     func videoRecordingCaptured(camera: LuminaCamera, videoURL: URL)
     func finishedFocus(camera: LuminaCamera)
