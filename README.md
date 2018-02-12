@@ -1,5 +1,5 @@
 <p align="center">
-	<img src="https://imgur.com/HChegN5.png">
+	<img src="./Assets/luminaLogo.jpg">
 </p>
 
 <p align="center">
@@ -17,9 +17,6 @@
 	</a>
 	<a href="https://choosealicense.com/licenses/mit/">
 		<img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License">
-	</a>
-	<a href="https://codebeat.co/projects/github-com-dokun1-lumina-master">
-		<img alt="codebeat badge" src="https://codebeat.co/badges/41b1cd78-8273-4a36-819f-83b90a1130bc" />
 	</a>
 	<a href="https://github.com/RichardLitt/standard-readme">
 		<img src="https://img.shields.io/badge/standard--readme-OK-green.svg" alt="Standard README Compliant">
