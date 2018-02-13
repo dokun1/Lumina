@@ -93,7 +93,7 @@ final class LuminaButton: UIButton {
             if #available(iOS 11, *) {
                 minY = self.safeAreaLayoutGuide.layoutFrame.maxY
             }
-            minY = minY - 80
+            minY -=  80
             self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.midX - 35, y: minY), size: CGSize(width: self.shutterButtonDimension, height: self.shutterButtonDimension))
             self.layer.cornerRadius = CGFloat(self.shutterButtonDimension / 2)
             self.layer.borderWidth = 3

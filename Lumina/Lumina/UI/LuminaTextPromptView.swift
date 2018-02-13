@@ -69,7 +69,7 @@ final class LuminaTextPromptView: UIView {
         if #available(iOS 11, *) {
             minY = self.safeAreaLayoutGuide.layoutFrame.minY
         }
-        minY = minY + 5.0
+        minY += 5.0
         self.textLabel.frame = CGRect(origin: CGPoint(x: 5, y: minY), size: CGSize(width: frame.width - 10, height: frame.height - 10))
     }
 
