@@ -1,5 +1,16 @@
 # Change Log
 
+## [1.1.0](https://github.com/dokun1/Lumina/tree/1.1.0) (2018-02-14)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.0.1...1.1.0)
+
+**Implemented enhancements:**
+
+- Updated result from CoreML to be a struct and not a tuple [\#70](https://github.com/dokun1/Lumina/pull/70) ([dokun1](https://github.com/dokun1))
+
+**Merged pull requests:**
+
+- Use safe area guides for text label and shutter button [\#69](https://github.com/dokun1/Lumina/pull/69) ([gerriet](https://github.com/gerriet))
+
 ## [1.0.1](https://github.com/dokun1/Lumina/tree/1.0.1) (2018-01-02)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/1.0.0...1.0.1)
 
