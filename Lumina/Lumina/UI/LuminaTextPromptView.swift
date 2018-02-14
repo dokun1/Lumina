@@ -64,7 +64,6 @@ final class LuminaTextPromptView: UIView {
     }
 
     override func layoutSubviews() {
-        self.frame.size = CGSize(width: UIScreen.main.bounds.maxX - 110, height: 80)
         self.textLabel.frame = CGRect(origin: CGPoint(x: 5, y: 5), size: CGSize(width: frame.width - 10, height: frame.height - 10))
     }
 

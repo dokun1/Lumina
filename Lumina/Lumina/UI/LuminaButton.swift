@@ -89,7 +89,12 @@ final class LuminaButton: UIButton {
             self.titleLabel?.layer.shadowRadius = 6
         case .shutter:
             self.backgroundColor = UIColor.normalState
-            self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.midX - 35, y: UIScreen.main.bounds.maxY - 80), size: CGSize(width: self.shutterButtonDimension, height: self.shutterButtonDimension))
+            var minY = UIScreen.main.bounds.maxY
+            if #available(iOS 11, *) {
+                minY = self.safeAreaLayoutGuide.layoutFrame.maxY
+            }
+            minY -=  80
+            self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.midX - 35, y: minY), size: CGSize(width: self.shutterButtonDimension, height: self.shutterButtonDimension))
             self.layer.cornerRadius = CGFloat(self.shutterButtonDimension / 2)
             self.layer.borderWidth = 3
             self.layer.borderColor = UIColor.borderNormalState
