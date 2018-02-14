@@ -57,25 +57,28 @@ extension LuminaViewController {
 
     func updateButtonFrames() {
         self.cancelButton.center = CGPoint(x: self.view.frame.minX + 55, y: self.view.frame.maxY - 45)
+        var minY = self.view.frame.minY
         if self.view.frame.width > self.view.frame.height {
             var maxX = self.view.frame.maxX
             if #available(iOS 11, *) {
                 maxX = self.view.safeAreaLayoutGuide.layoutFrame.maxX
             }
-            maxX -= 45
-            self.shutterButton.center = CGPoint(x: maxX, y: self.view.frame.midY)
+            self.shutterButton.center = CGPoint(x: maxX - 45, y: self.view.frame.midY)
         } else {
             var maxY = self.view.frame.maxY
             if #available(iOS 11, *) {
                 maxY = self.view.safeAreaLayoutGuide.layoutFrame.maxY
+                minY = self.view.safeAreaLayoutGuide.layoutFrame.minY
             }
-            maxY -= 45
-            self.shutterButton.center = CGPoint(x: self.view.frame.midX, y: self.view.frame.maxY - 45)
+            self.shutterButton.center = CGPoint(x: self.view.frame.midX, y: maxY - 45)
         }
         self.switchButton.center = CGPoint(x: self.view.frame.maxX - 25, y: self.view.frame.minY + 25)
         self.torchButton.center = CGPoint(x: self.view.frame.minX + 25, y: self.view.frame.minY + 25)
+        /// Use more width, if text has been moved down below the buttons (e.g. notch on iPhone X):
+        let textWidth = self.view.frame.maxX - (minY > 35 ? 20 : 110)
+        self.textPromptView.frame.size = CGSize(width: textWidth, height: 80)
         self.textPromptView.layoutSubviews()
-        self.textPromptView.center = CGPoint(x: self.view.frame.midX, y: self.view.frame.minY + 45)
+        self.textPromptView.center = CGPoint(x: self.view.frame.midX, y: minY + 45)
     }
 
     // swiftlint:disable cyclomatic_complexity
