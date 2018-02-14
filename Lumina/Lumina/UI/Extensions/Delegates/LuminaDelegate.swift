@@ -42,9 +42,9 @@ public protocol LuminaDelegate: class {
     /// - Warning: The other method for passing video frames back via a delegate will not be triggered in the presence of a CoreML model
     /// - Parameters:
     ///   - videoFrame: the frame captured by Lumina
-    ///   - predictions: an array of tuples, each containing the predictions made by a model used with Lumina, and its type, for matching against when parsing results.
+    ///   - predictions: an array of objects typed LuminaRecognitionResult, containing the predictions made by a model used with Lumina, and its type, for matching against when parsing results.
     ///   - controller: the instance of Lumina that is streaming the frames
-    func streamed(videoFrame: UIImage, with predictions: [([LuminaPrediction]?, Any.Type)]?, from controller: LuminaViewController)
+    func streamed(videoFrame: UIImage, with predictions: [LuminaRecognitionResult]?, from controller: LuminaViewController)
 
     /// Triggered whenever streamDepthData is set to true on Lumina, and streams depth data detected in the form of AVDepthData
     ///
