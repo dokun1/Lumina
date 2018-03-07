@@ -75,7 +75,7 @@ public protocol LuminaDelegate: class {
     
     /// Triggered whenever the image is tapped (outside of the buttons)
     ///
-    func tapped(controller: LuminaViewController)
+    func tapped(at: CGPoint, from controller: LuminaViewController)
 }
 
 // MARK: Extension to make delegate functions optional
@@ -88,5 +88,5 @@ public extension LuminaDelegate {
     func streamed(depthData: Any, from controller: LuminaViewController) {}
     func detected(metadata: [Any], from controller: LuminaViewController) {}
     func dismissed(controller: LuminaViewController) {}
-    func tapped(controller: LuminaViewController) {}
+    func tapped(at: CGPoint, from controller: LuminaViewController) {}
 }

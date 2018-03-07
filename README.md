@@ -276,6 +276,14 @@ func detected(metadata: [Any], from controller: LuminaViewController) {
 }
 ```
 
+To handle the user tapping the screen (outside of a button), implement:
+
+```swift
+func tapped(from controller: LuminaViewController, at: CGPoint) {
+    // here you can take the position of the tap and handle it however you'd like
+}
+```
+
 To handle a `CoreML` model and its predictions being streamed with each video frame, implement:
 ```swift
 func streamed(videoFrame: UIImage, with predictions: [LuminaRecognitionResult]?, from controller: LuminaViewController) {
