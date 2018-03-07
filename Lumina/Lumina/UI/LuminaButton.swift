@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum SystemButtonType {
+public enum SystemButtonType {
     enum FlashState {
         //swiftlint:disable identifier_name
         case on
