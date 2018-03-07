@@ -72,6 +72,10 @@ public protocol LuminaDelegate: class {
     ///
     /// - Parameter controller: the instance of Lumina that cancel was tapped on
     func dismissed(controller: LuminaViewController)
+    
+    /// Triggered whenever the image is tapped (outside of the buttons)
+    ///
+    func tapped(controller: LuminaViewController)
 }
 
 // MARK: Extension to make delegate functions optional
@@ -84,4 +88,5 @@ public extension LuminaDelegate {
     func streamed(depthData: Any, from controller: LuminaViewController) {}
     func detected(metadata: [Any], from controller: LuminaViewController) {}
     func dismissed(controller: LuminaViewController) {}
+    func tapped(controller: LuminaViewController) {}
 }
