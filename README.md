@@ -281,6 +281,7 @@ To handle the user tapping the screen (outside of a button), implement:
 ```swift
 func tapped(from controller: LuminaViewController, at: CGPoint) {
     // here you can take the position of the tap and handle it however you'd like
+    // default behavior for a tap is to focus on tapped point
 }
 ```
 
