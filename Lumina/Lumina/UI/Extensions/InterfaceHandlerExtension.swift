@@ -19,8 +19,9 @@ extension LuminaViewController {
     }
 
     @objc func handleTapGestureRecognizer(recognizer: UITapGestureRecognizer) {
-        if self.position == .back {
-            focusCamera(at: recognizer.location(in: self.view))
+        delegate?.tapped(at: recognizer.location(in: view), from: self)
+        if position == .back {
+            focusCamera(at: recognizer.location(in: view))
         }
     }
 
