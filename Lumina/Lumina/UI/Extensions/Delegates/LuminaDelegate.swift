@@ -72,9 +72,10 @@ public protocol LuminaDelegate: class {
     ///
     /// - Parameter controller: the instance of Lumina that cancel was tapped on
     func dismissed(controller: LuminaViewController)
-    
+
     /// Triggered whenever the image is tapped (outside of the buttons)
     ///
+    // swiftlint:disable identifier_name
     func tapped(at: CGPoint, from controller: LuminaViewController)
 }
 

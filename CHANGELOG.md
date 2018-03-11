@@ -1,5 +1,18 @@
 # Change Log
 
+## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
+
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.1.0...HEAD)
+
+**Fixed bugs:**
+
+- .xcworkspace doesn't work on download [\#74](https://github.com/dokun1/Lumina/issues/74)
+
+**Merged pull requests:**
+
+- Embed framework fix? [\#75](https://github.com/dokun1/Lumina/pull/75) ([gregheo](https://github.com/gregheo))
+- Add tapped\(\) to LuminaDelegate [\#73](https://github.com/dokun1/Lumina/pull/73) ([gerriet](https://github.com/gerriet))
+
 ## [1.1.0](https://github.com/dokun1/Lumina/tree/1.1.0) (2018-02-14)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/1.0.1...1.1.0)
 

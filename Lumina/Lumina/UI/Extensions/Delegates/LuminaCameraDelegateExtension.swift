@@ -56,5 +56,5 @@ extension LuminaViewController: LuminaCameraDelegate {
     func depthDataCaptured(camera: LuminaCamera, depthData: Any) {
         delegate?.streamed(depthData: depthData, from: self)
     }
-    
+
 }
