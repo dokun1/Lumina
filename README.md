@@ -313,12 +313,12 @@ Note that this returns a class type representation associated with the detected 
 
 ## Maintainers
 
-- David Okun [![Twitter Follow](https://img.shields.io/twitter/follow/dokun24.svg?style=social&label=Follow)](https://twitter.com/dokun24) [![GitHub followers](https://img.shields.io/github/followers/dokun1.svg?style=social&label=Follow)](https://github.com/dokun1)  
+- David Okun [![Twitter Follow](https://img.shields.io/twitter/follow/dokun24.svg?style=social&label=Follow)](https://twitter.com/dokun24) [![GitHub followers](https://img.shields.io/github/followers/dokun1.svg?style=social&label=Follow)](https://github.com/dokun1) 
+- Richard Littauer [![Twitter Follow](https://img.shields.io/twitter/follow/richlitt.svg?style=social&label=Follow)](https://twitter.com/richlitt) [![GitHub followers](https://img.shields.io/github/followers/RichardLitt.svg?style=social&label=Follow)](https://github.com/RichardLitt)
+- Daniel Conde [![Twitter Follow](https://img.shields.io/twitter/follow/danielconde7.svg?style=social&label=Follow)](https://twitter.com/danielconde7) [![GitHub followers](https://img.shields.io/github/followers/dconde7.svg?style=social&label=Follow)](https://github.com/dconde7)
 - Zach Falgout [![Twitter Follow](https://img.shields.io/twitter/follow/ZFalgout1.svg?style=social&label=Follow)](https://twitter.com/ZFalgout1) [![GitHub followers](https://img.shields.io/github/followers/ZFalgout.svg?style=social&label=Follow)](https://github.com/ZFalgout)  
 - Gerriet Backer [![Twitter Follow](https://img.shields.io/twitter/follow/gerriet.svg?style=social&label=Follow)](https://twitter.com/gerriet) [![GitHub followers](https://img.shields.io/github/followers/gerriet.svg?style=social&label=Follow)](https://github.com/gerriet)
-- Daniel Conde [![Twitter Follow](https://img.shields.io/twitter/follow/danielconde7.svg?style=social&label=Follow)](https://twitter.com/danielconde7) [![GitHub followers](https://img.shields.io/github/followers/dconde7.svg?style=social&label=Follow)](https://github.com/dconde7)
 - Greg Heo [![Twitter Follow](https://img.shields.io/twitter/follow/gregheo.svg?style=social&label=Follow)](https://twitter.com/gregheo) [![GitHub followers](https://img.shields.io/github/followers/gregheo.svg?style=social&label=Follow)](https://github.com/gregheo)
-- Richard Littauer [![Twitter Follow](https://img.shields.io/twitter/follow/richlitt.svg?style=social&label=Follow)](https://twitter.com/richlitt) [![GitHub followers](https://img.shields.io/github/followers/RichardLitt.svg?style=social&label=Follow)](https://github.com/RichardLitt)
 
 ## License
 
