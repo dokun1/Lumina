@@ -202,14 +202,6 @@ public final class LuminaViewController: UIViewController {
             self.camera?.frameRate = frameRate
         }
     }
-        
-    /// Set visibility for *all* buttons
-    public func setButton(visible: Bool) {
-        cancelButton.isHidden = !visible
-        torchButton.isHidden = !visible
-        shutterButton.isHidden = !visible
-        switchButton.isHidden = !visible
-    }
 
     /// A collection of model types that will be used when streaming images for object recognition
     ///
