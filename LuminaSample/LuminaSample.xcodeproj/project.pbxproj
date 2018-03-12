@@ -11,24 +11,24 @@
 		5365BFD41F79829800B8F338 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD31F79829800B8F338 /* ImageViewController.swift */; };
 		5365BFDA1F79AAA800B8F338 /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */; };
 		5373B3F11FC61BBF00C197BD /* SqueezeNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5373B3F01FC61BBF00C197BD /* SqueezeNet.mlmodel */; };
-		53B2CE281FF5D43D008287E6 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53B2CE261FF5D434008287E6 /* Lumina.framework */; };
-		53B2CE291FF5D43D008287E6 /* Lumina.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 53B2CE261FF5D434008287E6 /* Lumina.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		53B2CE391FF81302008287E6 /* LoggingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B2CE381FF81302008287E6 /* LoggingViewController.swift */; };
 		53B828F71EAAA09000E3A624 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828F61EAAA09000E3A624 /* AppDelegate.swift */; };
 		53B828F91EAAA09000E3A624 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828F81EAAA09000E3A624 /* ViewController.swift */; };
 		53B828FC1EAAA09000E3A624 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FA1EAAA09000E3A624 /* Main.storyboard */; };
 		53B828FE1EAAA09000E3A624 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FD1EAAA09000E3A624 /* Assets.xcassets */; };
 		53B829011EAAA09000E3A624 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FF1EAAA09000E3A624 /* LaunchScreen.storyboard */; };
+		78FC9B5C20550387005F8D5B /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78FC9B5B20550387005F8D5B /* Lumina.framework */; };
+		78FC9B5D20550387005F8D5B /* Lumina.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 78FC9B5B20550387005F8D5B /* Lumina.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		53B8290D1EAAA1A100E3A624 /* Embed Frameworks */ = {
+		78FC9B5E20550387005F8D5B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				53B2CE291FF5D43D008287E6 /* Lumina.framework in Embed Frameworks */,
+				78FC9B5D20550387005F8D5B /* Lumina.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -49,6 +49,7 @@
 		53B828FD1EAAA09000E3A624 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		53B829001EAAA09000E3A624 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		53B829021EAAA09000E3A624 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		78FC9B5B20550387005F8D5B /* Lumina.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Lumina.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,7 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				53B2CE281FF5D43D008287E6 /* Lumina.framework in Frameworks */,
+				78FC9B5C20550387005F8D5B /* Lumina.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +67,7 @@
 		53B828EA1EAAA09000E3A624 = {
 			isa = PBXGroup;
 			children = (
+				78FC9B5B20550387005F8D5B /* Lumina.framework */,
 				53B828F51EAAA09000E3A624 /* LuminaSample */,
 				53B829081EAAA16D00E3A624 /* Frameworks */,
 				53B828F41EAAA09000E3A624 /* Products */,
@@ -116,7 +118,7 @@
 				53B828EF1EAAA09000E3A624 /* Sources */,
 				53B828F01EAAA09000E3A624 /* Frameworks */,
 				53B828F11EAAA09000E3A624 /* Resources */,
-				53B8290D1EAAA1A100E3A624 /* Embed Frameworks */,
+				78FC9B5E20550387005F8D5B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -139,7 +141,6 @@
 				TargetAttributes = {
 					53B828F21EAAA09000E3A624 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = RQ632LL2X3;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
@@ -322,7 +323,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = RQ632LL2X3;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = LuminaSample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -336,7 +337,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = RQ632LL2X3;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = LuminaSample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
