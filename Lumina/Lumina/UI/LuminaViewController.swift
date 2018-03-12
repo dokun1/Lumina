@@ -60,7 +60,7 @@ public final class LuminaViewController: UIViewController {
     }
 
     private var _cancelButton: LuminaButton?
-    var cancelButton: LuminaButton {
+    public var cancelButton: LuminaButton {
         if let currentButton = _cancelButton {
             return currentButton
         }
@@ -71,7 +71,7 @@ public final class LuminaViewController: UIViewController {
     }
 
     private var _shutterButton: LuminaButton?
-    var shutterButton: LuminaButton {
+    public var shutterButton: LuminaButton {
         if let currentButton = _shutterButton {
             return currentButton
         }
@@ -83,7 +83,7 @@ public final class LuminaViewController: UIViewController {
     }
 
     private var _switchButton: LuminaButton?
-    var switchButton: LuminaButton {
+    public var switchButton: LuminaButton {
         if let currentButton = _switchButton {
             return currentButton
         }
@@ -94,7 +94,7 @@ public final class LuminaViewController: UIViewController {
     }
 
     private var _torchButton: LuminaButton?
-    var torchButton: LuminaButton {
+    public var torchButton: LuminaButton {
         if let currentButton = _torchButton {
             return currentButton
         }
@@ -202,29 +202,13 @@ public final class LuminaViewController: UIViewController {
             self.camera?.frameRate = frameRate
         }
     }
-    
-    /// Set visibility for *one* button
-    public func setButton(button: SystemButtonType, visible: Bool) {
-        switch button {
-        case .cancel:
-            cancelButton.isHidden = !visible
-        case .torch:
-            torchButton.isHidden = !visible
-        case .shutter:
-            shutterButton.isHidden = !visible
-        case .cameraSwitch:
-            switchButton.isHidden = !visible
-        case .photoCapture:
-            break
-        }
-    }
-    
+        
     /// Set visibility for *all* buttons
     public func setButton(visible: Bool) {
-        setButton(button: .cancel, visible: visible)
-        setButton(button: .torch, visible: visible)
-        setButton(button: .shutter, visible: visible)
-        setButton(button: .cameraSwitch, visible: visible)
+        cancelButton.isHidden = !visible
+        torchButton.isHidden = !visible
+        shutterButton.isHidden = !visible
+        switchButton.isHidden = !visible
     }
 
     /// A collection of model types that will be used when streaming images for object recognition

@@ -23,7 +23,7 @@ public enum SystemButtonType {
     case shutter
 }
 
-final class LuminaButton: UIButton {
+public final class LuminaButton: UIButton {
     private var squareSystemButtonWidth = 40
     private var squareSystemButtonHeight = 40
     private var cancelButtonWidth = 70
@@ -53,7 +53,7 @@ final class LuminaButton: UIButton {
         }
     }
 
-    required init() {
+    public required init() {
         super.init(frame: CGRect.zero)
         self.backgroundColor = UIColor.clear
         if let titleLabel = self.titleLabel {
@@ -149,7 +149,7 @@ final class LuminaButton: UIButton {
         }
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 }
