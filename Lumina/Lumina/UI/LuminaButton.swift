@@ -8,7 +8,7 @@
 
 import UIKit
 
-public enum SystemButtonType {
+enum SystemButtonType {
     enum FlashState {
         //swiftlint:disable identifier_name
         case on
@@ -23,7 +23,7 @@ public enum SystemButtonType {
     case shutter
 }
 
-public final class LuminaButton: UIButton {
+final class LuminaButton: UIButton {
     private var squareSystemButtonWidth = 40
     private var squareSystemButtonHeight = 40
     private var cancelButtonWidth = 70
@@ -53,7 +53,7 @@ public final class LuminaButton: UIButton {
         }
     }
 
-    public required init() {
+    required init() {
         super.init(frame: CGRect.zero)
         self.backgroundColor = UIColor.clear
         if let titleLabel = self.titleLabel {
@@ -149,7 +149,7 @@ public final class LuminaButton: UIButton {
         }
     }
 
-    public required init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 }
