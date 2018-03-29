@@ -203,6 +203,23 @@ public final class LuminaViewController: UIViewController {
         }
     }
 
+    /// Setting visibility of the buttons (default: all buttons are visible)
+    public func setCancelButton(visible: Bool) {
+        cancelButton.isHidden = !visible
+    }
+
+    public func setShutterButton(visible: Bool) {
+        shutterButton.isHidden = !visible
+    }
+
+    public func setSwitchButton(visible: Bool) {
+        switchButton.isHidden = !visible
+    }
+
+    public func setTorchButton(visible: Bool) {
+        torchButton.isHidden = !visible
+    }
+
     /// A collection of model types that will be used when streaming images for object recognition
     ///
     /// - Note: Only works on iOS 11 and up
