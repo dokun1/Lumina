@@ -311,6 +311,19 @@ func streamed(videoFrame: UIImage, with predictions: [LuminaRecognitionResult]?,
 
 Note that this returns a class type representation associated with the detected results. The example above also makes use of the built-in text prompt mechanism for Lumina.
 
+### Changing the user interface
+
+To adapt the user interface to your needs, you can set the visibility of the buttons by calling these methods on `LuminaViewController`:
+
+```swift
+camera.setCancelButton(visible: Bool)
+camera.setShutterButton(visible: Bool)
+camera.setSwitchButton(visible: Bool)
+camera.setTorchButton(visible: Bool)
+```
+
+Per default, all of the buttons are visible.
+
 ## Maintainers
 
 - David Okun [![Twitter Follow](https://img.shields.io/twitter/follow/dokun24.svg?style=social&label=Follow)](https://twitter.com/dokun24) [![GitHub followers](https://img.shields.io/github/followers/dokun1.svg?style=social&label=Follow)](https://github.com/dokun1) 
