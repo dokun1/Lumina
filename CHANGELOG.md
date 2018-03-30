@@ -1,8 +1,14 @@
 # Change Log
 
-## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
+## [1.2.1](https://github.com/dokun1/Lumina/tree/1.2.1) (2018-03-29)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.2.0...1.2.1)
 
-[Full Changelog](https://github.com/dokun1/Lumina/compare/1.1.0...HEAD)
+**Merged pull requests:**
+
+- Allow setting button visibility [\#72](https://github.com/dokun1/Lumina/pull/72) ([gerriet](https://github.com/gerriet))
+
+## [1.2.0](https://github.com/dokun1/Lumina/tree/1.2.0) (2018-03-11)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.1.0...1.2.0)
 
 **Fixed bugs:**
 
