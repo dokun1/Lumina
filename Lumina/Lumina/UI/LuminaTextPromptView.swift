@@ -8,6 +8,33 @@
 
 import UIKit
 
+enum LuminaTextError: Error {
+    case fontError
+}
+
+extension UIFont {
+    static func fontsURLs() -> [URL] {
+        let bundle = Bundle(identifier: "com.okun.io.Lumina")
+        let fileNames = ["IBMPlexSans-SemiBold"]
+        let newNames = fileNames.map({ bundle?.url(forResource: $0, withExtension: "ttf")! })
+        //swiftlint:disable force_cast
+        return newNames as! [URL]
+    }
+    
+    static func register(from url: URL) throws {
+        guard let fontDataProvider = CGDataProvider(url: url as CFURL) else {
+            throw LuminaTextError.fontError
+        }
+        guard let font = CGFont(fontDataProvider) else {
+            throw LuminaTextError.fontError
+        }
+        var error: Unmanaged<CFError>?
+        guard CTFontManagerRegisterGraphicsFont(font, &error) else {
+            throw error!.takeUnretainedValue()
+        }
+    }
+}
+
 final class LuminaTextPromptView: UIView {
 
     private var textLabel = UILabel()
@@ -19,7 +46,13 @@ final class LuminaTextPromptView: UIView {
         self.textLabel.backgroundColor = UIColor.clear
         self.textLabel.textColor = UIColor.white
         self.textLabel.textAlignment = .center
-        self.textLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        do {
+            try UIFont.fontsURLs().forEach { try UIFont.register(from: $0) }
+            self.textLabel.font = UIFont(name: "IBM Plex Sans", size: 22)
+        } catch {
+            Log.error("Could not locate IBM Font - using system font")
+            self.textLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        }
         self.textLabel.numberOfLines = 3
         self.textLabel.minimumScaleFactor = 10/UIFont.labelFontSize
         self.textLabel.adjustsFontSizeToFitWidth = true

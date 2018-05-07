@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5305A0C520A0DA7F0040A9A9 /* IBMPlexSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5305A0B520A0DA7F0040A9A9 /* IBMPlexSans-SemiBold.ttf */; };
 		5332084E1F9A99CA008354F7 /* LuminaDeviceUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5332084D1F9A99CA008354F7 /* LuminaDeviceUtil.swift */; };
 		5365BFD61F79941900B8F338 /* LuminaObjectRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD51F79941900B8F338 /* LuminaObjectRecognizer.swift */; };
 		5373B3C41FC386C600C197BD /* FileRecordingExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5373B3C31FC386C600C197BD /* FileRecordingExtension.swift */; };
@@ -55,6 +56,7 @@
 
 /* Begin PBXFileReference section */
 		509FF65F1F9D2F6300FD62CD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		5305A0B520A0DA7F0040A9A9 /* IBMPlexSans-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "IBMPlexSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		5332084D1F9A99CA008354F7 /* LuminaDeviceUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaDeviceUtil.swift; sourceTree = "<group>"; };
 		5365BFD51F79941900B8F338 /* LuminaObjectRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaObjectRecognizer.swift; sourceTree = "<group>"; };
 		5373B3C31FC386C600C197BD /* FileRecordingExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileRecordingExtension.swift; sourceTree = "<group>"; };
@@ -114,6 +116,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5305A0AA20A0DA630040A9A9 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				5305A0B520A0DA7F0040A9A9 /* IBMPlexSans-SemiBold.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		5373B3C11FC3868200C197BD /* Camera */ = {
 			isa = PBXGroup;
 			children = (
@@ -169,6 +179,7 @@
 		5373B3DD1FC3B7B600C197BD /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				5305A0AA20A0DA630040A9A9 /* Fonts */,
 				53B2CE311FF80B4D008287E6 /* Logging */,
 				53B828D31EAAA07F00E3A624 /* Lumina.h */,
 				53B828D41EAAA07F00E3A624 /* Info.plist */,
@@ -352,6 +363,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				53B9CCFB1EBF6C62008E4A43 /* Media.xcassets in Resources */,
+				5305A0C520A0DA7F0040A9A9 /* IBMPlexSans-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

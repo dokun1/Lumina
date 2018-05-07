@@ -46,6 +46,7 @@ enum CameraSetupResult: String {
 }
 
 final class LuminaCamera: NSObject {
+    //swiftlint:disable weak_delegate
     weak var delegate: LuminaCameraDelegate?
 
     enum TorchState {
@@ -276,6 +277,8 @@ final class LuminaCamera: NSObject {
 
     func stop() {
         Log.verbose("stopping capture session")
-        self.session.stopRunning()
+        self.sessionQueue.async {
+            self.session.stopRunning()
+        }
     }
 }

@@ -11,7 +11,7 @@ import AVFoundation
 import CoreML
 
 /// The main class that developers should interact with and instantiate when using Lumina
-public final class LuminaViewController: UIViewController {
+open class LuminaViewController: UIViewController {
     var camera: LuminaCamera?
 
     private var _previewLayer: AVCaptureVideoPreviewLayer?
@@ -117,6 +117,7 @@ public final class LuminaViewController: UIViewController {
     var isUpdating = false
 
     /// The delegate for streaming output from Lumina
+    //swiftlint:disable weak_delegate
     weak open var delegate: LuminaDelegate?
 
     /// The position of the camera
@@ -218,6 +219,14 @@ public final class LuminaViewController: UIViewController {
 
     public func setTorchButton(visible: Bool) {
         torchButton.isHidden = !visible
+    }
+
+    public func pauseCamera() {
+        self.camera?.stop()
+    }
+
+    public func startCamera() {
+        self.camera?.start()
     }
 
     /// A collection of model types that will be used when streaming images for object recognition
@@ -335,13 +344,13 @@ public final class LuminaViewController: UIViewController {
     }
 
     /// override with caution
-    public override func didReceiveMemoryWarning() {
+    open override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         Log.error("Camera framework is overloading on memory")
     }
 
     /// override with caution
-    public override func viewWillAppear(_ animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         createUI()
         //updateUI(orientation: UIApplication.shared.statusBarOrientation)
@@ -354,12 +363,12 @@ public final class LuminaViewController: UIViewController {
     }
 
     /// override with caution
-    public override func viewDidAppear(_ animated: Bool) {
+    open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         feedbackGenerator.prepare()
     }
 
-    public override var shouldAutorotate: Bool {
+    open override var shouldAutorotate: Bool {
         guard let camera = self.camera else {
             return true
         }
@@ -367,13 +376,13 @@ public final class LuminaViewController: UIViewController {
     }
 
     /// override with caution
-    public override func viewDidDisappear(_ animated: Bool) {
+    open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
         self.camera?.stop()
     }
 
     /// override with caution
-    public override func viewWillLayoutSubviews() {
+    open override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         if self.camera?.recordingVideo == true {
             return
@@ -383,8 +392,8 @@ public final class LuminaViewController: UIViewController {
     }
 
     /// override with caution
-    override public var prefersStatusBarHidden: Bool {
-        return true
+    open override var prefersStatusBarHidden: Bool {
+        return false
     }
 
     /// returns a string of the version of Lumina currently in use, follows semantic versioning.
