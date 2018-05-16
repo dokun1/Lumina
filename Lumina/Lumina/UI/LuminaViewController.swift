@@ -117,7 +117,6 @@ open class LuminaViewController: UIViewController {
     var isUpdating = false
 
     /// The delegate for streaming output from Lumina
-    //swiftlint:disable weak_delegate
     weak open var delegate: LuminaDelegate?
 
     /// The position of the camera
