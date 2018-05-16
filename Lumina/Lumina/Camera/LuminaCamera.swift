@@ -270,14 +270,14 @@ final class LuminaCamera: NSObject {
 
     func start() {
         Log.verbose("starting capture session")
-        self.sessionQueue.async {
+        self.sessionQueue.sync {
             self.session.startRunning()
         }
     }
 
     func stop() {
         Log.verbose("stopping capture session")
-        self.sessionQueue.async {
+        self.sessionQueue.sync {
             self.session.stopRunning()
         }
     }
