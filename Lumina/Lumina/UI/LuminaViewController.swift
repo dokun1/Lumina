@@ -356,9 +356,11 @@ open class LuminaViewController: UIViewController {
         self.camera?.updateVideo({ result in
             self.handleCameraSetupResult(result)
         })
-        self.camera?.updateAudio({ result in
-            self.handleCameraSetupResult(result)
-        })
+        if self.recordsVideo {
+            self.camera?.updateAudio({ result in
+                self.handleCameraSetupResult(result)
+            })
+        }
     }
 
     /// override with caution
