@@ -62,7 +62,7 @@ extension ViewController { //MARK: IBActions
         camera.maxZoomScale = (self.maxZoomScaleLabel.text! as NSString).floatValue
         camera.frameRate = Int(self.frameRateLabel.text!) ?? 30
         if #available(iOS 11.0, *), self.useCoreMLModelSwitch.isOn {
-            camera.streamingModelTypes = [MobileNet(), SqueezeNet()]
+            camera.streamingModels = [LuminaModel(model: MobileNet().model, type: "MobileNet"), LuminaModel(model: SqueezeNet().model, type: "SqueezeNet")]
         }
         present(camera, animated: true, completion: nil)
     }

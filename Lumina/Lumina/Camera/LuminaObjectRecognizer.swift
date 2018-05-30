@@ -24,15 +24,15 @@ public struct LuminaPrediction {
 public struct LuminaRecognitionResult {
     /// The collection of predictions in a given result, as predicted by Lumina
     public var predictions: [LuminaPrediction]?
-    /// The type of MLModel that made the predictions, best resolved as a String
-    public var type: Any.Type
+    /// The String type of MLModel that made the predictions
+    public var type: String
 }
 
 @available(iOS 11.0, *)
 final class LuminaObjectRecognizer: NSObject {
-    private var modelPairs: [(MLModel, Any.Type)]
+    private var modelPairs: [LuminaModel]
 
-    init(modelPairs: [(MLModel, Any.Type)]) {
+    init(modelPairs: [LuminaModel]) {
         Log.verbose("initializing object recognizer for \(modelPairs.count) CoreML models")
         self.modelPairs = modelPairs
     }
@@ -46,17 +46,21 @@ final class LuminaObjectRecognizer: NSObject {
         let recognitionGroup = DispatchGroup()
         for modelPair in modelPairs {
             recognitionGroup.enter()
-            guard let visionModel = try? VNCoreMLModel(for: modelPair.0) else {
+            guard let model = modelPair.model, let modelType = modelPair.type else {
+                recognitionGroup.leave()
+                continue
+            }
+            guard let visionModel = try? VNCoreMLModel(for: model) else {
                 recognitionGroup.leave()
                 continue
             }
             let request = VNCoreMLRequest(model: visionModel) { request, error in
                 if error != nil || request.results == nil {
-                    recognitionResults.append(LuminaRecognitionResult(predictions: nil, type: modelPair.1))
+                    recognitionResults.append(LuminaRecognitionResult(predictions: nil, type: modelType))
                     recognitionGroup.leave()
                 } else if let results = request.results {
                     let mappedResults = self.mapResults(results)
-                    recognitionResults.append(LuminaRecognitionResult(predictions: mappedResults, type: modelPair.1))
+                    recognitionResults.append(LuminaRecognitionResult(predictions: mappedResults, type: modelType))
                     recognitionGroup.leave()
                 }
             }

@@ -205,10 +205,10 @@ camera.maxZoomScale = 5.0 // not setting this defaults to the highest zoom scale
 
 You must have a `CoreML` compatible model(s) to try this. Ensure that you drag the model file(s) into your project file, and add it to your current application target.
 
-The sample in this repository comes with the `MobileNet` and `SqueezeNet` image recognition models, but again, any `CoreML` compatible model will work with this framework. Assign your model(s) to the framework like so:
+The sample in this repository comes with the `MobileNet` and `SqueezeNet` image recognition models, but again, any `CoreML` compatible model will work with this framework. Assign your model(s) to the framework using the convenient class called `LuminaModel` like so:
 
 ```swift
-camera.streamingModelTypes = [MobileNet(), SqueezeNet()]
+camera.streamingModels = [LuminaModel(model: MobileNet().model, type: "MobileNet"), LuminaModel(model: SqueezeNet().model, type: "SqueezeNet")]
 ```
 
 You are now set up to perform live video object recognition.

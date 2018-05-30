@@ -117,6 +117,7 @@ open class LuminaViewController: UIViewController {
     var isUpdating = false
 
     /// The delegate for streaming output from Lumina
+    //swiftlint:disable weak_delegate
     weak open var delegate: LuminaDelegate?
 
     /// The position of the camera
@@ -233,27 +234,17 @@ open class LuminaViewController: UIViewController {
     /// - Note: Only works on iOS 11 and up
     ///
     /// - Warning: If this is set, streamFrames is over-ridden to true
-    open var streamingModelTypes: [AnyObject]? {
+    open var streamingModels: [AnyObject]? {
         didSet {
             if #available(iOS 11.0, *) {
-                var modelsToSet = [(MLModel, Any.Type)]()
-                guard let types = streamingModelTypes else {
+                guard let castCollection = streamingModels as? [LuminaModel] else {
+                    Log.error("Could not cast models to LuminaModel type.")
                     return
                 }
-                for type in types {
-                    let reflection = Mirror(reflecting: type)
-                    for (name, value) in reflection.children where name == "model" {
-                        guard let model = value as? MLModel else {
-                            continue
-                        }
-                        Log.verbose("CoreML Model Detected - Loading \(reflection.subjectType)")
-                        modelsToSet.append((model, reflection.subjectType))
-                    }
-                }
-                if modelsToSet.count > 0 {
+                if castCollection.count > 0 {
                     Log.verbose("Valid models loaded - frame streaming mode defaulted to on")
                     self.streamFrames = true
-                    self.camera?.streamingModels = modelsToSet
+                    self.camera?.streamingModels = castCollection
                 }
             } else {
                 Log.error("Must be using iOS 11.0 or higher for CoreML")
