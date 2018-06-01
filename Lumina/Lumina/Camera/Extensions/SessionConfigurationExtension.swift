@@ -54,7 +54,8 @@ extension LuminaCamera {
     func restartVideo() {
         Log.verbose("restarting video feed")
         if self.session.isRunning {
-            self.session.stopRunning()
+            self.stop()
+            //self.session.stopRunning()
             updateVideo({ result in
                 if result == .videoSuccess {
                     self.start()
