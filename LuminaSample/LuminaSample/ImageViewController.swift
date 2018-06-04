@@ -69,7 +69,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     //END OF SCROLLVIEW FUNCTIONALITY
     
     //MARK: - Tap to zoom functionality.
-    func ZoomInOnPhoto(recognizer: UITapGestureRecognizer){
+    @objc func ZoomInOnPhoto(recognizer: UITapGestureRecognizer){
         if scrollView.zoomScale == 1 {
             scrollView.zoom(to: zoomRectForScale(scale: 2, center: recognizer.location(in: recognizer.view)), animated: true)
         } else {

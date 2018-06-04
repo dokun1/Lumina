@@ -11,7 +11,7 @@ import AVFoundation
 import CoreML
 
 /// The main class that developers should interact with and instantiate when using Lumina
-public final class LuminaViewController: UIViewController {
+open class LuminaViewController: UIViewController {
     var camera: LuminaCamera?
 
     private var _previewLayer: AVCaptureVideoPreviewLayer?
@@ -220,32 +220,36 @@ public final class LuminaViewController: UIViewController {
         torchButton.isHidden = !visible
     }
 
+    public func pauseCamera() {
+        self.camera?.stop()
+    }
+
+    public func startCamera() {
+        self.camera?.start()
+    }
+
     /// A collection of model types that will be used when streaming images for object recognition
     ///
     /// - Note: Only works on iOS 11 and up
     ///
     /// - Warning: If this is set, streamFrames is over-ridden to true
-    open var streamingModelTypes: [AnyObject]? {
+    open var streamingModels: [AnyObject]? {
         didSet {
             if #available(iOS 11.0, *) {
-                var modelsToSet = [(MLModel, Any.Type)]()
-                guard let types = streamingModelTypes else {
+                guard let streamingModels = self.streamingModels else {
                     return
                 }
-                for type in types {
-                    let reflection = Mirror(reflecting: type)
-                    for (name, value) in reflection.children where name == "model" {
-                        guard let model = value as? MLModel else {
-                            continue
-                        }
-                        Log.verbose("CoreML Model Detected - Loading \(reflection.subjectType)")
-                        modelsToSet.append((model, reflection.subjectType))
+                var properlyCastModels = [LuminaModel]()
+                for possibleModel in streamingModels {
+                    guard let model = possibleModel as? LuminaModel else {
+                        continue
                     }
+                    properlyCastModels.append(model)
                 }
-                if modelsToSet.count > 0 {
+                if properlyCastModels.count > 0 {
                     Log.verbose("Valid models loaded - frame streaming mode defaulted to on")
                     self.streamFrames = true
-                    self.camera?.streamingModels = modelsToSet
+                    self.camera?.streamingModels = properlyCastModels
                 }
             } else {
                 Log.error("Must be using iOS 11.0 or higher for CoreML")
@@ -335,31 +339,33 @@ public final class LuminaViewController: UIViewController {
     }
 
     /// override with caution
-    public override func didReceiveMemoryWarning() {
+    open override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         Log.error("Camera framework is overloading on memory")
     }
 
     /// override with caution
-    public override func viewWillAppear(_ animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         createUI()
         //updateUI(orientation: UIApplication.shared.statusBarOrientation)
         self.camera?.updateVideo({ result in
             self.handleCameraSetupResult(result)
         })
-        self.camera?.updateAudio({ result in
-            self.handleCameraSetupResult(result)
-        })
+        if self.recordsVideo {
+            self.camera?.updateAudio({ result in
+                self.handleCameraSetupResult(result)
+            })
+        }
     }
 
     /// override with caution
-    public override func viewDidAppear(_ animated: Bool) {
+    open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         feedbackGenerator.prepare()
     }
 
-    public override var shouldAutorotate: Bool {
+    open override var shouldAutorotate: Bool {
         guard let camera = self.camera else {
             return true
         }
@@ -367,13 +373,13 @@ public final class LuminaViewController: UIViewController {
     }
 
     /// override with caution
-    public override func viewDidDisappear(_ animated: Bool) {
+    open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
         self.camera?.stop()
     }
 
     /// override with caution
-    public override func viewWillLayoutSubviews() {
+    open override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         if self.camera?.recordingVideo == true {
             return
@@ -383,7 +389,7 @@ public final class LuminaViewController: UIViewController {
     }
 
     /// override with caution
-    override public var prefersStatusBarHidden: Bool {
+    open override var prefersStatusBarHidden: Bool {
         return true
     }
 

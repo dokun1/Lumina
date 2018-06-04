@@ -28,7 +28,7 @@ final class LuminaHapticFeedbackGenerator {
     }
 }
 
-fileprivate extension UIDevice {
+internal extension UIDevice {
     enum DevicePlatform {
         case other
         case iPhone6S
@@ -38,13 +38,16 @@ fileprivate extension UIDevice {
         case iPhone8
         case iPhone8Plus
         case iPhoneX
+        case simulator
     }
 
-    private var platform: DevicePlatform {
+    static var platform: DevicePlatform {
         var sysinfo = utsname()
         uname(&sysinfo)
         let platform = String(bytes: Data(bytes: &sysinfo.machine, count: Int(_SYS_NAMELEN)), encoding: .ascii)!.trimmingCharacters(in: .controlCharacters)
         switch platform {
+        case "x86_64":
+            return .simulator
         case "iPhone 10,1", "iPhone10,4":
             return .iPhone8
         case "iPhone 10,2", "iPhone 10,5":
@@ -65,10 +68,12 @@ fileprivate extension UIDevice {
     }
 
     var hasTapticEngine: Bool {
+        let platform = UIDevice.platform
         return platform == .iPhone6S || platform == .iPhone6SPlus || platform == .iPhone7 || platform == .iPhone7Plus || platform == .iPhone8 || platform == .iPhone8Plus || platform == .iPhoneX
     }
 
     var hasHapticFeedback: Bool {
+        let platform = UIDevice.platform
         return platform == .iPhone7 || platform == .iPhone7Plus || platform == .iPhone8 || platform == .iPhone8Plus || platform == .iPhoneX
     }
 }
