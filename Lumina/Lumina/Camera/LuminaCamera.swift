@@ -165,15 +165,15 @@ final class LuminaCamera: NSObject {
 
     var recognizer: AnyObject?
 
-    private var _streamingModels: [(AnyObject, Any.Type)]?
+    private var _streamingModels: [(AnyObject, String)]?
     @available(iOS 11.0, *)
-    var streamingModels: [(MLModel, Any.Type)]? {
+    var streamingModels: [LuminaModel]? {
         get {
             if let existingModels = _streamingModels {
-                var models = [(MLModel, Any.Type)]()
+                var models = [LuminaModel]()
                 for potentialModel in existingModels {
                     if let model = potentialModel.0 as? MLModel {
-                        models.append((model, potentialModel.1))
+                        models.append(LuminaModel(model: model, type: potentialModel.1))
                     }
                 }
                 guard models.count > 0 else {
@@ -186,9 +186,12 @@ final class LuminaCamera: NSObject {
         }
         set {
             if let tuples = newValue {
-                var downcastCollection = [(AnyObject, Any.Type)]()
+                var downcastCollection = [(AnyObject, String)]()
                 for tuple in tuples {
-                    downcastCollection.append((tuple.0 as AnyObject, tuple.1))
+                    guard let model = tuple.model, let type = tuple.type else {
+                        continue
+                    }
+                    downcastCollection.append((model as AnyObject, type))
                 }
                 _streamingModels = downcastCollection
             }
@@ -276,6 +279,8 @@ final class LuminaCamera: NSObject {
 
     func stop() {
         Log.verbose("stopping capture session")
-        self.session.stopRunning()
+        self.sessionQueue.async {
+            self.session.stopRunning()
+        }
     }
 }
