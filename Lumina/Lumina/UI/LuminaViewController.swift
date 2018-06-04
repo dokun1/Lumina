@@ -391,7 +391,7 @@ open class LuminaViewController: UIViewController {
 
     /// override with caution
     open override var prefersStatusBarHidden: Bool {
-        return false
+        return true
     }
 
     /// returns a string of the version of Lumina currently in use, follows semantic versioning.
