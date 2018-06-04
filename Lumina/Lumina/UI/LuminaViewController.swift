@@ -237,14 +237,20 @@ open class LuminaViewController: UIViewController {
     open var streamingModels: [AnyObject]? {
         didSet {
             if #available(iOS 11.0, *) {
-                guard let castCollection = streamingModels as? [LuminaModel] else {
-                    Log.error("Could not cast models to LuminaModel type.")
+                guard let streamingModels = self.streamingModels else {
                     return
                 }
-                if castCollection.count > 0 {
+                var properlyCastModels = [LuminaModel]()
+                for possibleModel in streamingModels {
+                    guard let model = possibleModel as? LuminaModel else {
+                        continue
+                    }
+                    properlyCastModels.append(model)
+                }
+                if properlyCastModels.count > 0 {
                     Log.verbose("Valid models loaded - frame streaming mode defaulted to on")
                     self.streamFrames = true
-                    self.camera?.streamingModels = castCollection
+                    self.camera?.streamingModels = properlyCastModels
                 }
             } else {
                 Log.error("Must be using iOS 11.0 or higher for CoreML")

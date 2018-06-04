@@ -13,12 +13,11 @@ enum LuminaTextError: Error {
 }
 
 extension UIFont {
-    static func fontsURLs() -> [URL] {
+    static func fontsURLs() -> [URL]? {
         let bundle = Bundle(identifier: "com.okun.io.Lumina")
         let fileNames = ["IBMPlexSans-SemiBold"]
-        let newNames = fileNames.map({ bundle?.url(forResource: $0, withExtension: "ttf")! })
-        //swiftlint:disable force_cast
-        return newNames as! [URL]
+        let newNames = fileNames.map({ bundle?.url(forResource: $0, withExtension: "ttf") })
+        return newNames as? [URL]
     }
 
     static func register(from url: URL) throws {
@@ -47,10 +46,15 @@ final class LuminaTextPromptView: UIView {
         self.textLabel.textColor = UIColor.white
         self.textLabel.textAlignment = .center
         do {
-            try UIFont.fontsURLs().forEach { try UIFont.register(from: $0) }
-            self.textLabel.font = UIFont(name: "IBM Plex Sans", size: 22)
+            if let fonts = UIFont.fontsURLs() {
+                try fonts.forEach { try UIFont.register(from: $0) }
+            }
         } catch {
-            Log.error("Could not locate IBM Font - using system font")
+            Log.debug("Special fonts already registered")
+        }
+        if let font = UIFont(name: "IBM Plex Sans", size: 22) {
+            self.textLabel.font = font
+        } else {
             self.textLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         }
         self.textLabel.numberOfLines = 3

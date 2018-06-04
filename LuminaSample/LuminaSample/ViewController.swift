@@ -64,13 +64,7 @@ extension ViewController { //MARK: IBActions
         if #available(iOS 11.0, *), self.useCoreMLModelSwitch.isOn {
             camera.streamingModels = [LuminaModel(model: MobileNet().model, type: "MobileNet"), LuminaModel(model: SqueezeNet().model, type: "SqueezeNet")]
         }
-        present(camera, animated: true) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: {
-                if #available(iOS 11.0, *) {
-                    camera.streamingModels = [LuminaModel(model: MobileNet().model, type: "MobileNet"), LuminaModel(model: SqueezeNet().model, type: "SqueezeNet")]
-                }
-            })
-        }
+        present(camera, animated: true, completion: nil)
     }
     
     @IBAction func frameRateSliderChanged() {
