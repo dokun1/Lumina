@@ -1,5 +1,18 @@
 # Change Log
 
+## [1.3.0](https://github.com/dokun1/Lumina/tree/1.3.0) (2018-06-04)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.2.1...1.3.0)
+
+**Closed issues:**
+
+- is there a way to save 3 seconds before and and after detection found? [\#79](https://github.com/dokun1/Lumina/issues/79)
+- Update to IBM Plex Font [\#78](https://github.com/dokun1/Lumina/issues/78)
+- Iphone X support [\#71](https://github.com/dokun1/Lumina/issues/71)
+
+**Merged pull requests:**
+
+- New font plus open [\#81](https://github.com/dokun1/Lumina/pull/81) ([dokun1](https://github.com/dokun1))
+
 ## [1.2.1](https://github.com/dokun1/Lumina/tree/1.2.1) (2018-03-29)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/1.2.0...1.2.1)
 
