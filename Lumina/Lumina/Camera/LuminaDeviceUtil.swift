@@ -48,11 +48,11 @@ internal extension UIDevice {
         switch platform {
         case "x86_64":
             return .simulator
-        case "iPhone 10,1", "iPhone10,4":
+        case "iPhone10,1", "iPhone10,4":
             return .iPhone8
-        case "iPhone 10,2", "iPhone 10,5":
+        case "iPhone10,2", "iPhone10,5":
             return .iPhone8Plus
-        case "iPhone 10,3", "iPhone 10,6":
+        case "iPhone10,3", "iPhone10,6":
             return .iPhoneX
         case "iPhone9,2", "iPhone9,4":
             return .iPhone7Plus
