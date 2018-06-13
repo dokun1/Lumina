@@ -85,7 +85,7 @@ public extension LuminaDelegate {
     func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController) {}
     func captured(videoAt: URL, from controller: LuminaViewController) {}
     func streamed(videoFrame: UIImage, from controller: LuminaViewController) {}
-    func streamed(videoFrame: UIImage, with predictions: [([LuminaPrediction]?, Any.Type)]?, from controller: LuminaViewController) {}
+    func streamed(videoFrame: UIImage, with predictions: [LuminaRecognitionResult]?, from controller: LuminaViewController) {}
     func streamed(depthData: Any, from controller: LuminaViewController) {}
     func detected(metadata: [Any], from controller: LuminaViewController) {}
     func dismissed(controller: LuminaViewController) {}
