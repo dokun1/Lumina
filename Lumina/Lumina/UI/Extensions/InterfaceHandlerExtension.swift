@@ -73,8 +73,8 @@ extension LuminaViewController {
             }
             self.shutterButton.center = CGPoint(x: self.view.frame.midX, y: maxY - 45)
         }
-        self.switchButton.center = CGPoint(x: self.view.frame.maxX - 25, y: self.view.frame.minY + (UIDevice.platform == .iPhoneX ? 80 : 25))
-        self.torchButton.center = CGPoint(x: self.view.frame.minX + 25, y: self.view.frame.minY + (UIDevice.platform == .iPhoneX ? 80 : 25))
+        self.switchButton.center = CGPoint(x: self.view.frame.maxX - 25, y: self.view.frame.minY + (UIDevice.platform == .iPhoneX ? (self.view.frame.width < self.view.frame.height ? 80 : 25) : 25))
+        self.torchButton.center = CGPoint(x: self.view.frame.minX + 25, y: self.view.frame.minY + (UIDevice.platform == .iPhoneX ? (self.view.frame.width < self.view.frame.height ? 80 : 25) : 25))
         /// Use more width, if text has been moved down below the buttons (e.g. notch on iPhone X):
         let textWidth = self.view.frame.maxX - (minY > 35 ? 20 : 110)
         self.textPromptView.frame.size = CGSize(width: textWidth - 10, height: 80)
