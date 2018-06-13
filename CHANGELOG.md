@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.3.1](https://github.com/dokun1/Lumina/tree/1.3.1) (2018-06-13)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.3.0...1.3.1)
+
+**Merged pull requests:**
+
+- New version fixes [\#83](https://github.com/dokun1/Lumina/pull/83) ([dokun1](https://github.com/dokun1))
+- Fixed issue with iPhone platform detection [\#82](https://github.com/dokun1/Lumina/pull/82) ([dokun1](https://github.com/dokun1))
+
 ## [1.3.0](https://github.com/dokun1/Lumina/tree/1.3.0) (2018-06-04)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/1.2.1...1.3.0)
 
