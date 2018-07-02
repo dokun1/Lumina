@@ -19,7 +19,7 @@ extension AVCapturePhoto {
         return UIImage(cgImage: cgImage.takeUnretainedValue(), scale: 1.0, orientation: getImageOrientation(forCamera: position))
     }
 
-    private func getImageOrientation(forCamera: CameraPosition) -> UIImageOrientation {
+    private func getImageOrientation(forCamera: CameraPosition) -> UIImage.Orientation {
         switch UIApplication.shared.statusBarOrientation {
         case .landscapeLeft:
             return forCamera == .back ? .down : .upMirrored
