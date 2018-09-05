@@ -301,6 +301,19 @@ open class LuminaViewController: UIViewController {
         }
     }
 
+    open var depthDataAccuracy: Any? {
+        didSet {
+            if #available(iOS 11.0, *) {
+                guard let accuracy = depthDataAccuracy as? LuminaDepthAccuracy else {
+                    return
+                }
+                self.camera?.depthDataAccuracy = accuracy
+            } else {
+                Log.error("Must be using iOS 11.0 or higher for AVDepthData")
+            }
+        }
+    }
+
     /// Set this to apply a level of logging to Lumina, to track activity within the framework
     open static var loggingLevel: LoggerMessageType = .none {
         didSet {

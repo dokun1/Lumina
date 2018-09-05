@@ -10,6 +10,13 @@ import Foundation
 import AVFoundation
 
 @available(iOS 11.0, *)
+public enum LuminaDepthAccuracy: Int {
+    case absolute = 1
+    case relative = 2
+    case unknown = 3
+}
+
+@available(iOS 11.0, *)
 extension LuminaCamera: AVCaptureDepthDataOutputDelegate {
     func depthDataOutput(_ output: AVCaptureDepthDataOutput, didOutput depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection) {
         DispatchQueue.main.async {

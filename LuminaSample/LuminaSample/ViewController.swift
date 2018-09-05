@@ -25,11 +25,29 @@ class ViewController: UITableViewController {
     @IBOutlet weak var useCoreMLModelSwitch: UISwitch!
     @IBOutlet weak var resolutionLabel: UILabel!
     @IBOutlet weak var loggingLevelLabel: UILabel!
+    @IBOutlet weak var depthAccuracyLabel: UILabel!
     @IBOutlet weak var maxZoomScaleLabel: UILabel!
     @IBOutlet weak var maxZoomScaleSlider: UISlider!
     
-    var selectedResolution: CameraResolution = .high1920x1080
+    var selectedResolution: CameraResolution = .photo
     var selectedLoggingLevel: LoggerMessageType = .none
+    private var _depthDataAccuracy: Int = 1
+    @available(iOS 11.0, *)
+    var depthDataAccuracy: LuminaDepthAccuracy {
+        get {
+            switch _depthDataAccuracy {
+            case 1:
+                return .absolute
+            case 2:
+                return .relative
+            default:
+                return .unknown
+            }
+        }
+        set {
+            _depthDataAccuracy = newValue.rawValue
+        }
+    }
     var depthView: UIImageView?
 }
 
@@ -39,6 +57,18 @@ extension ViewController { //MARK: IBActions
         super.viewWillAppear(animated)
         self.resolutionLabel.text = selectedResolution.rawValue
         self.loggingLevelLabel.text = selectedLoggingLevel.description
+        if #available(iOS 11.0, *) {
+            switch depthDataAccuracy {
+            case .absolute:
+                self.depthAccuracyLabel.text = "Absolute"
+            case .relative:
+                self.depthAccuracyLabel.text = "Relative"
+            default:
+                self.depthAccuracyLabel.text = "Unknown"
+            }
+        } else {
+            self.depthAccuracyLabel.text = "Unknown"
+        }
         if let version = LuminaViewController.getVersion() {
             self.title = "Lumina Sample v\(version)"
         } else {
@@ -63,6 +93,9 @@ extension ViewController { //MARK: IBActions
         camera.frameRate = Int(self.frameRateLabel.text!) ?? 30
         if #available(iOS 11.0, *), self.useCoreMLModelSwitch.isOn {
             camera.streamingModels = [LuminaModel(model: MobileNet().model, type: "MobileNet"), LuminaModel(model: SqueezeNet().model, type: "SqueezeNet")]
+        }
+        if #available(iOS 11.0, *) {
+            camera.depthDataAccuracy = self.depthDataAccuracy
         }
         present(camera, animated: true, completion: nil)
     }
@@ -92,6 +125,9 @@ extension ViewController { //MARK: IBActions
             controller.delegate = self
         } else if segue.identifier == "selectLoggingLevelSegue" {
             let controller = segue.destination as! LoggingViewController
+            controller.delegate = self
+        } else if #available(iOS 11.0, *), segue.identifier == "selectDepthDataAccuracySegue" {
+            let controller = segue.destination as! DepthAccuracyViewController
             controller.delegate = self
         }
     }
@@ -166,6 +202,14 @@ extension ViewController: LuminaDelegate {
     
     func dismissed(controller: LuminaViewController) {
         controller.dismiss(animated: true, completion: nil)
+    }
+}
+
+@available(iOS 11.0, *)
+extension ViewController: DepthAccuracyDelegate {
+    func didSelect(accuracy: LuminaDepthAccuracy, controller: DepthAccuracyViewController) {
+        self.depthDataAccuracy = accuracy
+        self.navigationController?.popToViewController(self, animated: true)
     }
 }
 

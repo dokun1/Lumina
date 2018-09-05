@@ -127,6 +127,25 @@ final class LuminaCamera: NSObject {
         }
     }
 
+    private var _depthDataAccuracy: Int?
+    @available(iOS 11.0, *)
+    var depthDataAccuracy: LuminaDepthAccuracy {
+        get {
+            switch _depthDataAccuracy {
+            case 1:
+                return .absolute
+            case 2:
+                return .relative
+            default:
+                return .unknown
+            }
+        }
+        set {
+            _depthDataAccuracy = newValue.rawValue
+            restartVideo()
+        }
+    }
+
     var captureHighResolutionImages = false {
         didSet {
             restartVideo()
@@ -217,6 +236,7 @@ final class LuminaCamera: NSObject {
     var videoInput: AVCaptureDeviceInput?
     var audioInput: AVCaptureDeviceInput?
     var currentCaptureDevice: AVCaptureDevice?
+    var currentAvailableFormats: [LuminaVideoFormat]?
     var videoBufferQueue = DispatchQueue(label: "com.Lumina.videoBufferQueue", attributes: .concurrent)
     var metadataBufferQueue = DispatchQueue(label: "com.lumina.metadataBufferQueue")
     var recognitionBufferQueue = DispatchQueue(label: "com.lumina.recognitionBufferQueue")
@@ -261,6 +281,25 @@ final class LuminaCamera: NSObject {
                 return existingOutput as? AVCaptureDepthDataOutput
             }
             let output = AVCaptureDepthDataOutput()
+            print(self.depthDataAccuracy)
+            print("----")
+            /*
+            var depthFormats = [LuminaVideoDepthFormat]()
+            guard let formats = currentCaptureDevice?.formats else {
+                return nil
+            }
+            for parentFormat in formats {
+                print(parentFormat.formatDescription)
+                /*
+                for depthFormat in parentFormat.supportedDepthDataFormats {
+                    depthFormats.append(LuminaVideoDepthFormat(mediaSubtypeCode: CMFormatDescriptionGetMediaSubType(depthFormat.formatDescription), depthMapDimensions: CMVideoFormatDescriptionGetDimensions(depthFormat.formatDescription), parentDimensions: CMVideoFormatDescriptionGetDimensions(parentFormat.formatDescription)))
+                }
+ */
+            }
+            for format in depthFormats where format.depthType == .hdep {
+                print("available format for \(String(describing: format.parentDimensions))")
+            }
+ */
             output.setDelegate(self, callbackQueue: depthDataQueue)
             _depthDataOutput = output
             return output

@@ -124,6 +124,24 @@ extension LuminaCamera {
             return failureResult
         }
         self.videoInput = videoInput
+        guard let currentCaptureDevice = self.currentCaptureDevice else {
+            return .invalidVideoDataOutput
+        }
+        var formats = [LuminaVideoFormat]()
+        for format in currentCaptureDevice.formats {
+            if #available(iOS 11.0, *) {
+                if format.supportedDepthDataFormats.count > 0 {
+                    for depthFormat in format.supportedDepthDataFormats {
+                        formats.append(LuminaVideoFormat(description: format.formatDescription, depthDescription: depthFormat.formatDescription))
+                    }
+                } else {
+                    formats.append(LuminaVideoFormat(description: format.formatDescription, depthDescription: nil))
+                }
+            } else {
+                formats.append(LuminaVideoFormat(description: format.formatDescription, depthDescription: nil))
+            }
+        }
+        self.currentAvailableFormats = Array(Set<LuminaVideoFormat>(formats))
         self.session.addInput(videoInput)
         if self.streamFrames {
             Log.verbose("adding video data output to session")
@@ -140,7 +158,9 @@ extension LuminaCamera {
         configureHiResPhotoOutput(for: self.session)
         configureLivePhotoOutput(for: self.session)
         configureDepthDataOutput(for: self.session)
-        configureFrameRate()
+        if self.frameRate != 30 {
+            configureFrameRate()
+        }
         return .videoSuccess
     }
 
