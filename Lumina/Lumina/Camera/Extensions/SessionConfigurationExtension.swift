@@ -242,6 +242,12 @@ extension LuminaCamera {
             if self.captureDepthData && self.photoOutput.isDepthDataDeliverySupported {
                 Log.verbose("enabling depth data delivery")
                 self.photoOutput.isDepthDataDeliveryEnabled = true
+                if self.depthDataAccuracy == .absolute {
+                    var desiredFormat: AVCaptureDevice.Format?
+                    guard let currentDevice = self.currentCaptureDevice else {
+                        return
+                    }
+                }
             } else if self.captureDepthData {
                 Log.error("cannot capture depth data with these settings")
                 self.captureDepthData = false
