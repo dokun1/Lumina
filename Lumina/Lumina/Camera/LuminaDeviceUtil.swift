@@ -38,7 +38,17 @@ internal extension UIDevice {
         case iPhone8
         case iPhone8Plus
         case iPhoneX
+        case iPhoneXS
+        case iPhoneXSMax
+        case iPhoneXR
         case simulator
+    }
+
+    static var hasNotch: Bool {
+        return platform == .iPhoneXSMax ||
+               platform == .iPhoneXS ||
+               platform == .iPhoneXR ||
+               platform == .iPhoneX
     }
 
     static var platform: DevicePlatform {
@@ -48,6 +58,12 @@ internal extension UIDevice {
         switch platform {
         case "x86_64":
             return .simulator
+        case "iPhone11,2":
+            return .iPhoneXS
+        case "iPhone11,4", "iPhone11,6":
+            return .iPhoneXSMax
+        case "iPhone11,8":
+            return .iPhoneXR
         case "iPhone10,1", "iPhone10,4":
             return .iPhone8
         case "iPhone10,2", "iPhone10,5":
