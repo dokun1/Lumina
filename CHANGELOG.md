@@ -1,5 +1,15 @@
 # Change Log
 
+## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
+
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.3.1...HEAD)
+
+**Closed issues:**
+
+- Depth data not delivered to captured delegate [\#87](https://github.com/dokun1/Lumina/issues/87)
+- Custom icons [\#86](https://github.com/dokun1/Lumina/issues/86)
+- `streamed` not being called [\#85](https://github.com/dokun1/Lumina/issues/85)
+
 ## [1.3.1](https://github.com/dokun1/Lumina/tree/1.3.1) (2018-06-13)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/1.3.0...1.3.1)
 
