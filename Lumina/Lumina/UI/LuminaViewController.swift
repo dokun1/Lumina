@@ -302,7 +302,7 @@ open class LuminaViewController: UIViewController {
     }
 
     /// Set this to apply a level of logging to Lumina, to track activity within the framework
-    open static var loggingLevel: LoggerMessageType = .none {
+    public static var loggingLevel: LoggerMessageType = .none {
         didSet {
             HeliumLogger.use(loggingLevel)
         }

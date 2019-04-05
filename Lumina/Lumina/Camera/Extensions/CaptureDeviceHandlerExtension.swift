@@ -99,8 +99,8 @@ extension LuminaCamera {
                 do {
                     try device.lockForConfiguration()
                     device.activeFormat = vFormat as AVCaptureDevice.Format
-                    device.activeVideoMinFrameDuration = CMTimeMake(1, Int32(self.frameRate))
-                    device.activeVideoMaxFrameDuration = CMTimeMake(1, Int32(self.frameRate))
+                    device.activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: Int32(self.frameRate))
+                    device.activeVideoMaxFrameDuration = CMTimeMake(value: 1, timescale: Int32(self.frameRate))
                     device.unlockForConfiguration()
                     break
                 } catch {

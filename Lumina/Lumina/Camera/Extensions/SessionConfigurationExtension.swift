@@ -71,26 +71,22 @@ extension LuminaCamera {
             switch AVCaptureDevice.authorizationStatus(for: AVMediaType.audio) {
             case .authorized:
                 guard let audioInput = self.getNewAudioInputDevice() else {
-                    completion(CameraSetupResult.invalidAudioInput)
-                    return
+                    return completion(CameraSetupResult.invalidAudioInput)
                 }
                 guard self.session.canAddInput(audioInput) else {
-                    completion(CameraSetupResult.invalidAudioInput)
-                    return
+                    return completion(CameraSetupResult.invalidAudioInput)
                 }
                 self.audioInput = audioInput
                 self.session.addInput(audioInput)
-                completion(CameraSetupResult.audioSuccess)
-                return
+                return completion(CameraSetupResult.audioSuccess)
             case .denied:
-                completion(CameraSetupResult.audioPermissionDenied)
-                return
+                return completion(CameraSetupResult.audioPermissionDenied)
             case .notDetermined:
-                completion(CameraSetupResult.audioRequiresAuthorization)
-                return
+                return completion(CameraSetupResult.audioRequiresAuthorization)
             case .restricted:
-                completion(CameraSetupResult.audioPermissionRestricted)
-                return
+                return completion(CameraSetupResult.audioPermissionRestricted)
+            @unknown default:
+                return completion(CameraSetupResult.unknownError)
             }
         }
     }
@@ -100,16 +96,15 @@ extension LuminaCamera {
             self.purgeVideoDevices()
             switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
             case .authorized:
-                completion(self.videoSetupApproved())
+                return completion(self.videoSetupApproved())
             case .denied:
-                completion(CameraSetupResult.videoPermissionDenied)
-                return
+                return completion(CameraSetupResult.videoPermissionDenied)
             case .notDetermined:
-                completion(CameraSetupResult.videoRequiresAuthorization)
-                return
+                return completion(CameraSetupResult.videoRequiresAuthorization)
             case .restricted:
-                completion(CameraSetupResult.videoPermissionRestricted)
-                return
+                return completion(CameraSetupResult.videoPermissionRestricted)
+            @unknown default:
+                return completion(CameraSetupResult.unknownError)
             }
         }
     }

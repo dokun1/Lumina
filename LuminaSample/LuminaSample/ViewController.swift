@@ -121,7 +121,7 @@ extension ViewController: LuminaDelegate {
     
     func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController) {
         controller.dismiss(animated: true) {
-            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage" : stillImage, "livePhotoURL" : livePhotoAt as Any, "depthData" : depthData, "isPhotoSelfie" : controller.position == .front ? true : false])
+            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage" : stillImage, "livePhotoURL" : livePhotoAt as Any, "depthData" : depthData as Any, "isPhotoSelfie" : controller.position == .front ? true : false])
         }
     }
     
@@ -159,7 +159,7 @@ extension ViewController: LuminaDelegate {
                 newView.contentMode = .scaleAspectFit
                 newView.backgroundColor = UIColor.clear
                 controller.view.addSubview(newView)
-                controller.view.bringSubview(toFront: newView)
+                controller.view.bringSubviewToFront(newView)
             }
         }
     }
@@ -194,7 +194,7 @@ extension CVPixelBuffer {
         }
     }
     
-    private func getImageOrientation(with position: CameraPosition) -> UIImageOrientation {
+    private func getImageOrientation(with position: CameraPosition) -> UIImage.Orientation {
         switch UIApplication.shared.statusBarOrientation {
         case .landscapeLeft:
             return position == .back ? .down : .upMirrored
@@ -205,6 +205,8 @@ extension CVPixelBuffer {
         case .portrait:
             return position == .back ? .right : .leftMirrored
         case .unknown:
+            return position == .back ? .right : .leftMirrored
+        @unknown default:
             return position == .back ? .right : .leftMirrored
         }
     }
