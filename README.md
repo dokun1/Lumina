@@ -68,9 +68,9 @@ Lumina can:
 
 ## Requirements
 
-- Xcode 8.0+ (by loading Swift 4 Toolchain)
-- iOS 10.0
-- Swift 4.0
+- Xcode 10.0+ (by loading Swift 4 Toolchain)
+- iOS 11.0
+- Swift 5.0
 
 ## Background
 
@@ -91,7 +91,7 @@ Small note: If editing the README, please conform to the [standard-readme](https
 You can use [CocoaPods](https://cocoapods.org) to install `Lumina` by adding it to your `Podfile`:
 
 ```ruby
-platform :ios, '10.0'
+platform :ios, '12.0'
 use_frameworks!
 
 target 'MyApp' do
@@ -335,4 +335,4 @@ Per default, all of the buttons are visible.
 
 ## License
 
-[MIT](LICENSE) © 2017 David Okun
+[MIT](LICENSE) © 2019 David Okun
