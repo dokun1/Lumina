@@ -37,7 +37,7 @@ final class LuminaButton: UIButton {
             return _image
         }
         set {
-            self.setImage(newValue, for: UIControlState.normal)
+            self.setImage(newValue, for: UIControl.State.normal)
             _image = newValue
         }
     }
@@ -48,7 +48,7 @@ final class LuminaButton: UIButton {
             return _text
         }
         set {
-            self.setTitle(newValue, for: UIControlState.normal)
+            self.setTitle(newValue, for: UIControl.State.normal)
             _text = newValue
         }
     }

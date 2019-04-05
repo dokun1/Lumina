@@ -37,7 +37,7 @@ extension CMSampleBuffer {
         return UIImage(cgImage: sample)
     }
 
-    private func getImageOrientation(forCamera: CameraPosition) -> UIImageOrientation {
+    private func getImageOrientation(forCamera: CameraPosition) -> UIImage.Orientation {
         switch UIApplication.shared.statusBarOrientation {
         case .landscapeLeft:
             return forCamera == .back ? .down : .upMirrored
@@ -48,6 +48,8 @@ extension CMSampleBuffer {
         case .portrait:
             return forCamera == .back ? .right : .leftMirrored
         case .unknown:
+            return forCamera == .back ? .right : .leftMirrored
+        @unknown default:
             return forCamera == .back ? .right : .leftMirrored
         }
     }
