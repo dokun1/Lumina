@@ -10,12 +10,12 @@ import Foundation
 
 extension LuminaViewController {
     @objc func cancelButtonTapped() {
-        Log.verbose("cancel button tapped")
+        LuminaLogger.notice(message: "cancel button tapped")
         delegate?.dismissed(controller: self)
     }
 
     @objc func shutterButtonTapped() {
-        Log.verbose("shutter button tapped")
+        LuminaLogger.notice(message: "shutter button tapped")
         shutterButton.takePhoto()
         previewLayer.opacity = 0
         UIView.animate(withDuration: 0.25) {
@@ -28,24 +28,24 @@ extension LuminaViewController {
     }
 
     @objc func shutterButtonLongPressed(_ sender: UILongPressGestureRecognizer) {
-        Log.verbose("shutter button long pressed")
+        LuminaLogger.notice(message: "shutter button long pressed")
         guard let camera = self.camera else {
             return
         }
         switch sender.state {
         case .began:
             if recordsVideo && !camera.recordingVideo {
-                Log.verbose("Attempting to start recording video")
+                LuminaLogger.notice(message: "Attempting to start recording video")
                 shutterButton.startRecordingVideo()
                 camera.startVideoRecording()
             }
         case .ended:
             if recordsVideo && camera.recordingVideo {
-                Log.verbose("Attempting to stop recording video")
+                LuminaLogger.notice(message: "Attempting to stop recording video")
                 shutterButton.stopRecordingVideo()
                 camera.stopVideoRecording()
             } else {
-                Log.error("Cannot record video")
+                LuminaLogger.error(message: "Cannot record video")
                 feedbackGenerator.errorFeedback()
             }
         default:
@@ -54,7 +54,7 @@ extension LuminaViewController {
     }
 
     @objc func switchButtonTapped() {
-        Log.verbose("camera switch button tapped")
+        LuminaLogger.notice(message: "camera switch button tapped")
         switch self.position {
         case .back:
             self.position = .front
@@ -65,25 +65,25 @@ extension LuminaViewController {
     }
 
     @objc func torchButtonTapped() {
-        Log.verbose("torch button tapped")
+        LuminaLogger.notice(message: "torch button tapped")
         guard let camera = self.camera, self.position == .back else {
-            Log.verbose("camera not found, or on front camera - defaulting to off")
+            LuminaLogger.notice(message: "camera not found, or on front camera - defaulting to off")
             self.camera?.torchState = .off
             self.torchButton.updateTorchIcon(to: SystemButtonType.FlashState.off)
             return
         }
         switch camera.torchState {
         case .off:
-            Log.verbose("torch mode should be set to on")
+            LuminaLogger.notice(message: "torch mode should be set to on")
             camera.torchState = .on(intensity: 1.0)
             self.torchButton.updateTorchIcon(to: SystemButtonType.FlashState.on)
         //swiftlint:disable empty_enum_arguments
         case .on(_):
-            Log.verbose("torch mode should be set to auto")
+            LuminaLogger.notice(message: "torch mode should be set to auto")
             camera.torchState = .auto
             self.torchButton.updateTorchIcon(to: SystemButtonType.FlashState.auto)
         case .auto:
-            Log.verbose("torch mode should be set to off")
+            LuminaLogger.notice(message: "torch mode should be set to off")
             camera.torchState = .off
             self.torchButton.updateTorchIcon(to: SystemButtonType.FlashState.off)
         }

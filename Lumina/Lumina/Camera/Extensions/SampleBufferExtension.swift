@@ -11,7 +11,8 @@ import AVFoundation
 
 extension CMSampleBuffer {
     func normalizedStillImage(forCameraPosition position: CameraPosition) -> UIImage? {
-        Log.verbose("normalizing still image from CMSampleBuffer")
+        LuminaLogger.notice(message: "normalizing still image from CMSampleBuffer")
+        // 'jpegPhotoDataRepresentation(forJPEGSampleBuffer:previewPhotoSampleBuffer:)' was deprecated in iOS 11.0: Use -[AVCapturePhoto fileDataRepresentation] instead.
         guard let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: self, previewPhotoSampleBuffer: nil) else {
             return nil
         }
@@ -25,7 +26,7 @@ extension CMSampleBuffer {
     }
 
     func normalizedVideoFrame() -> UIImage? {
-        Log.verbose("normalizing video frame from CMSampleBbuffer")
+        LuminaLogger.notice(message: "normalizing video frame from CMSampleBbuffer")
         guard let imageBuffer = CMSampleBufferGetImageBuffer(self) else {
             return nil
         }

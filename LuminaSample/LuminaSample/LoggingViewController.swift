@@ -10,7 +10,7 @@ import UIKit
 import Lumina
 
 protocol LoggingLevelDelegate: class {
-    func didSelect(loggingLevel: LoggerMessageType, controller: LoggingViewController)
+    func didSelect(loggingLevel: LuminaLoggerLevel, controller: LoggingViewController)
 }
 
 class LoggingViewController: UITableViewController {
@@ -23,7 +23,7 @@ class LoggingViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return LoggerMessageType.all().count
+        return LuminaLoggerLevel.allCases.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -31,12 +31,12 @@ class LoggingViewController: UITableViewController {
         guard let textLabel = cell.textLabel else {
             return cell
         }
-        textLabel.text = LoggerMessageType.all()[indexPath.row].description
+        textLabel.text = LuminaLoggerLevel.allCases[indexPath.row].description
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedLoggingLevel = LoggerMessageType.all()[indexPath.row]
+        let selectedLoggingLevel = LuminaLoggerLevel.allCases[indexPath.row]
         delegate?.didSelect(loggingLevel: selectedLoggingLevel, controller: self)
     }
 }

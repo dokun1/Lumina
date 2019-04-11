@@ -67,25 +67,25 @@ final class LuminaCamera: NSObject {
                 case .on(let intensity):
                     if input.device.isTorchModeSupported(.on) {
                         try input.device.setTorchModeOn(level: intensity)
-                        Log.verbose("torch mode set to on with intensity: \(intensity)")
+                        LuminaLogger.notice(message: "torch mode set to on with intensity: \(intensity)")
                         input.device.unlockForConfiguration()
                     }
                 case .off:
                     if input.device.isTorchModeSupported(.off) {
                         input.device.torchMode = .off
-                        Log.verbose("torch mode set to off")
+                        LuminaLogger.notice(message: "torch mode set to off")
                         input.device.unlockForConfiguration()
                     }
                 case .auto:
                     if input.device.isTorchModeSupported(.auto) {
                         input.device.torchMode = .auto
-                        Log.verbose("torch mode set to auto")
+                        LuminaLogger.notice(message: "torch mode set to auto")
                         input.device.unlockForConfiguration()
                     }
                 }
             } catch {
                 torchState = .off
-                Log.error("cannot change torch state - defaulting to off mode")
+                LuminaLogger.error(message: "cannot change torch state - defaulting to off mode")
                 input.device.unlockForConfiguration()
             }
         }
@@ -271,14 +271,14 @@ final class LuminaCamera: NSObject {
     }
 
     func start() {
-        Log.verbose("starting capture session")
+        LuminaLogger.notice(message: "starting capture session")
         self.sessionQueue.async {
             self.session.startRunning()
         }
     }
 
     func stop() {
-        Log.verbose("stopping capture session")
+        LuminaLogger.notice(message: "stopping capture session")
         self.sessionQueue.async {
             self.session.stopRunning()
         }

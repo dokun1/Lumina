@@ -13,7 +13,7 @@ extension LuminaCamera {
     func getNewVideoInputDevice() -> AVCaptureDeviceInput? {
         do {
             guard let device = getDevice(with: self.position == .front ? AVCaptureDevice.Position.front : AVCaptureDevice.Position.back) else {
-                Log.error("could not find valid AVCaptureDevice")
+                LuminaLogger.error(message: "could not find valid AVCaptureDevice")
                 return nil
             }
             let input = try AVCaptureDeviceInput(device: device)
@@ -36,14 +36,14 @@ extension LuminaCamera {
     }
 
     func purgeAudioDevices() {
-        Log.verbose("purging old audio devices on capture session")
+        LuminaLogger.notice(message: "purging old audio devices on capture session")
         for oldInput in self.session.inputs where oldInput == self.audioInput {
             self.session.removeInput(oldInput)
         }
     }
 
     func purgeVideoDevices() {
-        Log.verbose("purging old video devices on capture session")
+        LuminaLogger.notice(message: "purging old video devices on capture session")
         for oldInput in self.session.inputs where oldInput == self.videoInput {
             self.session.removeInput(oldInput)
         }

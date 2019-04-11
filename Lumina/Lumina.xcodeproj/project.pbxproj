@@ -33,9 +33,6 @@
 		53806FA41F6618230009A0E8 /* LuminaCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53806FA31F6618230009A0E8 /* LuminaCamera.swift */; };
 		53806FA61F672F780009A0E8 /* LuminaButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53806FA51F672F780009A0E8 /* LuminaButton.swift */; };
 		539848301EB8F14300F77AEA /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5398482F1EB8F14300F77AEA /* AVFoundation.framework */; };
-		53B2CE341FF80B5B008287E6 /* HeliumLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B2CE321FF80B5B008287E6 /* HeliumLogger.swift */; };
-		53B2CE351FF80B5B008287E6 /* HeliumStreamLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B2CE331FF80B5B008287E6 /* HeliumStreamLogger.swift */; };
-		53B2CE371FF80BA8008287E6 /* LoggerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B2CE361FF80BA8008287E6 /* LoggerAPI.swift */; };
 		53B828DA1EAAA07F00E3A624 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53B828D01EAAA07F00E3A624 /* Lumina.framework */; };
 		53B828DF1EAAA07F00E3A624 /* LuminaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828DE1EAAA07F00E3A624 /* LuminaTests.swift */; };
 		53B828E11EAAA07F00E3A624 /* Lumina.h in Headers */ = {isa = PBXBuildFile; fileRef = 53B828D31EAAA07F00E3A624 /* Lumina.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -43,6 +40,10 @@
 		53B9CCFB1EBF6C62008E4A43 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53B9CCFA1EBF6C62008E4A43 /* Media.xcassets */; };
 		53B9CCFD1EBFD22E008E4A43 /* LuminaTextPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B9CCFC1EBFD22E008E4A43 /* LuminaTextPromptView.swift */; };
 		53C06F7520BF0C8F00C03BA6 /* LuminaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C06F7420BF0C8F00C03BA6 /* LuminaModel.swift */; };
+		53F00D0C225F9D7C001D7534 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F00D09225F9D05001D7534 /* Logging.swift */; };
+		53F00D0D225F9D7C001D7534 /* LogHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F00D0A225F9D05001D7534 /* LogHandler.swift */; };
+		53F00D0E225F9D7C001D7534 /* Locks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F00D0B225F9D05001D7534 /* Locks.swift */; };
+		53F00D10225F9E30001D7534 /* LuminaLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53F00D0F225F9E30001D7534 /* LuminaLogger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,9 +84,6 @@
 		53806FA31F6618230009A0E8 /* LuminaCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaCamera.swift; sourceTree = "<group>"; };
 		53806FA51F672F780009A0E8 /* LuminaButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaButton.swift; sourceTree = "<group>"; };
 		5398482F1EB8F14300F77AEA /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		53B2CE321FF80B5B008287E6 /* HeliumLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeliumLogger.swift; sourceTree = "<group>"; };
-		53B2CE331FF80B5B008287E6 /* HeliumStreamLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeliumStreamLogger.swift; sourceTree = "<group>"; };
-		53B2CE361FF80BA8008287E6 /* LoggerAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerAPI.swift; sourceTree = "<group>"; };
 		53B828D01EAAA07F00E3A624 /* Lumina.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Lumina.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		53B828D31EAAA07F00E3A624 /* Lumina.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lumina.h; sourceTree = "<group>"; };
 		53B828D41EAAA07F00E3A624 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -96,6 +94,10 @@
 		53B9CCFA1EBF6C62008E4A43 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		53B9CCFC1EBFD22E008E4A43 /* LuminaTextPromptView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LuminaTextPromptView.swift; sourceTree = "<group>"; };
 		53C06F7420BF0C8F00C03BA6 /* LuminaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaModel.swift; sourceTree = "<group>"; };
+		53F00D09225F9D05001D7534 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
+		53F00D0A225F9D05001D7534 /* LogHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogHandler.swift; sourceTree = "<group>"; };
+		53F00D0B225F9D05001D7534 /* Locks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locks.swift; sourceTree = "<group>"; };
+		53F00D0F225F9E30001D7534 /* LuminaLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuminaLogger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,10 +184,11 @@
 		5373B3DD1FC3B7B600C197BD /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				53F00D08225F9D05001D7534 /* Logging */,
 				5305A0AA20A0DA630040A9A9 /* Fonts */,
-				53B2CE311FF80B4D008287E6 /* Logging */,
 				53B828D31EAAA07F00E3A624 /* Lumina.h */,
 				53B828D41EAAA07F00E3A624 /* Info.plist */,
+				53F00D0F225F9E30001D7534 /* LuminaLogger.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -217,16 +220,6 @@
 				5398482F1EB8F14300F77AEA /* AVFoundation.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		53B2CE311FF80B4D008287E6 /* Logging */ = {
-			isa = PBXGroup;
-			children = (
-				53B2CE321FF80B5B008287E6 /* HeliumLogger.swift */,
-				53B2CE331FF80B5B008287E6 /* HeliumStreamLogger.swift */,
-				53B2CE361FF80BA8008287E6 /* LoggerAPI.swift */,
-			);
-			path = Logging;
 			sourceTree = "<group>";
 		};
 		53B828C61EAAA07F00E3A624 = {
@@ -266,6 +259,16 @@
 				53B828E01EAAA07F00E3A624 /* Info.plist */,
 			);
 			path = LuminaTests;
+			sourceTree = "<group>";
+		};
+		53F00D08225F9D05001D7534 /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				53F00D09225F9D05001D7534 /* Logging.swift */,
+				53F00D0A225F9D05001D7534 /* LogHandler.swift */,
+				53F00D0B225F9D05001D7534 /* Locks.swift */,
+			);
+			path = Logging;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -404,15 +407,17 @@
 			files = (
 				5373B3DB1FC3B4A300C197BD /* CameraActionsExtension.swift in Sources */,
 				53806FA41F6618230009A0E8 /* LuminaCamera.swift in Sources */,
+				53F00D0E225F9D7C001D7534 /* Locks.swift in Sources */,
 				5373B3D31FC3B19700C197BD /* FocusHandlerExtension.swift in Sources */,
+				53F00D0C225F9D7C001D7534 /* Logging.swift in Sources */,
 				5373B3DF1FC3B8B600C197BD /* LuminaPhotoCapture.swift in Sources */,
 				53B8290F1EAAA24600E3A624 /* LuminaViewController.swift in Sources */,
 				5373B3C41FC386C600C197BD /* FileRecordingExtension.swift in Sources */,
 				5373B3EF1FC3D6CD00C197BD /* LuminaDelegate.swift in Sources */,
-				53B2CE341FF80B5B008287E6 /* HeliumLogger.swift in Sources */,
 				5373B3ED1FC3D65500C197BD /* LuminaCameraViewSettings.swift in Sources */,
 				5373B3EB1FC3D5D700C197BD /* InterfaceHandlerExtension.swift in Sources */,
 				5373B3E21FC3D47500C197BD /* ViewControllerFocusHandlerExtension.swift in Sources */,
+				53F00D10225F9E30001D7534 /* LuminaLogger.swift in Sources */,
 				53C06F7520BF0C8F00C03BA6 /* LuminaModel.swift in Sources */,
 				5373B3CB1FC3AFF900C197BD /* VideoDataOutputSampleBufferDelegateExtension.swift in Sources */,
 				53806FA61F672F780009A0E8 /* LuminaButton.swift in Sources */,
@@ -422,8 +427,8 @@
 				5373B3D71FC3B3F000C197BD /* CameraUtilExtension.swift in Sources */,
 				5332084E1F9A99CA008354F7 /* LuminaDeviceUtil.swift in Sources */,
 				5373B3D91FC3B47E00C197BD /* SessionConfigurationExtension.swift in Sources */,
-				53B2CE351FF80B5B008287E6 /* HeliumStreamLogger.swift in Sources */,
 				5373B3CD1FC3B07A00C197BD /* PhotoCaptureDelegateExtension.swift in Sources */,
+				53F00D0D225F9D7C001D7534 /* LogHandler.swift in Sources */,
 				5373B3CF1FC3B0DA00C197BD /* CapturePhotoExtension.swift in Sources */,
 				5373B3E71FC3D50300C197BD /* GestureRecognizerDelegateExtension.swift in Sources */,
 				5373B3C61FC387EE00C197BD /* DepthDataExtension.swift in Sources */,
@@ -431,7 +436,6 @@
 				5373B3D11FC3B14D00C197BD /* MetadataOutputDelegateExtension.swift in Sources */,
 				5373B3D51FC3B20200C197BD /* CaptureDeviceHandlerExtension.swift in Sources */,
 				5373B3E41FC3D4DB00C197BD /* ViewControllerButtonFunctions.swift in Sources */,
-				53B2CE371FF80BA8008287E6 /* LoggerAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

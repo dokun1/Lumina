@@ -29,7 +29,7 @@ class ViewController: UITableViewController {
     @IBOutlet weak var maxZoomScaleSlider: UISlider!
     
     var selectedResolution: CameraResolution = .high1920x1080
-    var selectedLoggingLevel: LoggerMessageType = .none
+    var selectedLoggingLevel: LuminaLoggerLevel = .none
     var depthView: UIImageView?
 }
 
@@ -170,7 +170,7 @@ extension ViewController: LuminaDelegate {
 }
 
 extension ViewController: LoggingLevelDelegate {
-    func didSelect(loggingLevel: LoggerMessageType, controller: LoggingViewController) {
+    func didSelect(loggingLevel: LuminaLoggerLevel, controller: LoggingViewController) {
         selectedLoggingLevel = loggingLevel
         self.navigationController?.popToViewController(self, animated: true)
     }

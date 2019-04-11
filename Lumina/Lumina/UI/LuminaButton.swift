@@ -162,13 +162,13 @@ extension LuminaButton {
         switch state {
         case .on:
             self.image = UIImage(named: "cameraTorchOn", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
-            Log.debug("torch icon updated to on")
+            LuminaLogger.debug(message: "torch icon updated to on")
         case .off:
             self.image = UIImage(named: "cameraTorchOff", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
-            Log.debug("torch icon updated to off")
+            LuminaLogger.debug(message: "torch icon updated to off")
         case .auto:
             self.image = UIImage(named: "cameraTorchAuto", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
-            Log.debug("torch icon updated to auto")
+            LuminaLogger.debug(message: "torch icon updated to auto")
         }
     }
 }
