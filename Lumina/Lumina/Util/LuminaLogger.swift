@@ -10,24 +10,24 @@ import Foundation
 
 public enum LuminaLoggerLevel: Int, CaseIterable {
     case none = 0
-    case info = 1
-    case notice = 2
-    case warning = 3
-    case critical = 4
-    case error = 5
-    case debug = 6
-    case trace = 7
+    case trace = 1
+    case debug = 2
+    case info = 3
+    case notice = 4
+    case warning = 5
+    case error = 6
+    case critical = 7
 
     public var description: String {
         switch self {
         case .none: return "NONE"
+        case .trace: return "TRACE"
+        case .debug: return "DEBUG"
         case .info: return "INFO"
         case .notice: return "NOTICE"
         case .warning: return "WARNING"
-        case .critical: return "CRITICAL"
         case .error: return "ERROR"
-        case .debug: return "DEBUG"
-        case .trace: return "TRACE"
+        case .critical: return "CRITICAL"
         }
     }
 }
@@ -37,44 +37,44 @@ internal class LuminaLogger {
     internal static var level: LuminaLoggerLevel = .none
 
     static func trace(message: String, metadata: Logger.Metadata? = nil) {
-        if level.rawValue >= 7 {
+        if level.rawValue >= 1 {
             logger.trace(Logger.Message(stringLiteral: message), metadata: metadata)
         }
     }
 
     static func debug(message: String, metadata: Logger.Metadata? = nil) {
-        if level.rawValue >= 6 {
+        if level.rawValue >= 2 {
             logger.debug(Logger.Message(stringLiteral: message), metadata: metadata)
         }
     }
 
     static func info(message: String, metadata: Logger.Metadata? = nil) {
-        if level.rawValue >= 1 {
+        if level.rawValue >= 3 {
             logger.info(Logger.Message(stringLiteral: message), metadata: metadata)
         }
     }
 
     static func notice(message: String, metadata: Logger.Metadata? = nil) {
-        if level.rawValue >= 2 {
+        if level.rawValue >= 4 {
             logger.notice(Logger.Message(stringLiteral: message), metadata: metadata)
         }
     }
 
     static func warning(message: String, metadata: Logger.Metadata? = nil) {
-        if level.rawValue >= 3 {
+        if level.rawValue >= 5 {
             logger.warning(Logger.Message(stringLiteral: message), metadata: metadata)
         }
     }
 
-    static func critical(message: String, metadata: Logger.Metadata? = nil) {
-        if level.rawValue >= 4 {
-            logger.critical(Logger.Message(stringLiteral: message), metadata: metadata)
+    static func error(message: String, metadata: Logger.Metadata? = nil) {
+        if level.rawValue >= 6 {
+            logger.error(Logger.Message(stringLiteral: message), metadata: metadata)
         }
     }
 
-    static func error(message: String, metadata: Logger.Metadata? = nil) {
-        if level.rawValue >= 5 {
-            logger.error(Logger.Message(stringLiteral: message), metadata: metadata)
+    static func critical(message: String, metadata: Logger.Metadata? = nil) {
+        if level.rawValue >= 7 {
+            logger.critical(Logger.Message(stringLiteral: message), metadata: metadata)
         }
     }
 }

@@ -120,7 +120,7 @@ let package = Package(
     name: "YOUR_PROJECT_NAME",
     targets: [],
     dependencies: [
-        .Package(url: "https://github.com/dokun1/Lumina.git", majorVersion: 0)
+        .Package(url: "https://github.com/dokun1/Lumina.git", majorVersion: 1)
     ]
 )
 ```
@@ -162,7 +162,7 @@ present(camera, animated: true, completion:nil)
 
 Lumina allows you to set a level of logging for actions happening within the module. The logger in use is [HeliumLogger](https://github.com/IBM-Swift/HeliumLogger), made by the [Swift@IBM](https://github.com/IBM-Swift) team. The deeper your level of logging, the more you'll see in your console.
 
-**NB**: While Lumina is licensed by the MIT license, [HeliumLogger](https://github.com/IBM-Swift/HeliumLogger) is licensed by [Apache 2.0](https://github.com/IBM-Swift/HeliumLogger/blob/master/LICENSE.txt). A copy of the license is also included in the source code.
+**NB**: While Lumina is licensed by the MIT license, [swift-log](https://github.com/apple/swift-log) is licensed by [Apache 2.0](https://github.com/apple/swift-log/blob/master/LICENSE.txt). A copy of the license is also included in the source code.
 
 To set a level of logging, set the static var on `LuminaViewController` like so:
 
@@ -173,13 +173,13 @@ LuminaViewController.loggingLevel = .verbose
 Levels read like so, from least to most logging:
 
 - NONE
-- ERROR
-- WARNING
 - INFO
-- VERBOSE
+- NOTICE
+- WARNING
+- CRITICAL
+- ERROR
 - DEBUG
-- EXIT
-- ENTRY
+- TRACE
 
 ### Functionality
 
