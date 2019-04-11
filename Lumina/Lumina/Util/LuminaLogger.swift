@@ -38,43 +38,43 @@ internal class LuminaLogger {
 
     static func trace(message: String, metadata: Logger.Metadata? = nil) {
         if level.rawValue >= 1 {
-            logger.trace(Logger.Message(stringLiteral: message), metadata: metadata)
+            logger.trace("\(message)", metadata: metadata)
         }
     }
 
     static func debug(message: String, metadata: Logger.Metadata? = nil) {
         if level.rawValue >= 2 {
-            logger.debug(Logger.Message(stringLiteral: message), metadata: metadata)
+            logger.debug("\(message)", metadata: metadata)
         }
     }
 
     static func info(message: String, metadata: Logger.Metadata? = nil) {
         if level.rawValue >= 3 {
-            logger.info(Logger.Message(stringLiteral: message), metadata: metadata)
+            logger.info("\(message)", metadata: metadata)
         }
     }
 
     static func notice(message: String, metadata: Logger.Metadata? = nil) {
         if level.rawValue >= 4 {
-            logger.notice(Logger.Message(stringLiteral: message), metadata: metadata)
+            logger.notice("\(message)", metadata: metadata)
         }
     }
 
     static func warning(message: String, metadata: Logger.Metadata? = nil) {
         if level.rawValue >= 5 {
-            logger.warning(Logger.Message(stringLiteral: message), metadata: metadata)
+            logger.warning("\(message)", metadata: metadata)
         }
     }
 
     static func error(message: String, metadata: Logger.Metadata? = nil) {
         if level.rawValue >= 6 {
-            logger.error(Logger.Message(stringLiteral: message), metadata: metadata)
+            logger.error("\(message)", metadata: metadata)
         }
     }
 
     static func critical(message: String, metadata: Logger.Metadata? = nil) {
         if level.rawValue >= 7 {
-            logger.critical(Logger.Message(stringLiteral: message), metadata: metadata)
+            logger.critical("\(message)", metadata: metadata)
         }
     }
 }
