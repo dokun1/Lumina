@@ -303,7 +303,7 @@ open class LuminaViewController: UIViewController {
     }
 
     /// Set this to apply a level of logging to Lumina, to track activity within the framework
-    public static var loggingLevel: LuminaLoggerLevel = .none {
+    public static var loggingLevel: Logger.Level = .critical {
         didSet {
             LuminaLogger.level = loggingLevel
         }
