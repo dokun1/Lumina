@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.5.0](https://github.com/dokun1/Lumina/tree/1.5.0) (2019-04-18)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.4.0...1.5.0)
+
+**Implemented enhancements:**
+
+- Using Apple's Swift standard logger [\#93](https://github.com/dokun1/Lumina/pull/93) ([dokun1](https://github.com/dokun1))
+
 ## [1.4.0](https://github.com/dokun1/Lumina/tree/1.4.0) (2019-04-05)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/1.3.2...1.4.0)
 
