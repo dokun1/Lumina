@@ -9,6 +9,6 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.ios.deployment_target = "11.0"
   s.source   = { :git => "https://github.com/dokun1/Lumina.git", :tag => s.version }
-  s.source_files = ["Lumina/Lumina/Camera/*.swift", "Lumina/Lumina/Camera/Extensions/*.swift", "Lumina/Lumina/Camera/Extensions/Delegates/*.swift", "Lumina/Lumina/Util/Logging/*.swift", "Lumina/Lumina/UI/*.swift", "Lumina/Lumina/UI/Extensions/*.swift", "Lumina/Lumina/UI/Extensions/Delegates/*.swift"]
+  s.source_files = ["Lumina/Lumina/Util/Logging/*.swift", "Lumina/Lumina/Util/LuminaLogger.swift", "Lumina/Lumina/Camera/*.swift", "Lumina/Lumina/Camera/Extensions/*.swift", "Lumina/Lumina/Camera/Extensions/Delegates/*.swift", "Lumina/Lumina/Util/Logging/*.swift", "Lumina/Lumina/UI/*.swift", "Lumina/Lumina/UI/Extensions/*.swift", "Lumina/Lumina/UI/Extensions/Delegates/*.swift"]
   s.resource = "Lumina/Lumina/UI/Media.xcassets"
 end

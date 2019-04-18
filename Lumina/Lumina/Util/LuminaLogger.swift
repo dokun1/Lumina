@@ -22,7 +22,7 @@ public extension Logger.Level {
     }
 }
 
-class LuminaLogger {
+internal class LuminaLogger {
     private static let logger = Logger(label: "com.okun.io.Lumina")
     internal static var level: Logger.Level = .critical
 
