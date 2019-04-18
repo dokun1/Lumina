@@ -37,7 +37,7 @@ extension LuminaCamera {
     func resetCameraToContinuousExposureAndFocus() {
         do {
             guard let input = self.videoInput else {
-                Log.error("Trying to focus, but cannot detect device input!")
+                LuminaLogger.error(message: "Trying to focus, but cannot detect device input!")
                 return
             }
             if input.device.isFocusModeSupported(.continuousAutoFocus) {
@@ -49,7 +49,7 @@ extension LuminaCamera {
                 input.device.unlockForConfiguration()
             }
         } catch {
-            Log.error("could not reset to continuous auto focus and exposure!!")
+            LuminaLogger.error(message: "could not reset to continuous auto focus and exposure!!")
         }
     }
 }

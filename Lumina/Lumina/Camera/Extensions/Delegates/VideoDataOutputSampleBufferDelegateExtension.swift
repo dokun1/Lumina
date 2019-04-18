@@ -16,13 +16,13 @@ extension LuminaCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         if #available(iOS 11.0, *) {
             if let modelPairs = self.streamingModels {
-                Log.verbose("valid CoreML models present - attempting to scan photo")
+                LuminaLogger.notice(message: "valid CoreML models present - attempting to scan photo")
                 if self.recognizer == nil {
                     let newRecognizer = LuminaObjectRecognizer(modelPairs: modelPairs)
                     self.recognizer = newRecognizer
                 }
                 guard let recognizer = self.recognizer as? LuminaObjectRecognizer else {
-                    Log.error("models loaded, but could not use object recognizer")
+                    LuminaLogger.error(message: "models loaded, but could not use object recognizer")
                     DispatchQueue.main.async {
                         self.delegate?.videoFrameCaptured(camera: self, frame: image)
                     }

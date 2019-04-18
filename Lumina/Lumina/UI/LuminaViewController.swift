@@ -12,6 +12,7 @@ import CoreML
 
 /// The main class that developers should interact with and instantiate when using Lumina
 open class LuminaViewController: UIViewController {
+    internal var logger = Logger(label: "com.okun.Lumina")
     var camera: LuminaCamera?
 
     private var _previewLayer: AVCaptureVideoPreviewLayer?
@@ -124,7 +125,7 @@ open class LuminaViewController: UIViewController {
     /// - Note: Responds live to being set at any time, and will update automatically
     open var position: CameraPosition = .back {
         didSet {
-            Log.verbose("Switching camera position to \(position.rawValue)")
+            LuminaLogger.notice(message: "Switching camera position to \(position.rawValue)")
             guard let camera = self.camera else {
                 return
             }
@@ -139,10 +140,10 @@ open class LuminaViewController: UIViewController {
     /// - Warning: This setting takes precedence over video data streaming - if this is turned on, frames cannot be streamed, nor can CoreML be used via Lumina's recognizer mechanism. 
     open var recordsVideo = false {
         didSet {
-            Log.verbose("Setting video recording mode to \(recordsVideo)")
+            LuminaLogger.notice(message: "Setting video recording mode to \(recordsVideo)")
             self.camera?.recordsVideo = recordsVideo
             if recordsVideo {
-                Log.warning("frames cannot be streamed, nor can CoreML be used via Lumina's recognizer mechanism")
+                LuminaLogger.warning(message: "frames cannot be streamed, nor can CoreML be used via Lumina's recognizer mechanism")
             }
         }
     }
@@ -154,7 +155,7 @@ open class LuminaViewController: UIViewController {
     /// - Warning: Will not do anything if delegate is not implemented
     open var streamFrames = false {
         didSet {
-            Log.verbose("Setting frame streaming mode to \(streamFrames)")
+            LuminaLogger.notice(message: "Setting frame streaming mode to \(streamFrames)")
             self.camera?.streamFrames = streamFrames
         }
     }
@@ -166,7 +167,7 @@ open class LuminaViewController: UIViewController {
     /// - Warning: Will not do anything if delegate is not implemented
     open var trackMetadata = false {
         didSet {
-            Log.verbose("Setting metadata tracking mode to \(trackMetadata)")
+            LuminaLogger.notice(message: "Setting metadata tracking mode to \(trackMetadata)")
             self.camera?.trackMetadata = trackMetadata
         }
     }
@@ -178,7 +179,7 @@ open class LuminaViewController: UIViewController {
     /// - Warning: If left empty, or unset, no view will be present, but view will be created if changed
     open var textPrompt = "" {
         didSet {
-            Log.verbose("Updating text prompt view to: \(textPrompt)")
+            LuminaLogger.notice(message: "Updating text prompt view to: \(textPrompt)")
             self.textPromptView.updateText(to: textPrompt)
         }
     }
@@ -188,7 +189,7 @@ open class LuminaViewController: UIViewController {
     /// - Note: Responds live to being set at any time, and will update automatically
     open var resolution: CameraResolution = .highest {
         didSet {
-            Log.verbose("Updating camera resolution to \(resolution.rawValue)")
+            LuminaLogger.notice(message: "Updating camera resolution to \(resolution.rawValue)")
             self.camera?.resolution = resolution
         }
     }
@@ -198,7 +199,7 @@ open class LuminaViewController: UIViewController {
     /// - Note: Responds live to being set at any time, and will update automatically
     open var frameRate: Int = 30 {
         didSet {
-            Log.verbose("Attempting to update camera frame rate to \(frameRate) FPS")
+            LuminaLogger.notice(message: "Attempting to update camera frame rate to \(frameRate) FPS")
             self.camera?.frameRate = frameRate
         }
     }
@@ -247,12 +248,12 @@ open class LuminaViewController: UIViewController {
                     properlyCastModels.append(model)
                 }
                 if properlyCastModels.count > 0 {
-                    Log.verbose("Valid models loaded - frame streaming mode defaulted to on")
+                    LuminaLogger.notice(message: "Valid models loaded - frame streaming mode defaulted to on")
                     self.streamFrames = true
                     self.camera?.streamingModels = properlyCastModels
                 }
             } else {
-                Log.error("Must be using iOS 11.0 or higher for CoreML")
+                LuminaLogger.error(message: "Must be using iOS 11.0 or higher for CoreML")
             }
         }
     }
@@ -262,7 +263,7 @@ open class LuminaViewController: UIViewController {
     /// - Note: Default value will rely on whatever the active device can handle, if this is not explicitly set
     open var maxZoomScale: Float = MAXFLOAT {
         didSet {
-            Log.verbose("Max zoom scale set to \(maxZoomScale)x")
+            LuminaLogger.notice(message: "Max zoom scale set to \(maxZoomScale)x")
             self.camera?.maxZoomScale = maxZoomScale
         }
     }
@@ -274,7 +275,7 @@ open class LuminaViewController: UIViewController {
     /// - Warning: If video recording is enabled, live photos will not work.
     open var captureLivePhotos: Bool = false {
         didSet {
-            Log.verbose("Attempting to set live photo capture mode to \(captureLivePhotos)")
+            LuminaLogger.notice(message: "Attempting to set live photo capture mode to \(captureLivePhotos)")
             self.camera?.captureLivePhotos = captureLivePhotos
         }
     }
@@ -285,7 +286,7 @@ open class LuminaViewController: UIViewController {
     /// - Note: Only works with .photo, .medium1280x720, and .vga640x480 resolutions
     open var captureDepthData: Bool = false {
         didSet {
-            Log.verbose("Attempting to set depth data capture mode to \(captureDepthData)")
+            LuminaLogger.notice(message: "Attempting to set depth data capture mode to \(captureDepthData)")
             self.camera?.captureDepthData = captureDepthData
         }
     }
@@ -296,15 +297,15 @@ open class LuminaViewController: UIViewController {
     /// - Note: Only works with .photo, .medium1280x720, and .vga640x480 resolutions
     open var streamDepthData: Bool = false {
         didSet {
-            Log.verbose("Attempting to set depth data streaming mode to \(streamDepthData)")
+            LuminaLogger.notice(message: "Attempting to set depth data streaming mode to \(streamDepthData)")
             self.camera?.streamDepthData = streamDepthData
         }
     }
 
     /// Set this to apply a level of logging to Lumina, to track activity within the framework
-    public static var loggingLevel: LoggerMessageType = .none {
+    public static var loggingLevel: Logger.Level = .critical {
         didSet {
-            HeliumLogger.use(loggingLevel)
+            LuminaLogger.level = loggingLevel
         }
     }
 
@@ -323,7 +324,7 @@ open class LuminaViewController: UIViewController {
         camera.delegate = self
         self.camera = camera
         if let version = LuminaViewController.getVersion() {
-            Log.info("Loading Lumina v\(version)")
+            LuminaLogger.info(message: "Loading Lumina v\(version)")
         }
     }
 
@@ -334,14 +335,14 @@ open class LuminaViewController: UIViewController {
         camera.delegate = self
         self.camera = camera
         if let version = LuminaViewController.getVersion() {
-            Log.info("Loading Lumina v\(version)")
+            LuminaLogger.info(message: "Loading Lumina v\(version)")
         }
     }
 
     /// override with caution
     open override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        Log.error("Camera framework is overloading on memory")
+        LuminaLogger.error(message: "Camera framework is overloading on memory")
     }
 
     /// override with caution

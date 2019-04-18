@@ -14,11 +14,11 @@ extension LuminaCamera {
         self.sessionQueue.suspend()
         AVCaptureDevice.requestAccess(for: .video) { success in
             if success {
-                Log.verbose("successfully enabled video permissions")
+                LuminaLogger.notice(message: "successfully enabled video permissions")
                 self.sessionQueue.resume()
                 self.delegate?.cameraSetupCompleted(camera: self, result: .requiresUpdate)
             } else {
-                Log.warning("video permissions were not allowed - video feed will not show")
+                LuminaLogger.warning(message: "video permissions were not allowed - video feed will not show")
                 self.delegate?.cameraSetupCompleted(camera: self, result: .videoPermissionDenied)
             }
         }
@@ -28,11 +28,11 @@ extension LuminaCamera {
         self.sessionQueue.suspend()
         AVCaptureDevice.requestAccess(for: AVMediaType.audio) { success in
             if success {
-                Log.verbose("successfully enabled audio permissions")
+                LuminaLogger.notice(message: "successfully enabled audio permissions")
                 self.sessionQueue.resume()
                 self.delegate?.cameraSetupCompleted(camera: self, result: .requiresUpdate)
             } else {
-                Log.warning("audio permissions were not allowed - audio feed will not be present")
+                LuminaLogger.warning(message: "audio permissions were not allowed - audio feed will not be present")
                 self.delegate?.cameraSetupCompleted(camera: self, result: .audioPermissionDenied)
             }
         }
@@ -52,7 +52,7 @@ extension LuminaCamera {
     }
 
     func restartVideo() {
-        Log.verbose("restarting video feed")
+        LuminaLogger.notice(message: "restarting video feed")
         if self.session.isRunning {
             self.stop()
             updateVideo({ result in
@@ -121,13 +121,13 @@ extension LuminaCamera {
         self.videoInput = videoInput
         self.session.addInput(videoInput)
         if self.streamFrames {
-            Log.verbose("adding video data output to session")
+            LuminaLogger.notice(message: "adding video data output to session")
             self.session.addOutput(self.videoDataOutput)
         }
         self.session.addOutput(self.photoOutput)
         self.session.commitConfiguration()
         if self.session.canSetSessionPreset(self.resolution.foundationPreset()) {
-            Log.verbose("creating video session with resolution: \(self.resolution.rawValue)")
+            LuminaLogger.notice(message: "creating video session with resolution: \(self.resolution.rawValue)")
             self.session.sessionPreset = self.resolution.foundationPreset()
         }
         configureVideoRecordingOutput(for: self.session)
@@ -141,30 +141,30 @@ extension LuminaCamera {
 
     private func checkSessionValidity(for input: AVCaptureDeviceInput) -> CameraSetupResult? {
         guard self.session.canAddInput(input) else {
-            Log.error("cannot add video input")
+            LuminaLogger.error(message: "cannot add video input")
             return .invalidVideoInput
         }
         guard self.session.canAddOutput(self.videoDataOutput) else {
-            Log.error("cannot add video data output")
+            LuminaLogger.error(message: "cannot add video data output")
             return .invalidVideoDataOutput
         }
         guard self.session.canAddOutput(self.photoOutput) else {
-            Log.error("cannot add photo output")
+            LuminaLogger.error(message: "cannot add photo output")
             return .invalidPhotoOutput
         }
         guard self.session.canAddOutput(self.metadataOutput) else {
-            Log.error("cannot add video metadata output")
+            LuminaLogger.error(message: "cannot add video metadata output")
             return .invalidVideoMetadataOutput
         }
         if self.recordsVideo == true {
             guard self.session.canAddOutput(self.videoFileOutput) else {
-                Log.error("cannot add video file output for recording video")
+                LuminaLogger.error(message: "cannot add video file output for recording video")
                 return .invalidVideoFileOutput
             }
         }
         if #available(iOS 11.0, *), let depthDataOutput = self.depthDataOutput {
             guard self.session.canAddOutput(depthDataOutput) else {
-                Log.error("cannot add depth data output with this settings map")
+                LuminaLogger.error(message: "cannot add depth data output with this settings map")
                 return .invalidDepthDataOutput
             }
         }
@@ -174,7 +174,7 @@ extension LuminaCamera {
     private func configureVideoRecordingOutput(for session: AVCaptureSession) {
         if self.recordsVideo {
             // adding this invalidates the video data output
-            Log.verbose("adding video file output")
+            LuminaLogger.notice(message: "adding video file output")
             self.session.addOutput(self.videoFileOutput)
             if let connection = self.videoFileOutput.connection(with: .video) {
                 if connection.isVideoStabilizationSupported {
@@ -186,27 +186,27 @@ extension LuminaCamera {
 
     private func configureHiResPhotoOutput(for session: AVCaptureSession) {
         if self.captureHighResolutionImages && self.photoOutput.isHighResolutionCaptureEnabled {
-            Log.verbose("enabling high resolution photo capture")
+            LuminaLogger.notice(message: "enabling high resolution photo capture")
             self.photoOutput.isHighResolutionCaptureEnabled = true
         } else if self.captureHighResolutionImages {
-            Log.error("cannot capture high resolution images with current settings")
+            LuminaLogger.error(message: "cannot capture high resolution images with current settings")
             self.captureHighResolutionImages = false
         }
     }
 
     private func configureLivePhotoOutput(for session: AVCaptureSession) {
         if self.captureLivePhotos && self.photoOutput.isLivePhotoCaptureSupported {
-            Log.verbose("enabling live photo capture")
+            LuminaLogger.notice(message: "enabling live photo capture")
             self.photoOutput.isLivePhotoCaptureEnabled = true
         } else if self.captureLivePhotos {
-            Log.error("cannot capture live photos with current settings")
+            LuminaLogger.error(message: "cannot capture live photos with current settings")
             self.captureLivePhotos = false
         }
     }
 
     private func configureMetadataOutput(for session: AVCaptureSession) {
         if self.trackMetadata {
-            Log.verbose("adding video metadata output")
+            LuminaLogger.notice(message: "adding video metadata output")
             session.addOutput(self.metadataOutput)
             self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
         }
@@ -215,19 +215,19 @@ extension LuminaCamera {
     private func configureDepthDataOutput(for session: AVCaptureSession) {
         if #available(iOS 11.0, *) {
             if self.captureDepthData && self.photoOutput.isDepthDataDeliverySupported {
-                Log.verbose("enabling depth data delivery")
+                LuminaLogger.notice(message: "enabling depth data delivery")
                 self.photoOutput.isDepthDataDeliveryEnabled = true
             } else if self.captureDepthData {
-                Log.error("cannot capture depth data with these settings")
+                LuminaLogger.error(message: "cannot capture depth data with these settings")
                 self.captureDepthData = false
             }
         } else {
-            Log.error("cannot capture depth data - must use iOS 11.0 or higher")
+            LuminaLogger.error(message: "cannot capture depth data - must use iOS 11.0 or higher")
             self.captureDepthData = false
         }
         if #available(iOS 11.0, *) {
             if self.streamDepthData, let depthDataOutput = self.depthDataOutput {
-                Log.verbose("adding streaming depth data output to capture session")
+                LuminaLogger.notice(message: "adding streaming depth data output to capture session")
                 session.addOutput(depthDataOutput)
                 session.commitConfiguration()
             }

@@ -10,6 +10,9 @@
 build/
 DerivedData/
 
+## Git Submodules
+swift-log/
+
 ## Various settings
 *.pbxuser
 !default.pbxuser

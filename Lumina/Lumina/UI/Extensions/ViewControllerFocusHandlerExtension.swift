@@ -20,7 +20,7 @@ extension LuminaViewController {
         guard let camera = self.camera else {
             return
         }
-        Log.verbose("Attempting focus at (\(focusX), \(focusY))")
+        LuminaLogger.notice(message: "Attempting focus at (\(focusX), \(focusY))")
         camera.handleFocus(at: CGPoint(x: focusX, y: focusY))
         showFocusView(at: point)
         let deadlineTime = DispatchTime.now() + .seconds(1)

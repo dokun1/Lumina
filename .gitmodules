@@ -1,0 +1,4 @@
+[submodule "swift-log"]
+	path = swift-log
+	url = https://github.com/apple/swift-log.git
+	branch = master

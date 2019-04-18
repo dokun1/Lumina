@@ -11,7 +11,7 @@ import AVFoundation
 
 extension LuminaCamera: AVCaptureMetadataOutputObjectsDelegate {
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-        Log.verbose("metadata detected - \(metadataObjects)")
+        LuminaLogger.notice(message: "metadata detected - \(metadataObjects)")
         guard case self.trackMetadata = true else {
             return
         }
