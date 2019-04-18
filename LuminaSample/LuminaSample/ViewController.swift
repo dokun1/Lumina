@@ -37,8 +37,7 @@ extension ViewController { //MARK: IBActions
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.resolutionLabel.text = selectedResolution.rawValue
-        self.loggingLevelLabel.text = selectedLoggingLevel.rawValue
+        self.loggingLevelLabel.text = selectedLoggingLevel.uppercasedStringRepresentation
         if let version = LuminaViewController.getVersion() {
             self.title = "Lumina Sample v\(version)"
         } else {

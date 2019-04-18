@@ -8,6 +8,20 @@
 
 import Foundation
 
+public extension Logger.Level {
+    var uppercasedStringRepresentation: String {
+        switch self {
+        case .trace: return "TRACE"
+        case .debug: return "DEBUG"
+        case .info: return "INFO"
+        case .notice: return "NOTICE"
+        case .warning: return "WARNING"
+        case .error: return "ERROR"
+        case .critical: return "CRITICAL"
+        }
+    }
+}
+
 internal class LuminaLogger {
     private static let logger = Logger(label: "com.okun.io.Lumina")
     internal static var level: Logger.Level = .critical

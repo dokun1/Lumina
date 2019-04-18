@@ -31,7 +31,7 @@ class LoggingViewController: UITableViewController {
         guard let textLabel = cell.textLabel else {
             return cell
         }
-        textLabel.text = Logger.Level.allCases[indexPath.row].description
+        textLabel.text = Logger.Level.allCases[indexPath.row].uppercasedStringRepresentation
         return cell
     }
     
