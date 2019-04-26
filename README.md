@@ -160,7 +160,7 @@ present(camera, animated: true, completion:nil)
 
 ### Logging
 
-Lumina allows you to set a level of logging for actions happening within the module. The logger in use is [HeliumLogger](https://github.com/IBM-Swift/HeliumLogger), made by the [Swift@IBM](https://github.com/IBM-Swift) team. The deeper your level of logging, the more you'll see in your console.
+Lumina allows you to set a level of logging for actions happening within the module. The logger in use is [swift-log](https://github.com/apple/swift-log), made by the [Swift Server Working Group](https://github.com/swift-server) team. The deeper your level of logging, the more you'll see in your console.
 
 **NB**: While Lumina is licensed by the MIT license, [swift-log](https://github.com/apple/swift-log) is licensed by [Apache 2.0](https://github.com/apple/swift-log/blob/master/LICENSE.txt). A copy of the license is also included in the source code.
 
