@@ -18,7 +18,7 @@ extension LuminaCamera: AVCaptureVideoDataOutputSampleBufferDelegate {
             if let modelPairs = self.streamingModels {
                 LuminaLogger.notice(message: "valid CoreML models present - attempting to scan photo")
                 if self.recognizer == nil {
-                    let newRecognizer = LuminaObjectRecognizer(modelPairs: modelPairs)
+                    let newRecognizer = LuminaObjectRecognizer(modelPairs: modelPairs, detectionPairs: self.detectionModels)
                     self.recognizer = newRecognizer
                 }
                 guard let recognizer = self.recognizer as? LuminaObjectRecognizer else {

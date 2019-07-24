@@ -197,6 +197,16 @@ final class LuminaCamera: NSObject {
             }
         }
     }
+    
+    private var _detectionModels: [MLModel]?
+    var detectionModels: [MLModel]? {
+        get {
+            return _detectionModels
+        }
+        set {
+            _detectionModels = newValue
+        }
+    }
 
     var session = AVCaptureSession()
 

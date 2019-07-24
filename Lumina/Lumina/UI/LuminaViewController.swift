@@ -257,6 +257,12 @@ open class LuminaViewController: UIViewController {
             }
         }
     }
+  
+    open var detectionModels: [MLModel]? {
+        didSet {
+            
+        }
+    }
 
     /// The maximum amount of zoom that Lumina can use
     ///

@@ -31,10 +31,18 @@ public struct LuminaRecognitionResult {
 @available(iOS 11.0, *)
 final class LuminaObjectRecognizer: NSObject {
     private var modelPairs: [LuminaModel]
+    private var detectionPairs: [MLModel]?
 
-    init(modelPairs: [LuminaModel]) {
+    init(modelPairs: [LuminaModel], detectionPairs: [MLModel]?) {
         LuminaLogger.notice(message: "initializing object recognizer", metadata: ["Model Count": "\(modelPairs.count)"])
+        self.detectionPairs = detectionPairs
         self.modelPairs = modelPairs
+    }
+    
+    func detect(from image: UIImage, completion: @escaping () -> Void) {
+        
+        //let provider: MLFeatureProvider = MLFeatureProvider()
+        //self.detectionPairs?.first?.prediction(from: <#T##MLFeatureProvider#>)
     }
 
     func recognize(from image: UIImage, completion: @escaping ([LuminaRecognitionResult]?) -> Void) {
