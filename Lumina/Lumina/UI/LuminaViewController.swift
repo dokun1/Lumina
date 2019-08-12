@@ -14,6 +14,14 @@ import CoreML
 open class LuminaViewController: UIViewController {
     internal var logger = Logger(label: "com.okun.Lumina")
     var camera: LuminaCamera?
+    public var torchState: TorchState {
+        get {
+            return camera?.torchState ?? .off
+        }
+        set(newValue) {
+            camera?.torchState = newValue
+        }
+    }
 
     private var _previewLayer: AVCaptureVideoPreviewLayer?
     var previewLayer: AVCaptureVideoPreviewLayer {
@@ -309,7 +317,7 @@ open class LuminaViewController: UIViewController {
         }
     }
 
-    var currentZoomScale: Float = 1.0 {
+    public var currentZoomScale: Float = 1.0 {
         didSet {
             self.camera?.currentZoomScale = currentZoomScale
         }
