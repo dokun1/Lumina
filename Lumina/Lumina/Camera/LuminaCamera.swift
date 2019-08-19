@@ -45,15 +45,15 @@ enum CameraSetupResult: String {
     case audioSuccess = "Audio Setup Success"
 }
 
+public enum TorchState {
+    //swiftlint:disable identifier_name
+    case on(intensity: Float)
+    case off
+    case auto
+}
+
 final class LuminaCamera: NSObject {
     weak var delegate: LuminaCameraDelegate?
-
-    enum TorchState {
-        //swiftlint:disable identifier_name
-        case on(intensity: Float)
-        case off
-        case auto
-    }
 
     var torchState: TorchState = .off {
         didSet {

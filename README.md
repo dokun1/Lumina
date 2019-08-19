@@ -324,6 +324,61 @@ camera.setTorchButton(visible: Bool)
 
 Per default, all of the buttons are visible.
 
+### Adding your own controls outside the camera view
+
+For some UI designs, apps may want to embed `LuminaViewController` within a custom View Controler, adding controls adjacent to the camera view rather than putting all the controls inside the camera view. 
+
+Here is a code snippet that demonstrates adding a torch buttons and controlling the camera zoom level via the externally accessible API:
+```
+class MyCustomViewController: UIViewController {
+    @IBOutlet weak var flashButton: UIButton!
+    @IBOutlet weak var zoomButton: UIButton!
+    var luminaVC: LuminaViewController? //set in prepare(for segue:) via the embed segue in the storyboard
+    var flashState = false
+    var zoomLevel:Float = 2.0
+    let flashOnImage = UIImage(named: "Flash_On") #assumes an image with this name is in your Assets Library
+    let flashOffImage = UIImage(named: "Flash_Off") #assumes an image with this name is in your Assets Library
+
+    override public func viewDidLoad() {
+        super.viewDidLoad()
+
+        luminaVC?.delegate = self
+        luminaVC?.trackMetadata = true
+        luminaVC?.position = .back
+        luminaVC?.setTorchButton(visible: false)
+        luminaVC?.setCancelButton(visible: false)
+        luminaVC?.setSwitchButton(visible: false)
+        luminaVC?.setShutterButton(visible: false)
+        luminaVC?.camera?.torchState = flashState ? .on(intensity: 1.0) : .off
+        luminaVC?.currentZoomScale = zoomLevel
+    }
+
+    override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if segue.identifier == "Lumina" { #name this segue in storyboard
+            self.luminaVC = segue.destination as? LuminaViewController
+        }
+    }
+
+    @IBAction func flashTapped(_ sender: Any) {
+        flashState = !flashState
+        luminaVC?.camera?.torchState = flashState ? .on(intensity: 1.0) : .off
+        let image = flashState ? flashOnImage : flashOffImage
+        flashButton.setImage(image, for: .normal)
+    }
+
+    @IBAction func zoomTapped(_ sender: Any) {
+        if zoomLevel == 1.0 {
+            zoomLevel = 2.0
+            zoomButton.setTitle("2x", for: .normal)
+        } else {
+            zoomLevel = 1.0
+            zoomButton.setTitle("1x", for: .normal)
+        }
+        luminaVC?.currentZoomScale = zoomLevel
+    }
+
+```
+
 ## Maintainers
 
 - David Okun [![Twitter Follow](https://img.shields.io/twitter/follow/dokun24.svg?style=social&label=Follow)](https://twitter.com/dokun24) [![GitHub followers](https://img.shields.io/github/followers/dokun1.svg?style=social&label=Follow)](https://github.com/dokun1) 
