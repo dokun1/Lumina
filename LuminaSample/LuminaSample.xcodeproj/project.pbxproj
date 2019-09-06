@@ -17,8 +17,6 @@
 		53B828FC1EAAA09000E3A624 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FA1EAAA09000E3A624 /* Main.storyboard */; };
 		53B828FE1EAAA09000E3A624 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FD1EAAA09000E3A624 /* Assets.xcassets */; };
 		53B829011EAAA09000E3A624 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53B828FF1EAAA09000E3A624 /* LaunchScreen.storyboard */; };
-		78FC9B5C20550387005F8D5B /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78FC9B5B20550387005F8D5B /* Lumina.framework */; };
-		78FC9B5D20550387005F8D5B /* Lumina.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 78FC9B5B20550387005F8D5B /* Lumina.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,7 +26,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				78FC9B5D20550387005F8D5B /* Lumina.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -49,7 +46,6 @@
 		53B828FD1EAAA09000E3A624 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		53B829001EAAA09000E3A624 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		53B829021EAAA09000E3A624 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		78FC9B5B20550387005F8D5B /* Lumina.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Lumina.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +53,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				78FC9B5C20550387005F8D5B /* Lumina.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,7 +62,6 @@
 		53B828EA1EAAA09000E3A624 = {
 			isa = PBXGroup;
 			children = (
-				78FC9B5B20550387005F8D5B /* Lumina.framework */,
 				53B828F51EAAA09000E3A624 /* LuminaSample */,
 				53B829081EAAA16D00E3A624 /* Frameworks */,
 				53B828F41EAAA09000E3A624 /* Products */,
