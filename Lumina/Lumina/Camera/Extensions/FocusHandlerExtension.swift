@@ -18,7 +18,7 @@ extension LuminaCamera {
             do {
                 if input.device.isFocusModeSupported(.autoFocus) && input.device.isFocusPointOfInterestSupported {
                     try input.device.lockForConfiguration()
-                    input.device.focusMode = .autoFocus
+                    input.device.focusMode = .continuousAutoFocus
                     input.device.focusPointOfInterest = CGPoint(x: focusPoint.x, y: focusPoint.y)
                     if input.device.isExposureModeSupported(.autoExpose) && input.device.isExposurePointOfInterestSupported {
                         input.device.exposureMode = .autoExpose
