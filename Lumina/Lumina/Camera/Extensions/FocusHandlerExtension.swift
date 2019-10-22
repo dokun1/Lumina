@@ -42,7 +42,7 @@ extension LuminaCamera {
             }
             if input.device.isFocusModeSupported(.continuousAutoFocus) {
                 try input.device.lockForConfiguration()
-                input.device.focusMode = .autoFocus
+                input.device.focusMode = .continuousAutoFocus
                 if input.device.isExposureModeSupported(.continuousAutoExposure) {
                     input.device.exposureMode = .continuousAutoExposure
                 }
