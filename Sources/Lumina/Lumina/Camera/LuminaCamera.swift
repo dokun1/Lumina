@@ -211,6 +211,9 @@ final class LuminaCamera: NSObject {
         if #available(iOS 11.1, *), self.captureDepthData == true {
             deviceTypes.append(.builtInTrueDepthCamera)
         }
+        if #available(iOS 13.0, *), self.captureDepthData == true {
+          deviceTypes.append(.builtInUltraWideCamera)
+        }
         #endif
         return AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
     }

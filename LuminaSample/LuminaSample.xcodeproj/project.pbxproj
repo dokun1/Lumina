@@ -11,6 +11,7 @@
 		5365BFD41F79829800B8F338 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD31F79829800B8F338 /* ImageViewController.swift */; };
 		5365BFDA1F79AAA800B8F338 /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */; };
 		5373B3F11FC61BBF00C197BD /* SqueezeNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 5373B3F01FC61BBF00C197BD /* SqueezeNet.mlmodel */; };
+		53A0BB6523B847C100A50DD2 /* Lumina.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53A0BB6423B847C000A50DD2 /* Lumina.framework */; };
 		53B2CE391FF81302008287E6 /* LoggingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B2CE381FF81302008287E6 /* LoggingViewController.swift */; };
 		53B828F71EAAA09000E3A624 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828F61EAAA09000E3A624 /* AppDelegate.swift */; };
 		53B828F91EAAA09000E3A624 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B828F81EAAA09000E3A624 /* ViewController.swift */; };
@@ -37,7 +38,7 @@
 		5365BFD31F79829800B8F338 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = MobileNet.mlmodel; path = LuminaSample/MobileNet.mlmodel; sourceTree = "<group>"; };
 		5373B3F01FC61BBF00C197BD /* SqueezeNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = SqueezeNet.mlmodel; path = LuminaSample/SqueezeNet.mlmodel; sourceTree = "<group>"; };
-		53B2CE261FF5D434008287E6 /* Lumina.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lumina.framework; path = "../../../Library/Developer/Xcode/DerivedData/Lumina-ayddllynafnebvdypcqglyhzrbnw/Build/Products/Debug-iphoneos/Lumina.framework"; sourceTree = "<group>"; };
+		53A0BB6423B847C000A50DD2 /* Lumina.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lumina.framework; path = "../../../Library/Developer/Xcode/DerivedData/Lumina-ayddllynafnebvdypcqglyhzrbnw/Build/Products/Debug-iphonesimulator/Lumina.framework"; sourceTree = "<group>"; };
 		53B2CE381FF81302008287E6 /* LoggingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingViewController.swift; sourceTree = "<group>"; };
 		53B828F31EAAA09000E3A624 /* LuminaSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LuminaSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53B828F61EAAA09000E3A624 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -53,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53A0BB6523B847C100A50DD2 /* Lumina.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,7 +97,7 @@
 		53B829081EAAA16D00E3A624 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				53B2CE261FF5D434008287E6 /* Lumina.framework */,
+				53A0BB6423B847C000A50DD2 /* Lumina.framework */,
 				5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */,
 				5373B3F01FC61BBF00C197BD /* SqueezeNet.mlmodel */,
 			);
@@ -326,7 +328,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = RQ632LL2X3;
 				INFOPLIST_FILE = LuminaSample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.okun.io.LuminaSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -340,7 +342,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = RQ632LL2X3;
 				INFOPLIST_FILE = LuminaSample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.okun.io.LuminaSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";

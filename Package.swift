@@ -7,7 +7,7 @@ let package = Package(
     .iOS(.v12)
   ],
   products: [
-    .library(name: "Lumina", targets: ["Lumina"])
+    .library(name: "Lumina", type: .dynamic, targets: ["Lumina"])
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0")

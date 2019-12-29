@@ -10,6 +10,7 @@ import UIKit
 import Lumina
 import CoreML
 import AVKit
+import Logging
 
 class ViewController: UITableViewController {
     @IBOutlet weak var frontCameraSwitch: UISwitch!

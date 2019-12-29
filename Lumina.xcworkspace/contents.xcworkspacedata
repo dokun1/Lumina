@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Lumina.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:LuminaSample/LuminaSample.xcodeproj">
    </FileRef>
 </Workspace>
