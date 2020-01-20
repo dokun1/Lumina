@@ -167,17 +167,16 @@ Lumina allows you to set a level of logging for actions happening within the mod
 To set a level of logging, set the static var on `LuminaViewController` like so:
 
 ```swift
-LuminaViewController.loggingLevel = .verbose
+LuminaViewController.loggingLevel = .notice
 ```
 
 Levels read like so, from least to most logging:
 
-- NONE
-- INFO
-- NOTICE
-- WARNING
 - CRITICAL
 - ERROR
+- WARNING
+- NOTICE
+- INFO
 - DEBUG
 - TRACE
 
