@@ -68,7 +68,7 @@ internal class LuminaLogger {
         }
     }
 
-    static func wouldLog(level thisLoglevel : Logger.Level) -> Bool {
+    static func wouldLog(level thisLoglevel: Logger.Level) -> Bool {
         return level <= thisLoglevel
     }
 }

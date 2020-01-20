@@ -54,5 +54,5 @@ class LuminaTests: XCTestCase {
         XCTAssertFalse(LuminaLogger.wouldLog(level: .debug))
         XCTAssertFalse(LuminaLogger.wouldLog(level: .trace))
     }
-    
+
 }
