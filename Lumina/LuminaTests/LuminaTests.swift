@@ -33,4 +33,26 @@ class LuminaTests: XCTestCase {
         }
     }
 
+    func testLogging() {
+        // Logging should happen at the specified level and at *higher* levels
+        // e.g. if level is set to error, critical and error should be logged, but not warning, notice, etc.
+        LuminaLogger.level = .error
+        XCTAssertTrue(LuminaLogger.wouldLog(level: .critical))
+        XCTAssertTrue(LuminaLogger.wouldLog(level: .error))
+        XCTAssertFalse(LuminaLogger.wouldLog(level: .warning))
+        XCTAssertFalse(LuminaLogger.wouldLog(level: .notice))
+        XCTAssertFalse(LuminaLogger.wouldLog(level: .info))
+        XCTAssertFalse(LuminaLogger.wouldLog(level: .debug))
+        XCTAssertFalse(LuminaLogger.wouldLog(level: .trace))
+
+        LuminaLogger.level = .info
+        XCTAssertTrue(LuminaLogger.wouldLog(level: .critical))
+        XCTAssertTrue(LuminaLogger.wouldLog(level: .error))
+        XCTAssertTrue(LuminaLogger.wouldLog(level: .warning))
+        XCTAssertTrue(LuminaLogger.wouldLog(level: .notice))
+        XCTAssertTrue(LuminaLogger.wouldLog(level: .info))
+        XCTAssertFalse(LuminaLogger.wouldLog(level: .debug))
+        XCTAssertFalse(LuminaLogger.wouldLog(level: .trace))
+    }
+
 }
