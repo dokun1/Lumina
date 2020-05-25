@@ -8,8 +8,8 @@
 import Foundation
 import AVFoundation
 
-extension Lumina.Camera {
-  public enum Position: String {
+extension Lumina {
+  public enum CameraPosition: String {
     case front
     case back
   }

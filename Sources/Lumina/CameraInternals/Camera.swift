@@ -12,7 +12,7 @@ extension Lumina {
   class Camera {
     var session = AVCaptureSession()
     var currentCaptureDevice: AVCaptureDevice?
-    var position: Lumina.Camera.Position = .back
+    var position: Lumina.CameraPosition = .back
     
     init() {}
     
