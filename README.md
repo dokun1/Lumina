@@ -1,20 +1,11 @@
 <p align="center">
-	<img src="./Assets/luminaLogo.jpg">
+	<img src="./Assets/luminaLogo.png">
 </p>
 
 <p align="center">
     <a href="https://api.travis-ci.org/dokun1/Lumina.svg?branch=master">
         <img src="https://api.travis-ci.org/dokun1/Lumina.svg?branch=master" alt="Travis CI Status">
     </a>
-	<a href="https://cocoapods.org/pods/Lumina">
-		<img src="https://img.shields.io/cocoapods/v/Lumina.svg" alt="Pods Version">
-	</a>
-	<a href="https://github.com/Carthage/Carthage">
-		<img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage Compatible">
-	</a>
-	<a href="https://swift.org/package-manager/">
-		<img src="https://img.shields.io/badge/SwiftPM-futureReady-FC3324.svg?style=flat" alt="Swift PM Compatible">
-	</a>
 	<a href="https://choosealicense.com/licenses/mit/">
 		<img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License">
 	</a>
@@ -68,9 +59,9 @@ Lumina can:
 
 ## Requirements
 
-- Xcode 10.0+ (by loading Swift 4 Toolchain)
-- iOS 11.0
-- Swift 5.0
+- Xcode 12.0+ (by loading Swift 4 Toolchain)
+- iOS 13.0
+- Swift 5.2
 
 ## Background
 
@@ -86,50 +77,7 @@ Small note: If editing the README, please conform to the [standard-readme](https
 
 ## Install
 
-### CocoaPods
-
-You can use [CocoaPods](https://cocoapods.org) to install `Lumina` by adding it to your `Podfile`:
-
-```ruby
-platform :ios, '12.0'
-use_frameworks!
-
-target 'MyApp' do
-    pod 'Lumina'
-end
-```
-
-### Carthage
-
-You can use [Carthage](https://github.com/Carthage/Carthage) to install `Lumina` by adding it to your `Cartfile`:
-
-```bash
-github "dokun1/Lumina"
-```
-
-### Swift Package Manager
-
-#### NB: Lumina does not currently build with Swift Package Manager due to a lack of support for frameworks that require UIKit. Nonetheless, as SPM evolves, Lumina will be ready to support it!
-
-You can use [Swift Package Manager](https://swift.org/package-manager/) to install `Lumina` by adding the proper description to your `Package.swift` file:
-
-```swift
-import PackageDescription
-
-let package = Package(
-    name: "YOUR_PROJECT_NAME",
-    targets: [],
-    dependencies: [
-        .Package(url: "https://github.com/dokun1/Lumina.git", majorVersion: 1)
-    ]
-)
-```
-
-**NB**: As the Swift Package Manager continues to grow, please view its documentation [here](https://swift.org/package-manager/#example-usage).
-
-### Manually
-
-Clone or download this repository, and use the provided workspace to build a version of the library for your own use in any application.
+Lumina fully supports Swift Package Manager. You can either add the repo url in your Xcode project or in your Package.swift file under dependencies.
 
 ## Usage
 
