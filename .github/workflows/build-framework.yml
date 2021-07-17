@@ -6,7 +6,9 @@ jobs:
     runs-on: macos-10.15
     name: "Run Danger"
     steps:
+      - name: Import Actions
         uses: actions/checkout@master
+        
       - name: Danger
         uses: danger/swift@3.3.0
         with:
