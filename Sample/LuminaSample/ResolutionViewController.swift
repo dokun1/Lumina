@@ -15,17 +15,17 @@ protocol ResolutionDelegate: class {
 
 class ResolutionViewController: UITableViewController {
   weak var delegate: ResolutionDelegate?
-  
+
   // MARK: - Table view data source
-  
+
   override func numberOfSections(in tableView: UITableView) -> Int {
     return 1
   }
-  
+
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     CameraResolution.allCases.count
   }
-  
+
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
     guard let textLabel = cell.textLabel else {
@@ -34,7 +34,7 @@ class ResolutionViewController: UITableViewController {
     textLabel.text = CameraResolution.allCases[indexPath.row].rawValue
     return cell
   }
-  
+
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let selectedResolution = CameraResolution.allCases[indexPath.row]
     delegate?.didSelect(resolution: selectedResolution, controller: self)

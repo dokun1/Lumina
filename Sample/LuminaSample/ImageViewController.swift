@@ -11,20 +11,20 @@ import AVKit
 import Lumina
 
 class ImageViewController: UIViewController, UIScrollViewDelegate {
-  
+
   let doubleTap = UITapGestureRecognizer()
-  
+
   @IBOutlet public weak var imageView: UIImageView!
   @IBOutlet public weak var livePhotoButton: UIBarButtonItem!
   @IBOutlet public weak var depthDataButton: UIBarButtonItem!
   @IBOutlet weak var scrollView: UIScrollView!
-  
+
   var image: UIImage?
   var livePhotoURL: URL?
   var showingDepth: Bool = false
   var position: CameraPosition = .back
   private var _depthData: Any?
-  
+
   var depthData: AVDepthData? {
     get {
       return _depthData as? AVDepthData
@@ -35,20 +35,20 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
       }
     }
   }
-  
+
   override func viewWillAppear(_ animated: Bool) {
     //Scrollview setup.
     scrollView.delegate = self
-    
+
     scrollView.minimumZoomScale = 1.0
     scrollView.maximumZoomScale = 10.0//maximum zoom scale you want
     scrollView.zoomScale = 1.0
-    
+
     //Tap gesture recognizer setup.
     doubleTap.numberOfTapsRequired = 2
     doubleTap.addTarget(self, action: #selector(ImageViewController.ZoomInOnPhoto))
     scrollView.addGestureRecognizer(doubleTap)
-    
+
     self.imageView.image = self.image
     if livePhotoURL != nil {
       self.livePhotoButton.isEnabled = true
@@ -58,24 +58,24 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
         self.depthDataButton.isEnabled = true
       }
     }
-    
+
   }
-  
-  //MARK: - Scrollview functionality.
+
+  // MARK: - Scrollview functionality.
   func viewForZooming(in scrollView: UIScrollView) -> UIView? {
     return imageView
   }
   //END OF SCROLLVIEW FUNCTIONALITY
-  
-  //MARK: - Tap to zoom functionality.
-  @objc func ZoomInOnPhoto(recognizer: UITapGestureRecognizer){
+
+  // MARK: - Tap to zoom functionality.
+  @objc func ZoomInOnPhoto(recognizer: UITapGestureRecognizer) {
     if scrollView.zoomScale == 1 {
       scrollView.zoom(to: zoomRectForScale(scale: 2, center: recognizer.location(in: recognizer.view)), animated: true)
     } else {
       scrollView.setZoomScale(1, animated: true)
     }
   }
-  
+
   func zoomRectForScale(scale: CGFloat, center: CGPoint) -> CGRect {
     var zoomRect = CGRect.zero
     zoomRect.size.height = imageView.frame.size.height / scale
@@ -86,7 +86,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     return zoomRect
   }
   //END OF TAP TO ZOOM FUNCTIONALITY
-  
+
   @IBAction func livePhotoButtonTapped() {
     if let url = livePhotoURL {
       let player = AVPlayer(url: url)
@@ -97,7 +97,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
       }
     }
   }
-  
+
   @IBAction func depthDataButtonTapped() {
     if #available(iOS 11.0, *) {
       if let data = depthData {

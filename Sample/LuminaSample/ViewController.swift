@@ -28,14 +28,14 @@ class ViewController: UITableViewController {
   @IBOutlet weak var loggingLevelLabel: UILabel!
   @IBOutlet weak var maxZoomScaleLabel: UILabel!
   @IBOutlet weak var maxZoomScaleSlider: UISlider!
-  
+
   var selectedResolution: CameraResolution = .high1920x1080
   var selectedLoggingLevel: Logger.Level = .critical
   var depthView: UIImageView?
 }
 
-extension ViewController { //MARK: IBActions
-  
+extension ViewController { // MARK: IBActions
+
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.loggingLevelLabel.text = selectedLoggingLevel.uppercasedStringRepresentation
@@ -46,7 +46,7 @@ extension ViewController { //MARK: IBActions
       self.title  = "Lumina Sample"
     }
   }
-  
+
   @IBAction func cameraButtonTapped() {
     LuminaViewController.loggingLevel = selectedLoggingLevel
     let camera = LuminaViewController()
@@ -68,19 +68,19 @@ extension ViewController { //MARK: IBActions
     camera.modalPresentationStyle = .fullScreen
     present(camera, animated: true, completion: nil)
   }
-  
+
   @IBAction func frameRateSliderChanged() {
     frameRateLabel.text = String(Int(frameRateSlider.value))
   }
-  
+
   @IBAction func zoomScaleSliderChanged() {
     maxZoomScaleLabel.text = String(format: "%.01f", maxZoomScaleSlider.value)
   }
-  
+
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "stillImageOutputSegue" {
       let controller = segue.destination as! ImageViewController
-      if let map = sender as? [String : Any] {
+      if let map = sender as? [String: Any] {
         controller.image = map["stillImage"] as? UIImage
         controller.livePhotoURL = map["livePhotoURL"] as? URL
         if #available(iOS 11.0, *) {
@@ -122,10 +122,10 @@ extension ViewController: LuminaDelegate {
   }
   func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController) {
     controller.dismiss(animated: true) {
-      self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage" : stillImage, "livePhotoURL" : livePhotoAt as Any, "depthData" : depthData as Any, "isPhotoSelfie" : controller.position == .front ? true : false])
+      self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage": stillImage, "livePhotoURL": livePhotoAt as Any, "depthData": depthData as Any, "isPhotoSelfie": controller.position == .front ? true : false])
     }
   }
-  
+
   func captured(videoAt: URL, from controller: LuminaViewController) {
     controller.dismiss(animated: true) {
       let player = AVPlayer(url: videoAt)
@@ -136,15 +136,15 @@ extension ViewController: LuminaDelegate {
       }
     }
   }
-  
+
   func detected(metadata: [Any], from controller: LuminaViewController) {
     print(metadata)
   }
-  
+
   func streamed(videoFrame: UIImage, from controller: LuminaViewController) {
     print("video frame received")
   }
-  
+
   func streamed(depthData: Any, from controller: LuminaViewController) {
     if #available(iOS 11.0, *) {
       if let data = depthData as? AVDepthData {
@@ -164,7 +164,7 @@ extension ViewController: LuminaDelegate {
       }
     }
   }
-  
+
   func dismissed(controller: LuminaViewController) {
     controller.dismiss(animated: true, completion: nil)
   }
@@ -189,12 +189,12 @@ extension CVPixelBuffer {
     let ciImage = CIImage(cvPixelBuffer: self)
     let context = CIContext(options: nil)
     if let cgImage = context.createCGImage(ciImage, from: CGRect(x: 0, y: 0, width: CVPixelBufferGetWidth(self), height: CVPixelBufferGetHeight(self))) {
-      return UIImage(cgImage: cgImage , scale: 1.0, orientation: getImageOrientation(with: position))
+      return UIImage(cgImage: cgImage, scale: 1.0, orientation: getImageOrientation(with: position))
     } else {
       return nil
     }
   }
-  
+
   private func getImageOrientation(with position: CameraPosition) -> UIImage.Orientation {
     switch UIApplication.shared.statusBarOrientation {
       case .landscapeLeft:
