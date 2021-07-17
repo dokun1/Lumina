@@ -10,6 +10,12 @@ jobs:
         uses: actions/checkout@master
 
       - name: Install Danger
+        uses: danger/swift@3.3.0
+        with:
+            args: --failOnErrors --no-publish-check
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_DANGER_API_TOKEN }}
+            
         run: bundle install
 
       - name: Run Danger
