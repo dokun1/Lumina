@@ -3,19 +3,19 @@ on:
   pull_request:
 jobs:
   build:
-    runs-on: macos-10.15
+    runs-on: macos-latest
     name: Check Build
     steps:
       - name: Import Actions
         uses: actions/checkout@master
-
-      - name: Install Danger
-        run: brew install danger/tap/danger-swift
+      
+      - name: bundle install
+        run: bundle install --without=documentation
+        
+      - name: danger
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_DANGER_API_TOKEN }}
-
-      - name: Run Danger
-        run: danger-swift ci
+            DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
+        run: bundle exec danger
 
       - name: Run xcodebuild
         run: swift build -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios13.0-simulator"
