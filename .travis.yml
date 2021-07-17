@@ -1,9 +1,0 @@
-language: objective-c
-osx_image: xcode10.2
-install:
-  - bundle install
-  - brew update
-script:
-  - bundle exec danger
-  - xcodebuild -scheme Lumina -workspace Lumina.xcworkspace -destination 'platform=iOS Simulator,name=iPhone X,OS=11.3'
-  - xcodebuild -scheme Lumina -workspace Lumina.xcworkspace -destination 'platform=iOS Simulator,name=iPhone X,OS=12.2'

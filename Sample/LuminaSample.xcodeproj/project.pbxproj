@@ -34,7 +34,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		5025C7B626A33BBD009B1F85 /* Lumina */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Lumina; path = ..; sourceTree = "<group>"; };
+		5025C7BA26A36C36009B1F85 /* Lumina */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Lumina; path = ..; sourceTree = "<group>"; };
 		534C1E9D1F7C3C59001127BC /* ResolutionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResolutionViewController.swift; sourceTree = "<group>"; };
 		5365BFD31F79829800B8F338 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		5365BFD91F79AA9B00B8F338 /* MobileNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = MobileNet.mlmodel; path = LuminaSample/MobileNet.mlmodel; sourceTree = "<group>"; };
@@ -62,18 +62,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5025C7B526A33BB1009B1F85 /* Package */ = {
+		5025C7B926A36C36009B1F85 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				5025C7B626A33BBD009B1F85 /* Lumina */,
+				5025C7BA26A36C36009B1F85 /* Lumina */,
 			);
-			name = Package;
+			name = Packages;
 			sourceTree = "<group>";
 		};
 		53B828EA1EAAA09000E3A624 = {
 			isa = PBXGroup;
 			children = (
-				5025C7B526A33BB1009B1F85 /* Package */,
+				5025C7B926A36C36009B1F85 /* Packages */,
 				53B828F51EAAA09000E3A624 /* LuminaSample */,
 				53B829081EAAA16D00E3A624 /* Frameworks */,
 				53B828F41EAAA09000E3A624 /* Products */,
