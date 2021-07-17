@@ -22,7 +22,7 @@ extension LuminaCamera {
       return nil
     }
   }
-  
+
   func getNewAudioInputDevice() -> AVCaptureDeviceInput? {
     do {
       guard let device = AVCaptureDevice.default(for: AVMediaType.audio) else {
@@ -34,14 +34,14 @@ extension LuminaCamera {
       return nil
     }
   }
-  
+
   func purgeAudioDevices() {
     LuminaLogger.notice(message: "purging old audio devices on capture session")
     for oldInput in self.session.inputs where oldInput == self.audioInput {
       self.session.removeInput(oldInput)
     }
   }
-  
+
   func purgeVideoDevices() {
     LuminaLogger.notice(message: "purging old video devices on capture session")
     for oldInput in self.session.inputs where oldInput == self.videoInput {
@@ -61,7 +61,7 @@ extension LuminaCamera {
       }
     }
   }
-  
+
   func getDevice(with position: AVCaptureDevice.Position) -> AVCaptureDevice? {
 #if swift(>=4.0.2)
     if #available(iOS 11.1, *), position == .front {
@@ -80,7 +80,7 @@ extension LuminaCamera {
     }
     return nil
   }
-  
+
   func configureFrameRate() {
     guard let device = self.currentCaptureDevice else {
       return
@@ -109,7 +109,7 @@ extension LuminaCamera {
       }
     }
   }
-  
+
   func updateZoom() {
     guard let input = self.videoInput else {
       return

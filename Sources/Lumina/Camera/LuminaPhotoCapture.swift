@@ -11,19 +11,19 @@ import AVFoundation
 
 struct LuminaPhotoCapture {
   var camera: LuminaCamera?
-  
+
   var stillImage: UIImage? {
     didSet {
       collectionUpdated()
     }
   }
-  
+
   var livePhotoURL: URL? {
     didSet {
       collectionUpdated()
     }
   }
-  
+
   private var _depthData: Any?
   @available(iOS 11.0, *)
   var depthData: AVDepthData? {
@@ -37,7 +37,7 @@ struct LuminaPhotoCapture {
       }
     }
   }
-  
+
   fileprivate func collectionUpdated() {
     LuminaLogger.notice(message: "photo capture struct updating")
     var sendingLivePhotoURL: URL?
@@ -53,7 +53,7 @@ struct LuminaPhotoCapture {
         return
       }
     }
-    
+
     if sendingCamera.captureDepthData == true {
       if let data = depthData {
         LuminaLogger.notice(message: "new depth data map added to current capture struct")

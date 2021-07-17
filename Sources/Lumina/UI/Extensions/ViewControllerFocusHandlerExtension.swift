@@ -29,7 +29,7 @@ extension LuminaViewController {
       camera.resetCameraToContinuousExposureAndFocus()
     }
   }
-  
+
   private func showFocusView(at point: CGPoint) {
     let focusView: UIImageView = UIImageView(image: UIImage(systemName: "camera.metering.partial")?.withTintColor(.white, renderingMode: .alwaysOriginal))
     focusView.contentMode = .scaleAspectFit

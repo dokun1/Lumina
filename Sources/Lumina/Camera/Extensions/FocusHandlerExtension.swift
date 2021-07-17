@@ -33,7 +33,7 @@ extension LuminaCamera {
       }
     }
   }
-  
+
   func resetCameraToContinuousExposureAndFocus() {
     do {
       guard let input = self.videoInput else {

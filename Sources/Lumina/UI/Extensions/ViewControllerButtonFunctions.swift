@@ -13,7 +13,7 @@ extension LuminaViewController {
     LuminaLogger.notice(message: "cancel button tapped")
     delegate?.dismissed(controller: self)
   }
-  
+
   @objc func shutterButtonTapped() {
     LuminaLogger.notice(message: "shutter button tapped")
     shutterButton.takePhoto()
@@ -26,7 +26,7 @@ extension LuminaViewController {
     }
     camera.captureStillImage()
   }
-  
+
   @objc func shutterButtonLongPressed(_ sender: UILongPressGestureRecognizer) {
     LuminaLogger.notice(message: "shutter button long pressed")
     guard let camera = self.camera else {
@@ -52,7 +52,7 @@ extension LuminaViewController {
         break
     }
   }
-  
+
   @objc func switchButtonTapped() {
     LuminaLogger.notice(message: "camera switch button tapped")
     switch self.position {
@@ -63,7 +63,7 @@ extension LuminaViewController {
         self.position = .back
     }
   }
-  
+
   @objc func torchButtonTapped() {
     LuminaLogger.notice(message: "torch button tapped")
     guard let camera = self.camera, self.position == .back else {

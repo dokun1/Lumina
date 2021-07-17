@@ -15,7 +15,7 @@ extension LuminaCamera {
     previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
     return previewLayer
   }
-  
+
   func captureStillImage() {
     LuminaLogger.info(message: "Attempting photo capture")
     var settings = AVCapturePhotoSettings()
@@ -50,7 +50,7 @@ extension LuminaCamera {
     }
     self.photoOutput.capturePhoto(with: settings, delegate: self)
   }
-  
+
   func startVideoRecording() {
     LuminaLogger.notice(message: "attempting to start video recording")
     if self.resolution == .photo {
@@ -72,7 +72,7 @@ extension LuminaCamera {
       self.videoFileOutput.startRecording(to: URL(fileURLWithPath: fileName), recordingDelegate: self)
     }
   }
-  
+
   func stopVideoRecording() {
     LuminaLogger.notice(message: "ending video recording")
     recordingVideo = false

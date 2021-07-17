@@ -17,14 +17,14 @@ extension LuminaViewController {
     currentZoomScale = min(maxZoomScale, max(1.0, beginZoomScale * Float(recognizer.scale)))
     LuminaLogger.notice(message: "setting zoom scale to \(currentZoomScale)")
   }
-  
+
   @objc func handleTapGestureRecognizer(recognizer: UITapGestureRecognizer) {
     delegate?.tapped(at: recognizer.location(in: view), from: self)
     if position == .back {
       focusCamera(at: recognizer.location(in: view))
     }
   }
-  
+
   func createUI() {
     LuminaLogger.notice(message: "Creating UI")
     self.view.layer.addSublayer(self.previewLayer)
@@ -37,7 +37,7 @@ extension LuminaViewController {
     self.view.addGestureRecognizer(self.focusRecognizer)
     enableUI(valid: false)
   }
-  
+
   func enableUI(valid: Bool) {
     DispatchQueue.main.async {
       self.shutterButton.isEnabled = valid
@@ -45,7 +45,7 @@ extension LuminaViewController {
       self.torchButton.isEnabled = valid
     }
   }
-  
+
   func updateUI(orientation: UIInterfaceOrientation) {
     LuminaLogger.notice(message: "updating UI for orientation: \(orientation.rawValue)")
     guard let connection = self.previewLayer.connection, connection.isVideoOrientationSupported else {
@@ -55,20 +55,20 @@ extension LuminaViewController {
     connection.videoOrientation = necessaryVideoOrientation(for: orientation)
     self.camera?.updateOutputVideoOrientation(connection.videoOrientation)
   }
-  
+
   func updateButtonFrames() {
     let frame = self.view.safeAreaLayoutGuide.layoutFrame
     self.switchButton.center = CGPoint(x: frame.maxX - 30, y: frame.minY + 25)
     self.cancelButton.center = CGPoint(x: frame.minX + 55, y: frame.maxY - 45)
     self.torchButton.center = CGPoint(x: frame.minX + 25, y: frame.minY + 25)
     self.shutterButton.center = CGPoint(x: frame.midX, y: frame.maxY - 45)
-    
+
     let textWidth = frame.maxX - 110
     self.textPromptView.frame.size = CGSize(width: textWidth - 10, height: 80)
     self.textPromptView.layoutSubviews()
     self.textPromptView.center = CGPoint(x: frame.midX, y: frame.minY + 45)
   }
-  
+
   // swiftlint:disable cyclomatic_complexity
   func handleCameraSetupResult(_ result: CameraSetupResult) {
     LuminaLogger.notice(message: "camera set up result: \(result.rawValue)")
@@ -117,7 +117,7 @@ extension LuminaViewController {
       }
     }
   }
-  
+
   private func necessaryVideoOrientation(for statusBarOrientation: UIInterfaceOrientation) -> AVCaptureVideoOrientation {
     switch statusBarOrientation {
       case .portrait:

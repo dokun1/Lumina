@@ -30,12 +30,12 @@ public struct LuminaRecognitionResult {
 
 final class LuminaObjectRecognizer: NSObject {
   private var modelPairs: [LuminaModel]
-  
+
   init(modelPairs: [LuminaModel]) {
     LuminaLogger.notice(message: "initializing object recognizer", metadata: ["Model Count": "\(modelPairs.count)"])
     self.modelPairs = modelPairs
   }
-  
+
   func recognize(from image: UIImage, completion: @escaping ([LuminaRecognitionResult]?) -> Void) {
     guard let coreImage = image.cgImage else {
       completion(nil)
@@ -75,7 +75,7 @@ final class LuminaObjectRecognizer: NSObject {
       completion(recognitionResults)
     }
   }
-  
+
   private func mapResults(_ objects: [Any]) -> [LuminaPrediction] {
     var results = [LuminaPrediction]()
     for object in objects {

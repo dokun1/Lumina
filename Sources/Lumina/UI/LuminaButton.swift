@@ -15,7 +15,7 @@ enum SystemButtonType {
     case off
     case auto
   }
-  
+
   case torch
   case cameraSwitch
   case photoCapture
@@ -42,7 +42,7 @@ final class LuminaButton: UIButton {
       _image = newValue
     }
   }
-  
+
   private var _text: String?
   var text: String? {
     get {
@@ -53,7 +53,7 @@ final class LuminaButton: UIButton {
       _text = newValue
     }
   }
-  
+
   required init() {
     super.init(frame: CGRect.zero)
     self.backgroundColor = UIColor.clear
@@ -63,7 +63,7 @@ final class LuminaButton: UIButton {
       titleLabel.textAlignment = .center
     }
   }
-  
+
   init(with systemStyle: SystemButtonType) {
     super.init(frame: CGRect.zero)
     self.style = systemStyle
@@ -97,7 +97,7 @@ final class LuminaButton: UIButton {
         break
     }
   }
-  
+
   func startRecordingVideo() {
     if style == .shutter {
       DispatchQueue.main.async {
@@ -109,7 +109,7 @@ final class LuminaButton: UIButton {
       }
     }
   }
-  
+
   func stopRecordingVideo() {
     if style == .shutter {
       DispatchQueue.main.async {
@@ -121,7 +121,7 @@ final class LuminaButton: UIButton {
       }
     }
   }
-  
+
   func takePhoto() {
     if style == .shutter {
       DispatchQueue.main.async {
@@ -137,7 +137,7 @@ final class LuminaButton: UIButton {
       }
     }
   }
-  
+
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
@@ -166,23 +166,23 @@ fileprivate extension UIColor {
   class var normalState: UIColor {
     return UIColor(white: 1.0, alpha: 0.65)
   }
-  
+
   class var recordingState: UIColor {
     return UIColor.red.withAlphaComponent(0.65)
   }
-  
+
   class var takePhotoState: UIColor {
     return UIColor.lightGray.withAlphaComponent(0.65)
   }
-  
+
   class var borderNormalState: CGColor {
     return UIColor.gray.cgColor
   }
-  
+
   class var borderRecordingState: CGColor {
     return UIColor.red.cgColor
   }
-  
+
   class var borderTakePhotoState: CGColor {
     return UIColor.darkGray.cgColor
   }

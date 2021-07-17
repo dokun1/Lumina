@@ -19,7 +19,7 @@ extension UIFont {
     let newNames = fileNames.map({ bundle?.url(forResource: $0, withExtension: "ttf") })
     return newNames as? [URL]
   }
-  
+
   static func register(from url: URL) throws {
     guard let fontDataProvider = CGDataProvider(url: url as CFURL) else {
       throw LuminaTextError.fontError
@@ -35,10 +35,10 @@ extension UIFont {
 }
 
 final class LuminaTextPromptView: UIView {
-  
+
   private var textLabel = UILabel()
   static private let animationDuration = 0.3
-  
+
   init() {
     super.init(frame: CGRect.zero)
     self.textLabel = UILabel()
@@ -68,7 +68,7 @@ final class LuminaTextPromptView: UIView {
     self.alpha = 0.0
     self.layer.cornerRadius = 5.0
   }
-  
+
   func updateText(to text: String) {
     DispatchQueue.main.async {
       if text.isEmpty {
@@ -79,7 +79,7 @@ final class LuminaTextPromptView: UIView {
       }
     }
   }
-  
+
   func hide(andErase: Bool) {
     DispatchQueue.main.async {
       UIView.animate(withDuration: LuminaTextPromptView.animationDuration, animations: {
@@ -91,7 +91,7 @@ final class LuminaTextPromptView: UIView {
       })
     }
   }
-  
+
   private func makeAppear() {
     DispatchQueue.main.async {
       UIView.animate(withDuration: LuminaTextPromptView.animationDuration) {
@@ -99,11 +99,11 @@ final class LuminaTextPromptView: UIView {
       }
     }
   }
-  
+
   override func layoutSubviews() {
     self.textLabel.frame = CGRect(origin: CGPoint(x: 5, y: 5), size: CGSize(width: frame.width - 10, height: frame.height - 10))
   }
-  
+
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }

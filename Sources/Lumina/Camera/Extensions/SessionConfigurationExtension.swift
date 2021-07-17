@@ -23,7 +23,7 @@ extension LuminaCamera {
       }
     }
   }
-  
+
   func requestAudioPermissions() {
     self.sessionQueue.suspend()
     AVCaptureDevice.requestAccess(for: AVMediaType.audio) { success in
@@ -37,7 +37,7 @@ extension LuminaCamera {
       }
     }
   }
-  
+
   func updateOutputVideoOrientation(_ orientation: AVCaptureVideoOrientation) {
     self.videoBufferQueue.async {
       for output in self.session.outputs {
@@ -50,7 +50,7 @@ extension LuminaCamera {
       }
     }
   }
-  
+
   func restartVideo() {
     LuminaLogger.notice(message: "restarting video feed")
     if self.session.isRunning {
@@ -64,7 +64,7 @@ extension LuminaCamera {
       }
     }
   }
-  
+
   func updateAudio(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
     self.sessionQueue.async {
       self.purgeAudioDevices()
@@ -90,7 +90,7 @@ extension LuminaCamera {
       }
     }
   }
-  
+
   func updateVideo(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
     self.sessionQueue.async {
       self.purgeVideoDevices()
@@ -108,7 +108,7 @@ extension LuminaCamera {
       }
     }
   }
-  
+
   private func videoSetupApproved() -> CameraSetupResult {
     self.torchState = .off
     self.session.sessionPreset = .high // set to high here so that device input can be added to session. resolution can be checked for update later
@@ -138,7 +138,7 @@ extension LuminaCamera {
     configureFrameRate()
     return .videoSuccess
   }
-  
+
   private func checkSessionValidity(for input: AVCaptureDeviceInput) -> CameraSetupResult? {
     guard self.session.canAddInput(input) else {
       LuminaLogger.error(message: "cannot add video input")
@@ -170,7 +170,7 @@ extension LuminaCamera {
     }
     return nil
   }
-  
+
   private func configureVideoRecordingOutput(for session: AVCaptureSession) {
     if self.recordsVideo {
       // adding this invalidates the video data output
@@ -183,7 +183,7 @@ extension LuminaCamera {
       }
     }
   }
-  
+
   private func configureHiResPhotoOutput(for session: AVCaptureSession) {
     if self.captureHighResolutionImages && self.photoOutput.isHighResolutionCaptureEnabled {
       LuminaLogger.notice(message: "enabling high resolution photo capture")
@@ -193,7 +193,7 @@ extension LuminaCamera {
       self.captureHighResolutionImages = false
     }
   }
-  
+
   private func configureLivePhotoOutput(for session: AVCaptureSession) {
     if self.captureLivePhotos && self.photoOutput.isLivePhotoCaptureSupported {
       LuminaLogger.notice(message: "enabling live photo capture")
@@ -203,7 +203,7 @@ extension LuminaCamera {
       self.captureLivePhotos = false
     }
   }
-  
+
   private func configureMetadataOutput(for session: AVCaptureSession) {
     if self.trackMetadata {
       LuminaLogger.notice(message: "adding video metadata output")
@@ -211,7 +211,7 @@ extension LuminaCamera {
       self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
     }
   }
-  
+
   private func configureDepthDataOutput(for session: AVCaptureSession) {
     if self.captureDepthData && self.photoOutput.isDepthDataDeliverySupported {
       LuminaLogger.notice(message: "enabling depth data delivery")
@@ -220,7 +220,7 @@ extension LuminaCamera {
       LuminaLogger.error(message: "cannot capture depth data with these settings")
       self.captureDepthData = false
     }
-    
+
     if self.streamDepthData, let depthDataOutput = self.depthDataOutput {
       LuminaLogger.notice(message: "adding streaming depth data output to capture session")
       session.addOutput(depthDataOutput)

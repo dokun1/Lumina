@@ -23,7 +23,7 @@ extension CMSampleBuffer {
     }
     return UIImage(cgImage: cgImageRef, scale: 1.0, orientation: getImageOrientation(forCamera: position))
   }
-  
+
   func normalizedVideoFrame() -> UIImage? {
     LuminaLogger.notice(message: "normalizing video frame from CMSampleBbuffer")
     guard let imageBuffer = CMSampleBufferGetImageBuffer(self) else {
@@ -36,7 +36,7 @@ extension CMSampleBuffer {
     }
     return UIImage(cgImage: sample)
   }
-  
+
   private func getImageOrientation(forCamera: CameraPosition) -> UIImage.Orientation {
     switch UIApplication.shared.statusBarOrientation {
       case .landscapeLeft:

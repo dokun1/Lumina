@@ -15,7 +15,7 @@ final public class LuminaModel {
   var model: MLModel?
   /// A string that represents the class name of the model performing recognition
   var type: String?
-  
+
   public init(model: MLModel, type: String) {
     self.model = model
     self.type = type

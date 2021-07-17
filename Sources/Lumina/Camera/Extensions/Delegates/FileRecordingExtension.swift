@@ -17,21 +17,21 @@ extension LuminaCamera: AVCaptureFileOutputRecordingDelegate {
       }
     }
   }
-  
+
   func photoOutput(_ output: AVCapturePhotoOutput, willBeginCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
     if self.captureLivePhotos {
       LuminaLogger.notice(message: "beginning live photo capture")
       self.delegate?.cameraBeganTakingLivePhoto(camera: self)
     }
   }
-  
+
   func photoOutput(_ output: AVCapturePhotoOutput, didFinishRecordingLivePhotoMovieForEventualFileAt outputFileURL: URL, resolvedSettings: AVCaptureResolvedPhotoSettings) {
     if self.captureLivePhotos {
       LuminaLogger.notice(message: "finishing live photo capture")
       self.delegate?.cameraFinishedTakingLivePhoto(camera: self)
     }
   }
-  
+
   //swiftlint:disable function_parameter_count
   func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingLivePhotoToMovieFileAt outputFileURL: URL, duration: CMTime, photoDisplayTime: CMTime, resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
     photoCollectionQueue.sync {

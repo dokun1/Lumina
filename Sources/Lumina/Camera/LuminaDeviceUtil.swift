@@ -13,11 +13,11 @@ import AudioToolbox.AudioServices
 
 final class LuminaHapticFeedbackGenerator {
   private let notificationGeneratorSharedInstance = UINotificationFeedbackGenerator()
-  
+
   func prepare() {
     notificationGeneratorSharedInstance.prepare()
   }
-  
+
   func errorFeedback() {
     if UIDevice.current.hasHapticFeedback {
       notificationGeneratorSharedInstance.notificationOccurred(.warning)
@@ -50,7 +50,7 @@ internal extension UIDevice {
     case iPhone12ProMax
     case simulator
   }
-  
+
   static var hasNotch: Bool {
     return platform == .iPhoneXSMax ||
     platform == .iPhoneXS ||
@@ -64,7 +64,7 @@ internal extension UIDevice {
     platform == .iPhone12Pro ||
     platform == .iPhone12ProMax
   }
-  
+
   // TODO: Encode new devices as of 2021 - and is this API still being used?
   static var platform: DevicePlatform {
     var sysinfo = utsname()
@@ -97,12 +97,12 @@ internal extension UIDevice {
         return .other
     }
   }
-  
+
   var hasTapticEngine: Bool {
     let platform = UIDevice.platform
     return platform == .iPhone6S || platform == .iPhone6SPlus || platform == .iPhone7 || platform == .iPhone7Plus || platform == .iPhone8 || platform == .iPhone8Plus || platform == .iPhoneX
   }
-  
+
   var hasHapticFeedback: Bool {
     let platform = UIDevice.platform
     return platform == .iPhone7 || platform == .iPhone7Plus || platform == .iPhone8 || platform == .iPhone8Plus || platform == .iPhoneX

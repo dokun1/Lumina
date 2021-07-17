@@ -33,7 +33,7 @@ extension LuminaCamera: AVCapturePhotoCaptureDelegate {
       }
     }
   }
-  
+
   // swiftlint:disable function_parameter_count
   func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
     if #available(iOS 11.0, *) { // make use of AVCapturePhotoOutput

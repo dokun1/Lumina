@@ -31,7 +31,7 @@ public enum CameraResolution: String, CaseIterable {
   case medium = "Medium"
   case highest = "Highest"
   case inputPriority = "Input Priority"
-  
+
   // swiftlint:disable cyclomatic_complexity
   func foundationPreset() -> AVCaptureSession.Preset {
     switch self {
@@ -61,7 +61,7 @@ public enum CameraResolution: String, CaseIterable {
         return AVCaptureSession.Preset.inputPriority
     }
   }
-  
+
   func getDimensions() -> CMVideoDimensions {
     switch self {
       case .vga640x480:

@@ -54,7 +54,7 @@ public enum TorchState {
 
 final class LuminaCamera: NSObject {
   weak var delegate: LuminaCameraDelegate?
-  
+
   var torchState: TorchState = .off {
     didSet {
       guard let input = self.videoInput else {
@@ -90,81 +90,81 @@ final class LuminaCamera: NSObject {
       }
     }
   }
-  
+
   var recordsVideo = false {
     didSet {
       restartVideo()
     }
   }
-  
+
   var streamFrames = false {
     didSet {
       restartVideo()
     }
   }
-  
+
   var trackMetadata = false {
     didSet {
       restartVideo()
     }
   }
-  
+
   var captureLivePhotos = false {
     didSet {
       restartVideo()
     }
   }
-  
+
   var captureDepthData = false {
     didSet {
       restartVideo()
     }
   }
-  
+
   var streamDepthData = false {
     didSet {
       restartVideo()
     }
   }
-  
+
   var captureHighResolutionImages = false {
     didSet {
       restartVideo()
     }
   }
-  
+
   var recordingVideo: Bool = false
-  
+
   var position: CameraPosition = .back {
     didSet {
       restartVideo()
     }
   }
-  
+
   var resolution: CameraResolution = .highest {
     didSet {
       restartVideo()
     }
   }
-  
+
   var frameRate: Int = 30 {
     didSet {
       restartVideo()
     }
   }
-  
+
   var maxZoomScale: Float = MAXFLOAT
-  
+
   var currentZoomScale: Float = 1.0 {
     didSet {
       updateZoom()
     }
   }
-  
+
   var currentPhotoCollection: LuminaPhotoCapture?
-  
+
   var recognizer: AnyObject?
-  
+
   private var _streamingModels: [(AnyObject, String)]?
   @available(iOS 11.0, *)
   var streamingModels: [LuminaModel]? {
@@ -197,9 +197,9 @@ final class LuminaCamera: NSObject {
       }
     }
   }
-  
+
   var session = AVCaptureSession()
-  
+
   fileprivate var discoverySession: AVCaptureDevice.DiscoverySession? {
     var deviceTypes = [AVCaptureDevice.DeviceType]()
     deviceTypes.append(.builtInWideAngleCamera)
@@ -213,7 +213,7 @@ final class LuminaCamera: NSObject {
 #endif
     return AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
   }
-  
+
   var videoInput: AVCaptureDeviceInput?
   var audioInput: AVCaptureDeviceInput?
   var currentCaptureDevice: AVCaptureDevice?
@@ -223,7 +223,7 @@ final class LuminaCamera: NSObject {
   var sessionQueue = DispatchQueue(label: "com.lumina.sessionQueue")
   var photoCollectionQueue = DispatchQueue(label: "com.lumina.photoCollectionQueue")
   var depthDataQueue = DispatchQueue(label: "com.lumina.depthDataQueue")
-  
+
   var videoDataOutput: AVCaptureVideoDataOutput {
     let output = AVCaptureVideoDataOutput()
     output.alwaysDiscardsLateVideoFrames = true
@@ -231,7 +231,7 @@ final class LuminaCamera: NSObject {
     return output
   }
   var photoOutput = AVCapturePhotoOutput()
-  
+
   private var _metadataOutput: AVCaptureMetadataOutput?
   var metadataOutput: AVCaptureMetadataOutput {
     if let existingOutput = _metadataOutput {
@@ -242,7 +242,7 @@ final class LuminaCamera: NSObject {
     _metadataOutput = output
     return output
   }
-  
+
   private var _videoFileOutput: AVCaptureMovieFileOutput?
   var videoFileOutput: AVCaptureMovieFileOutput {
     if let existingOutput = _videoFileOutput {
@@ -252,7 +252,7 @@ final class LuminaCamera: NSObject {
     _videoFileOutput = output
     return output
   }
-  
+
   private var _depthDataOutput: AnyObject?
   @available(iOS 11.0, *)
   var depthDataOutput: AVCaptureDepthDataOutput? {
@@ -269,14 +269,14 @@ final class LuminaCamera: NSObject {
       _depthDataOutput = newValue
     }
   }
-  
+
   func start() {
     LuminaLogger.notice(message: "starting capture session")
     self.sessionQueue.async {
       self.session.startRunning()
     }
   }
-  
+
   func stop() {
     LuminaLogger.notice(message: "stopping capture session")
     self.sessionQueue.async {
