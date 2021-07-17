@@ -11,11 +11,11 @@ jobs:
 
       - name: Install Danger
         run: brew install danger/tap/danger-swift
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_DANGER_API_TOKEN }}
 
       - name: Run Danger
         run: danger-swift ci
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_DANGER_API_TOKEN }}
 
       - name: Run xcodebuild
         run: swift build -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios13.0-simulator"
