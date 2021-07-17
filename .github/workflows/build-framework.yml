@@ -2,23 +2,19 @@ name: Pull Request Testing
 on:
   pull_request:
 jobs:
-  mac_build:
-    name: Build on Mac
+  build:
     runs-on: macos-10.15
+    name: "Run Danger"
     steps:
-      - name: Checkout Actions
         uses: actions/checkout@master
-
-      - name: Install Danger
+      - name: Danger
         uses: danger/swift@3.3.0
         with:
             args: --failOnErrors --no-publish-check
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_DANGER_API_TOKEN }}
-            
-        run: bundle install
 
-      - name: Run Danger
+      - name: "Run bundle exec"
         run: bundle exec danger
 
       - name: Run xcodebuild
