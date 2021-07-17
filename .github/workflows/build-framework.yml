@@ -3,18 +3,18 @@ on:
   pull_request:
 jobs:
   build:
-    runs-on: macos-10.15
-    name: "Run Danger"
+    runs-on: macos-latest
+    name: Check Build
     steps:
+      - name: Import Actions
         uses: actions/checkout@master
-      - name: Danger
-        uses: danger/swift@3.3.0
-        with:
-            args: --failOnErrors --no-publish-check
+      
+      - name: bundle install
+        run: bundle install --without=documentation
+        
+      - name: danger
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_DANGER_API_TOKEN }}
-
-      - name: "Run bundle exec"
+            DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
         run: bundle exec danger
 
       - name: Run xcodebuild
