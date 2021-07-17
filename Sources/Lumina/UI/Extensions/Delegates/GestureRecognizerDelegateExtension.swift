@@ -9,10 +9,10 @@
 import UIKit
 
 extension LuminaViewController: UIGestureRecognizerDelegate {
-    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if gestureRecognizer.isKind(of: UIPinchGestureRecognizer.self) {
-            beginZoomScale = currentZoomScale
-        }
-        return true
+  public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    if gestureRecognizer.isKind(of: UIPinchGestureRecognizer.self) {
+      beginZoomScale = currentZoomScale
     }
+    return true
+  }
 }

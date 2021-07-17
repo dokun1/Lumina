@@ -120,7 +120,6 @@ extension ViewController: LuminaDelegate {
       print("CoreML not available in iOS 10.0")
     }
   }
-  
   func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController) {
     controller.dismiss(animated: true) {
       self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage" : stillImage, "livePhotoURL" : livePhotoAt as Any, "depthData" : depthData as Any, "isPhotoSelfie" : controller.position == .front ? true : false])

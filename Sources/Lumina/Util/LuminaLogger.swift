@@ -9,6 +9,7 @@
 import Foundation
 import Logging
 
+// TODO: Work out how to expose a Lumina-specific logger so apps don't have to import `Logging`, even though it's there.
 public extension Logger.Level {
   var uppercasedStringRepresentation: String {
     self.rawValue.uppercased()

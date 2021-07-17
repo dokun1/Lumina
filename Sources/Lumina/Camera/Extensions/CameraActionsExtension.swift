@@ -25,8 +25,6 @@ extension LuminaCamera {
         settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
       }
     }
-//    settings.isauto
-//    settings.isAutoStillImageStabilizationEnabled = true
     switch self.torchState {
         //swiftlint:disable empty_enum_arguments
       case .on(_):

@@ -55,9 +55,17 @@ internal extension UIDevice {
     return platform == .iPhoneXSMax ||
     platform == .iPhoneXS ||
     platform == .iPhoneXR ||
-    platform == .iPhoneX
+    platform == .iPhoneX ||
+    platform == .iPhone11 ||
+    platform == .iPhone11Pro ||
+    platform == .iPhone11ProMax ||
+    platform == .iPhone12Mini ||
+    platform == .iPhone12 ||
+    platform == .iPhone12Pro ||
+    platform == .iPhone12ProMax
   }
   
+  // TODO: Encode new devices as of 2021 - and is this API still being used?
   static var platform: DevicePlatform {
     var sysinfo = utsname()
     uname(&sysinfo)

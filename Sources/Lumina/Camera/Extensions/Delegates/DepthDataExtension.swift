@@ -10,13 +10,13 @@ import Foundation
 import AVFoundation
 
 extension LuminaCamera: AVCaptureDepthDataOutputDelegate {
-    func depthDataOutput(_ output: AVCaptureDepthDataOutput, didOutput depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection) {
-        DispatchQueue.main.async {
-            self.delegate?.depthDataCaptured(camera: self, depthData: depthData)
-        }
+  func depthDataOutput(_ output: AVCaptureDepthDataOutput, didOutput depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection) {
+    DispatchQueue.main.async {
+      self.delegate?.depthDataCaptured(camera: self, depthData: depthData)
     }
-
-    func depthDataOutput(_ output: AVCaptureDepthDataOutput, didDrop depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection, reason: AVCaptureOutput.DataDroppedReason) {
-        LuminaLogger.error(message: "dropped depth data output")
-    }
+  }
+  
+  func depthDataOutput(_ output: AVCaptureDepthDataOutput, didDrop depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection, reason: AVCaptureOutput.DataDroppedReason) {
+    LuminaLogger.error(message: "dropped depth data output")
+  }
 }
