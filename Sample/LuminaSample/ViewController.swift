@@ -79,19 +79,19 @@ extension ViewController { // MARK: IBActions
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "stillImageOutputSegue" {
-      let controller = segue.destination as! ImageViewController
+      guard let controller = segue.destination as? ImageViewController else { return }
       if let map = sender as? [String: Any] {
         controller.image = map["stillImage"] as? UIImage
         controller.livePhotoURL = map["livePhotoURL"] as? URL
         controller.depthData = map["depthData"] as? AVDepthData
-        let positionBool = map["isPhotoSelfie"] as! Bool
+        guard let positionBool = map["isPhotoSelfie"] as? Bool else { return }
         controller.position = positionBool ? .front : .back
       } else { return }
     } else if segue.identifier == "selectResolutionSegue" {
-      let controller = segue.destination as! ResolutionViewController
+      guard let controller = segue.destination as? ResolutionViewController else { return }
       controller.delegate = self
     } else if segue.identifier == "selectLoggingLevelSegue" {
-      let controller = segue.destination as! LoggingViewController
+      guard let controller = segue.destination as? LoggingViewController else { return }
       controller.delegate = self
     }
   }

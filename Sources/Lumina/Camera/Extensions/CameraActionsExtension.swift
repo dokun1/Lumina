@@ -24,7 +24,6 @@ extension LuminaCamera {
       settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
     }
     switch self.torchState {
-        //swiftlint:disable empty_enum_arguments
       case .on(_):
         settings.flashMode = .on
       case .off:
