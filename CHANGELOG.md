@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
+## [1.6.0](https://github.com/dokun1/Lumina/tree/1.6.0) (2021-07-18)
 
-[Full Changelog](https://github.com/dokun1/Lumina/compare/1.5.0...HEAD)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.5.0...1.6.0)
 
 **Closed issues:**
 
