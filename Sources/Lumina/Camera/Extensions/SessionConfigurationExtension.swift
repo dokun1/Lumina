@@ -162,7 +162,7 @@ extension LuminaCamera {
         return .invalidVideoFileOutput
       }
     }
-    if #available(iOS 11.0, *), let depthDataOutput = self.depthDataOutput {
+    if let depthDataOutput = self.depthDataOutput {
       guard self.session.canAddOutput(depthDataOutput) else {
         LuminaLogger.error(message: "cannot add depth data output with this settings map")
         return .invalidDepthDataOutput

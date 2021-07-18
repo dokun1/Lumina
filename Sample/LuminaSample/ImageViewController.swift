@@ -53,12 +53,9 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     if livePhotoURL != nil {
       self.livePhotoButton.isEnabled = true
     }
-    if #available(iOS 11.0, *) {
-      if depthData != nil {
-        self.depthDataButton.isEnabled = true
-      }
+    if depthData != nil {
+      self.depthDataButton.isEnabled = true
     }
-
   }
 
   // MARK: - Scrollview functionality.
@@ -99,19 +96,17 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
   }
 
   @IBAction func depthDataButtonTapped() {
-    if #available(iOS 11.0, *) {
-      if let data = depthData {
-        if self.showingDepth == false {
-          if let map = data.depthDataMap.normalizedImage(with: self.position) {
-            self.imageView.image = map
-          } else {
-            self.showingDepth = true
-          }
+    if let data = depthData {
+      if self.showingDepth == false {
+        if let map = data.depthDataMap.normalizedImage(with: self.position) {
+          self.imageView.image = map
         } else {
-          self.imageView.image = self.image
+          self.showingDepth = true
         }
-        self.showingDepth = !self.showingDepth
+      } else {
+        self.imageView.image = self.image
       }
+      self.showingDepth = !self.showingDepth
     }
   }
 }
