@@ -1,0 +1,21 @@
+name: Pull Request Testing
+on:
+  pull_request:
+jobs:
+  build:
+    runs-on: macos-latest
+    name: Check Build
+    steps:
+      - name: Import Actions
+        uses: actions/checkout@master
+      
+      - name: bundle install
+        run: bundle install --without=documentation
+        
+      - name: danger
+        env:
+            DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
+        run: bundle exec danger
+
+      - name: Run xcodebuild
+        run: swift build -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios13.0-simulator"
