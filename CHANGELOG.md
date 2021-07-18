@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.1](https://github.com/dokun1/Lumina/tree/1.6.1) (2021-07-18)
+
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.6.0...1.6.1)
+
+**Merged pull requests:**
+
+- No more availability checks [\#108](https://github.com/dokun1/Lumina/pull/108) ([dokun1](https://github.com/dokun1))
+
 ## [1.6.0](https://github.com/dokun1/Lumina/tree/1.6.0) (2021-07-18)
 
 [Full Changelog](https://github.com/dokun1/Lumina/compare/1.5.0...1.6.0)
