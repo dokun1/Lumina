@@ -272,7 +272,7 @@ Per default, all of the buttons are visible.
 For some UI designs, apps may want to embed `LuminaViewController` within a custom View Controler, adding controls adjacent to the camera view rather than putting all the controls inside the camera view. 
 
 Here is a code snippet that demonstrates adding a torch buttons and controlling the camera zoom level via the externally accessible API:
-```
+```swift
 class MyCustomViewController: UIViewController {
     @IBOutlet weak var flashButton: UIButton!
     @IBOutlet weak var zoomButton: UIButton!
