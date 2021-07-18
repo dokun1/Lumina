@@ -235,24 +235,20 @@ func tapped(from controller: LuminaViewController, at: CGPoint) {
 To handle a `CoreML` model and its predictions being streamed with each video frame, implement:
 ```swift
 func streamed(videoFrame: UIImage, with predictions: [LuminaRecognitionResult]?, from controller: LuminaViewController) {
-    if #available(iOS 11.0, *) {
-        guard let predicted = predictions else {
-            return
-        }
-        var resultString = String()
-        for prediction in predicted {
-            guard let values = prediction.predictions else {
-                continue
-            }
-            guard let bestPrediction = values.first else {
-                continue
-            }
-            resultString.append("\(String(describing: prediction.type)): \(bestPrediction.name)" + "\r\n")
-        }
-        controller.textPrompt = resultString
-    } else {
-        print("CoreML not available in iOS 10.0")
+  guard let predicted = predictions else {
+    return
+  }
+  var resultString = String()
+  for prediction in predicted {
+    guard let values = prediction.predictions else {
+      continue
     }
+    guard let bestPrediction = values.first else {
+      continue
+    }
+    resultString.append("\(String(describing: prediction.type)): \(bestPrediction.name)" + "\r\n")
+  }
+  controller.textPrompt = resultString
 }
 ```
 

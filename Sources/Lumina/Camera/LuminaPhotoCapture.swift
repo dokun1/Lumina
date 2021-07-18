@@ -25,7 +25,6 @@ struct LuminaPhotoCapture {
   }
 
   private var _depthData: Any?
-  @available(iOS 11.0, *)
   var depthData: AVDepthData? {
     get {
       return _depthData as? AVDepthData

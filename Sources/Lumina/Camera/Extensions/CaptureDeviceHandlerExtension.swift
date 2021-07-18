@@ -54,24 +54,20 @@ extension LuminaCamera {
       if let dataOutput = oldOutput as? AVCaptureVideoDataOutput {
         self.session.removeOutput(dataOutput)
       }
-      if #available(iOS 11.0, *) {
-        if let depthOutput = oldOutput as? AVCaptureDepthDataOutput {
-          self.session.removeOutput(depthOutput)
-        }
+      if let depthOutput = oldOutput as? AVCaptureDepthDataOutput {
+        self.session.removeOutput(depthOutput)
       }
     }
   }
 
   func getDevice(with position: AVCaptureDevice.Position) -> AVCaptureDevice? {
-#if swift(>=4.0.2)
-    if #available(iOS 11.1, *), position == .front {
+    if position == .front {
       if let device = AVCaptureDevice.default(.builtInTrueDepthCamera, for: .video, position: .front) {
         self.currentCaptureDevice = device
         return device
       }
     }
-#endif
-    if #available(iOS 10.2, *), let device = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: position) {
+    if let device = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: position) {
       self.currentCaptureDevice = device
       return device
     } else if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position) {

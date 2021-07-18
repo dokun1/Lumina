@@ -33,20 +33,4 @@ extension LuminaCamera: AVCapturePhotoCaptureDelegate {
       }
     }
   }
-
-  // swiftlint:disable function_parameter_count
-  func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
-    if #available(iOS 11.0, *) { // make use of AVCapturePhotoOutput
-      LuminaLogger.warning(message: "using iOS 11.0 or better - discarding output in favor of AVCapturePhoto methods")
-      return
-    } else {
-      guard let buffer = photoSampleBuffer else {
-        return
-      }
-      guard let image = buffer.normalizedStillImage(forCameraPosition: self.position) else {
-        return
-      }
-      delegate?.stillImageCaptured(camera: self, image: image, livePhotoURL: nil, depthData: nil)
-    }
-  }
 }

@@ -9,14 +9,18 @@
 import UIKit
 import AVFoundation
 
-@available (iOS 11.0, *)
 extension AVCapturePhoto {
   func normalizedImage(forCameraPosition position: CameraPosition) -> UIImage? {
     LuminaLogger.notice(message: "normalizing image from AVCapturePhoto instance")
     guard let cgImage = self.cgImageRepresentation() else {
       return nil
     }
-    return UIImage(cgImage: cgImage as! CGImage, scale: 1.0, orientation: getImageOrientation(forCamera: position))
+    #if swift(>=5.5)
+    return UIImage(cgImage: cgImage, scale: 1.0, orientation: getImageOrientation(forCamera: position))
+    #else
+    return UIImage(cgImage: cgImage.takeUnretainedValue(), scale: 1.0, orientation: getImageOrientation(forCamera: position))
+    #endif
+
   }
 
   private func getImageOrientation(forCamera: CameraPosition) -> UIImage.Orientation {

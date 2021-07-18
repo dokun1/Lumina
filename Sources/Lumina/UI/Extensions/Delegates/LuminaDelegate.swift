@@ -17,7 +17,7 @@ public protocol LuminaDelegate: class {
   /// - Parameters:
   ///   - stillImage: the image captured by Lumina
   ///   - livePhotoAt: the URL where the live photo file can be located and used, if enabled and available
-  ///   - depthData: the depth data associated with the captured still image, if enabled and available (iOS 11.0 only)
+  ///   - depthData: the depth data associated with the captured still image, if enabled and available
   ///   - controller: the instance of Lumina that captured the still image
   func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController)
 
@@ -49,7 +49,6 @@ public protocol LuminaDelegate: class {
   /// Triggered whenever streamDepthData is set to true on Lumina, and streams depth data detected in the form of AVDepthData
   ///
   /// - Warning: This data is returned from type `Any`, and must be optionally downcast to `AVDepthData` by the user of Lumina. This is to maintain backwards compatibility with iOS 10.0
-  /// - Note: This is only available on iOS 11.0
   /// - Parameters:
   ///   - depthData: buffer containing AVDepthData relevant to the streamed video frame
   ///   - controller: the instance of Lumina that is streaming the depth data

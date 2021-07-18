@@ -19,14 +19,11 @@ extension LuminaCamera {
   func captureStillImage() {
     LuminaLogger.info(message: "Attempting photo capture")
     var settings = AVCapturePhotoSettings()
-    if #available(iOS 11.0, *) {
-      if self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
-        LuminaLogger.notice(message: "Will capture photo with HEVC codec")
-        settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
-      }
+    if self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
+      LuminaLogger.notice(message: "Will capture photo with HEVC codec")
+      settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
     }
     switch self.torchState {
-        //swiftlint:disable empty_enum_arguments
       case .on(_):
         settings.flashMode = .on
       case .off:
@@ -42,11 +39,9 @@ extension LuminaCamera {
     if self.captureHighResolutionImages {
       settings.isHighResolutionPhotoEnabled = true
     }
-    if #available(iOS 11.0, *) {
-      if self.captureDepthData && self.photoOutput.isDepthDataDeliverySupported {
-        LuminaLogger.notice(message: "depth data delivery is enabled")
-        settings.isDepthDataDeliveryEnabled = true
-      }
+    if self.captureDepthData && self.photoOutput.isDepthDataDeliverySupported {
+      LuminaLogger.notice(message: "depth data delivery is enabled")
+      settings.isDepthDataDeliveryEnabled = true
     }
     self.photoOutput.capturePhoto(with: settings, delegate: self)
   }

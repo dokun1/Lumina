@@ -7,7 +7,7 @@ let package = Package(
   name: "Lumina",
   platforms: [.iOS(.v13)],
   products: [
-    .library(name: "Lumina",targets: ["Lumina"]),
+    .library(name: "Lumina", targets: ["Lumina"])
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0")
@@ -16,6 +16,6 @@ let package = Package(
     .target(name: "Lumina", dependencies: [
       .product(name: "Logging", package: "swift-log")
     ]),
-    .testTarget(name: "LuminaTests", dependencies: ["Lumina"]),
+    .testTarget(name: "LuminaTests", dependencies: ["Lumina"])
   ]
 )

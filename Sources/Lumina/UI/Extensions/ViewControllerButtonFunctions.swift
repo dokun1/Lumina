@@ -77,7 +77,6 @@ extension LuminaViewController {
         LuminaLogger.notice(message: "torch mode should be set to on")
         camera.torchState = .on(intensity: 1.0)
         self.torchButton.updateTorchIcon(to: SystemButtonType.FlashState.on)
-        //swiftlint:disable empty_enum_arguments
       case .on(_):
         LuminaLogger.notice(message: "torch mode should be set to auto")
         camera.torchState = .auto

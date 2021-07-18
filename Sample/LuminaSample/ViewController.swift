@@ -79,21 +79,19 @@ extension ViewController { // MARK: IBActions
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "stillImageOutputSegue" {
-      let controller = segue.destination as! ImageViewController
+      guard let controller = segue.destination as? ImageViewController else { return }
       if let map = sender as? [String: Any] {
         controller.image = map["stillImage"] as? UIImage
         controller.livePhotoURL = map["livePhotoURL"] as? URL
-        if #available(iOS 11.0, *) {
-          controller.depthData = map["depthData"] as? AVDepthData
-        }
-        let positionBool = map["isPhotoSelfie"] as! Bool
+        controller.depthData = map["depthData"] as? AVDepthData
+        guard let positionBool = map["isPhotoSelfie"] as? Bool else { return }
         controller.position = positionBool ? .front : .back
       } else { return }
     } else if segue.identifier == "selectResolutionSegue" {
-      let controller = segue.destination as! ResolutionViewController
+      guard let controller = segue.destination as? ResolutionViewController else { return }
       controller.delegate = self
     } else if segue.identifier == "selectLoggingLevelSegue" {
-      let controller = segue.destination as! LoggingViewController
+      guard let controller = segue.destination as? LoggingViewController else { return }
       controller.delegate = self
     }
   }
@@ -101,25 +99,22 @@ extension ViewController { // MARK: IBActions
 
 extension ViewController: LuminaDelegate {
   func streamed(videoFrame: UIImage, with predictions: [LuminaRecognitionResult]?, from controller: LuminaViewController) {
-    if #available(iOS 11.0, *) {
-      guard let predicted = predictions else {
-        return
-      }
-      var resultString = String()
-      for prediction in predicted {
-        guard let values = prediction.predictions else {
-          continue
-        }
-        guard let bestPrediction = values.first else {
-          continue
-        }
-        resultString.append("\(String(describing: prediction.type)): \(bestPrediction.name)" + "\r\n")
-      }
-      controller.textPrompt = resultString
-    } else {
-      print("CoreML not available in iOS 10.0")
+    guard let predicted = predictions else {
+      return
     }
+    var resultString = String()
+    for prediction in predicted {
+      guard let values = prediction.predictions else {
+        continue
+      }
+      guard let bestPrediction = values.first else {
+        continue
+      }
+      resultString.append("\(String(describing: prediction.type)): \(bestPrediction.name)" + "\r\n")
+    }
+    controller.textPrompt = resultString
   }
+
   func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController) {
     controller.dismiss(animated: true) {
       self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage": stillImage, "livePhotoURL": livePhotoAt as Any, "depthData": depthData as Any, "isPhotoSelfie": controller.position == .front ? true : false])
@@ -146,22 +141,20 @@ extension ViewController: LuminaDelegate {
   }
 
   func streamed(depthData: Any, from controller: LuminaViewController) {
-    if #available(iOS 11.0, *) {
-      if let data = depthData as? AVDepthData {
-        guard let image = data.depthDataMap.normalizedImage(with: controller.position) else {
-          print("could not convert depth data")
-          return
-        }
-        if let imageView = self.depthView {
-          imageView.removeFromSuperview()
-        }
-        let newView = UIImageView(frame: CGRect(x: controller.view.frame.minX, y: controller.view.frame.maxY - 300, width: 200, height: 200))
-        newView.image = image
-        newView.contentMode = .scaleAspectFit
-        newView.backgroundColor = UIColor.clear
-        controller.view.addSubview(newView)
-        controller.view.bringSubviewToFront(newView)
+    if let data = depthData as? AVDepthData {
+      guard let image = data.depthDataMap.normalizedImage(with: controller.position) else {
+        print("could not convert depth data")
+        return
       }
+      if let imageView = self.depthView {
+        imageView.removeFromSuperview()
+      }
+      let newView = UIImageView(frame: CGRect(x: controller.view.frame.minX, y: controller.view.frame.maxY - 300, width: 200, height: 200))
+      newView.image = image
+      newView.contentMode = .scaleAspectFit
+      newView.backgroundColor = UIColor.clear
+      controller.view.addSubview(newView)
+      controller.view.bringSubviewToFront(newView)
     }
   }
 

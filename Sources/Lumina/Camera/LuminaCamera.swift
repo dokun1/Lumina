@@ -13,7 +13,6 @@ import CoreML
 protocol LuminaCameraDelegate: class {
   func stillImageCaptured(camera: LuminaCamera, image: UIImage, livePhotoURL: URL?, depthData: Any?)
   func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
-  @available (iOS 11.0, *)
   func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaRecognitionResult]?)
   func depthDataCaptured(camera: LuminaCamera, depthData: Any)
   func videoRecordingCaptured(camera: LuminaCamera, videoURL: URL)
@@ -166,7 +165,7 @@ final class LuminaCamera: NSObject {
   var recognizer: AnyObject?
 
   private var _streamingModels: [(AnyObject, String)]?
-  @available(iOS 11.0, *)
+
   var streamingModels: [LuminaModel]? {
     get {
       if let existingModels = _streamingModels {
@@ -203,14 +202,12 @@ final class LuminaCamera: NSObject {
   fileprivate var discoverySession: AVCaptureDevice.DiscoverySession? {
     var deviceTypes = [AVCaptureDevice.DeviceType]()
     deviceTypes.append(.builtInWideAngleCamera)
-    if #available(iOS 10.2, *) {
-      deviceTypes.append(.builtInDualCamera)
-    }
-#if swift(>=4.0.2) // Xcode 9.1 shipped with Swift 4.0.2
-    if #available(iOS 11.1, *), self.captureDepthData == true {
+    deviceTypes.append(.builtInDualCamera)
+    deviceTypes.append(.builtInTripleCamera)
+    deviceTypes.append(.builtInUltraWideCamera)
+    if self.captureDepthData == true {
       deviceTypes.append(.builtInTrueDepthCamera)
     }
-#endif
     return AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
   }
 
@@ -254,7 +251,6 @@ final class LuminaCamera: NSObject {
   }
 
   private var _depthDataOutput: AnyObject?
-  @available(iOS 11.0, *)
   var depthDataOutput: AVCaptureDepthDataOutput? {
     get {
       if let existingOutput = _depthDataOutput {
