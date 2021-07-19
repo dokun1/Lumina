@@ -347,7 +347,7 @@ open class LuminaViewController: UIViewController {
       }
     }
   }
-  
+
   static var orientation: UIInterfaceOrientation {
     UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation  ?? .portrait
   }
