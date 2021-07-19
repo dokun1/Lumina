@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import CoreML
 
-protocol LuminaCameraDelegate: class {
+protocol LuminaCameraDelegate: AnyObject {
   func stillImageCaptured(camera: LuminaCamera, image: UIImage, livePhotoURL: URL?, depthData: Any?)
   func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
   func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaRecognitionResult]?)
@@ -164,38 +164,7 @@ final class LuminaCamera: NSObject {
 
   var recognizer: AnyObject?
 
-  private var _streamingModels: [(AnyObject, String)]?
-
-  var streamingModels: [LuminaModel]? {
-    get {
-      if let existingModels = _streamingModels {
-        var models = [LuminaModel]()
-        for potentialModel in existingModels {
-          if let model = potentialModel.0 as? MLModel {
-            models.append(LuminaModel(model: model, type: potentialModel.1))
-          }
-        }
-        guard models.count > 0 else {
-          return nil
-        }
-        return models
-      } else {
-        return nil
-      }
-    }
-    set {
-      if let tuples = newValue {
-        var downcastCollection = [(AnyObject, String)]()
-        for tuple in tuples {
-          guard let model = tuple.model, let type = tuple.type else {
-            continue
-          }
-          downcastCollection.append((model as AnyObject, type))
-        }
-        _streamingModels = downcastCollection
-      }
-    }
-  }
+  var streamingModels: [LuminaModel]?
 
   var session = AVCaptureSession()
 

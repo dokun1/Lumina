@@ -24,7 +24,7 @@ extension AVCapturePhoto {
   }
 
   private func getImageOrientation(forCamera: CameraPosition) -> UIImage.Orientation {
-    switch UIApplication.shared.statusBarOrientation {
+    switch LuminaViewController.orientation {
       case .landscapeLeft:
         return forCamera == .back ? .down : .upMirrored
       case .landscapeRight:

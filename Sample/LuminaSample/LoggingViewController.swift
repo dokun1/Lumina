@@ -10,7 +10,7 @@ import UIKit
 import Lumina
 import Logging
 
-protocol LoggingLevelDelegate: class {
+protocol LoggingLevelDelegate: AnyObject {
   func didSelect(loggingLevel: Logger.Level, controller: LoggingViewController)
 }
 

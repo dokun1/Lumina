@@ -63,7 +63,16 @@ extension ViewController { // MARK: IBActions
     camera.maxZoomScale = (self.maxZoomScaleLabel.text! as NSString).floatValue
     camera.frameRate = Int(self.frameRateLabel.text!) ?? 30
     if self.useCoreMLModelSwitch.isOn {
-      camera.streamingModels = [LuminaModel(model: MobileNet().model, type: "MobileNet"), LuminaModel(model: SqueezeNet().model, type: "SqueezeNet")]
+      let config = MLModelConfiguration()
+      config.computeUnits = .cpuAndGPU
+      do {
+        let mobileNet = LuminaModel(model: try MobileNet(configuration: config).model, type: "MobileNet")
+        let squeezeNet = LuminaModel(model: try SqueezeNet(configuration: config).model, type: "SqueezeNet")
+        camera.streamingModels = [mobileNet, squeezeNet]
+      } catch let error {
+        self.showErrorAlert(with: error.localizedDescription)
+        return
+      }
     }
     camera.modalPresentationStyle = .fullScreen
     present(camera, animated: true, completion: nil)
@@ -189,7 +198,8 @@ extension CVPixelBuffer {
   }
 
   private func getImageOrientation(with position: CameraPosition) -> UIImage.Orientation {
-    switch UIApplication.shared.statusBarOrientation {
+    let orientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation ?? .portrait
+    switch orientation {
       case .landscapeLeft:
         return position == .back ? .down : .upMirrored
       case .landscapeRight:
@@ -203,5 +213,13 @@ extension CVPixelBuffer {
       @unknown default:
         return position == .back ? .right : .leftMirrored
     }
+  }
+}
+
+extension ViewController {
+  func showErrorAlert(with message: String) {
+    let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+    alert.addAction(.init(title: "OK", style: .default, handler: nil))
+    self.present(alert, animated: true, completion: nil)
   }
 }
