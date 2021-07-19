@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased](https://github.com/dokun1/Lumina/tree/HEAD)
+
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.6.1...HEAD)
+
+**Closed issues:**
+
+- camera does not return to continuous autofocus after tap to focus [\#99](https://github.com/dokun1/Lumina/issues/99)
+- allow public accessors to torch state and zoom level \(get and set\) [\#94](https://github.com/dokun1/Lumina/issues/94)
+- iPhone X support [\#91](https://github.com/dokun1/Lumina/issues/91)
+
+**Merged pull requests:**
+
+- Removed all warnings, no more MLModel casting [\#109](https://github.com/dokun1/Lumina/pull/109) ([dokun1](https://github.com/dokun1))
+- Adding swift to format the current code as Swift style [\#104](https://github.com/dokun1/Lumina/pull/104) ([cs4alhaider](https://github.com/cs4alhaider))
+
 ## [1.6.1](https://github.com/dokun1/Lumina/tree/1.6.1) (2021-07-18)
 
 [Full Changelog](https://github.com/dokun1/Lumina/compare/1.6.0...1.6.1)
