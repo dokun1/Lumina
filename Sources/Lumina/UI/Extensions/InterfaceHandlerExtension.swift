@@ -77,7 +77,7 @@ extension LuminaViewController {
         case .videoSuccess:
           if let camera = self.camera {
             self.enableUI(valid: true)
-            self.updateUI(orientation: UIApplication.shared.statusBarOrientation)
+            self.updateUI(orientation: LuminaViewController.orientation)
             camera.start()
           }
         case .audioSuccess:

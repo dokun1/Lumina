@@ -9,7 +9,7 @@
 import UIKit
 import Lumina
 
-protocol ResolutionDelegate: class {
+protocol ResolutionDelegate: AnyObject {
   func didSelect(resolution: CameraResolution, controller: ResolutionViewController)
 }
 

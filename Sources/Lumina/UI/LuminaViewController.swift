@@ -239,27 +239,11 @@ open class LuminaViewController: UIViewController {
   }
 
   /// A collection of model types that will be used when streaming images for object recognition
-  ///
-  /// - Note: Only works on iOS 11 and up
-  ///
   /// - Warning: If this is set, streamFrames is over-ridden to true
-  open var streamingModels: [AnyObject]? {
+  open var streamingModels: [LuminaModel]? {
     didSet {
-      guard let streamingModels = self.streamingModels else {
-        return
-      }
-      var properlyCastModels = [LuminaModel]()
-      for possibleModel in streamingModels {
-        guard let model = possibleModel as? LuminaModel else {
-          continue
-        }
-        properlyCastModels.append(model)
-      }
-      if properlyCastModels.count > 0 {
-        LuminaLogger.notice(message: "Valid models loaded - frame streaming mode defaulted to on")
-        self.streamFrames = true
-        self.camera?.streamingModels = properlyCastModels
-      }
+      self.camera?.streamingModels = streamingModels
+      self.streamFrames = true
     }
   }
 
@@ -353,7 +337,7 @@ open class LuminaViewController: UIViewController {
   open override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     createUI()
-    updateUI(orientation: UIApplication.shared.statusBarOrientation)
+    updateUI(orientation: LuminaViewController.orientation)
     self.camera?.updateVideo { result in
       self.handleCameraSetupResult(result)
     }
@@ -362,6 +346,10 @@ open class LuminaViewController: UIViewController {
         self.handleCameraSetupResult(result)
       }
     }
+  }
+  
+  static var orientation: UIInterfaceOrientation {
+    UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation  ?? .portrait
   }
 
   /// override with caution
@@ -389,7 +377,7 @@ open class LuminaViewController: UIViewController {
     if self.camera?.recordingVideo == true {
       return
     }
-    updateUI(orientation: UIApplication.shared.statusBarOrientation)
+    updateUI(orientation: LuminaViewController.orientation)
     updateButtonFrames()
   }
 

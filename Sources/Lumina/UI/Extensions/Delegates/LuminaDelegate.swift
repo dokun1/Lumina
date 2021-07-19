@@ -10,7 +10,7 @@ import UIKit
 import CoreML
 
 /// Delegate for returning information to the application utilizing Lumina
-public protocol LuminaDelegate: class {
+public protocol LuminaDelegate: AnyObject {
 
   /// Triggered whenever a still image is captured by the user of Lumina
   ///
