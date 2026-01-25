@@ -7,8 +7,6 @@
 //
 
 import SwiftUI
-import CoreML
-import Logging
 
 // MARK: - Camera Configuration Environment Values
 
@@ -50,7 +48,7 @@ extension EnvironmentValues {
     @Entry var luminaCurrentZoomScale: Float = 1.0
 
     /// CoreML models for streaming object recognition
-    @Entry var luminaStreamingModels: [LuminaModel]? = nil
+    @Entry var luminaStreamingModels: [LuminaModel]?
 
     /// The torch/flash state
     @Entry var luminaTorchState: TorchState = .off

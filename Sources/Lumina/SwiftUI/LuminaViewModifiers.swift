@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import CoreML
 
 // MARK: - Camera Configuration Modifiers
 

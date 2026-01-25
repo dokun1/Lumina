@@ -7,8 +7,6 @@
 //
 
 import SwiftUI
-import AVFoundation
-import CoreML
 
 /// A SwiftUI view that wraps the LuminaViewController camera interface.
 ///
