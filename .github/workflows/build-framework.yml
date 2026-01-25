@@ -1,21 +1,39 @@
 name: Pull Request Testing
 on:
   pull_request:
-jobs:
-  build:
-    runs-on: macos-latest
-    name: Check Build
-    steps:
-      - name: Import Actions
-        uses: actions/checkout@master
-      
-      - name: bundle install
-        run: bundle install --without=documentation
-        
-      - name: danger
-        env:
-            DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
-        run: bundle exec danger
 
-      - name: Run xcodebuild
-        run: swift build -Xswiftc "-sdk" -Xswiftc "`xcrun --sdk iphonesimulator --show-sdk-path`" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios13.0-simulator"
+jobs:
+  danger:
+    runs-on: ubuntu-latest
+    name: Danger PR Checks
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Danger
+        uses: danger/danger-js@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  swiftlint:
+    runs-on: macos-15
+    name: SwiftLint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Run SwiftLint
+        run: swiftlint --config .swiftlint.yml
+
+  build:
+    runs-on: macos-26
+    name: Build Framework
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build for iOS Simulator
+        run: |
+          xcodebuild build \
+            -scheme Lumina \
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest'
