@@ -15,15 +15,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   swiftlint:
-    runs-on: ubuntu-latest
+    runs-on: macos-15
     name: SwiftLint
     steps:
       - uses: actions/checkout@v4
 
       - name: Run SwiftLint
-        uses: realm/SwiftLint@v0.57.0
-        with:
-          config_file: .swiftlint.yml
+        run: swiftlint --config .swiftlint.yml --strict
 
   build:
     runs-on: macos-15
