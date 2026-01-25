@@ -37,8 +37,6 @@ jobs:
 
       - name: Build for iOS Simulator
         run: |
-          swift build \
-            -Xswiftc "-sdk" \
-            -Xswiftc "$(xcrun --sdk iphonesimulator --show-sdk-path)" \
-            -Xswiftc "-target" \
-            -Xswiftc "arm64-apple-ios17.0-simulator"
+          xcodebuild build \
+            -scheme Lumina \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest'
