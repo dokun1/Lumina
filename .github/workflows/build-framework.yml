@@ -27,16 +27,13 @@ jobs:
         run: swiftlint --config .swiftlint.yml --strict
 
   build:
-    runs-on: macos-15
+    runs-on: macos-26
     name: Build Framework
     steps:
       - uses: actions/checkout@v4
-
-      - name: Select Xcode 16
-        run: sudo xcode-select -s /Applications/Xcode_16.2.app
 
       - name: Build for iOS Simulator
         run: |
           xcodebuild build \
             -scheme Lumina \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest'
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=latest'
